@@ -2,6 +2,9 @@
 
 > Reclaim your digital life. One post at a time.
 
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![GitHub Pages](https://img.shields.io/website?down_color=lightgrey&down_message=offline&up_color=brightgreen&up_message=online&url=https%3A%2F%2Fandrewgstanton.github.io%2Fcontinuum)
+
 **Continuum** is a self-hosted, Bitcoin-aligned dashboard that ingests, organizes, and visualizes your content from platforms like Twitter/X, Facebook, LinkedIn, YouTube, and Nostr.
 
 Whether you're a writer, builder, or Bitcoiner, Continuum helps you own your signal, trace your timeline, and future-proof your work.
