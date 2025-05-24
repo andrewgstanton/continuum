@@ -31,3 +31,25 @@ cd continuum
 ```
 
 Setup scripts for imports, database, and dashboard coming soon.
+
+## 🧪 Status
+
+> **Early alpha** — currently under active development.  
+> First milestone: Load, classify, and explore Nostr + Twitter exports.
+
+## 🌐 Live Site
+
+[mycontinuum.xyz](http://mycontinuum.xyz) — clean landing page, coming soon with full dashboard.
+
+## 📜 License
+
+MIT — use freely, attribute honestly.
+
+## 🙏 Author
+
+**Andrew G. Stanton**  
+📍 San Francisco Bay Area  
+🔗 [primal.net/andrewgstanton](https://primal.net/andrewgstanton)  
+⚡ Built with Bitcoin, faith, and proof of work.
+
+
