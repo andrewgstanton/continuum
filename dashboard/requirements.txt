@@ -1,0 +1,7 @@
+flask
+pandas
+python-dotenv
+markdown
+requests
+Websockets
+bech32

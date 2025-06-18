@@ -1,0 +1,6 @@
+dashboard/data/*
+dashboard/docs/*
+!dashboard/data/.gitkeep	
+!dashboard/docs/.gitkeep	
+dashboard/environment.txt	
+.pyc, .DS_Store, .vscode/
