@@ -28,7 +28,9 @@ def load_backup(path="data/nostr-content.txt.gz"):
                     pass
     return events
 
-def summarize_events(events):
+def summarize_events(events, output_dir="data"):
+    os.makedirs(output_dir, exist_ok=True)
+
     summary = {
         "notes": 0,
         "replies": 0,
@@ -36,37 +38,82 @@ def summarize_events(events):
         "likes": 0,
         "dms": 0,
         "articles": {"total": 0, "published": 0, "drafts": 0, "deleted": 0},
-        "other": 0,
+        "other": {},
         "total": 0
     }
+
+    categorized = {
+        "kind_1_notes": [],
+        "kind_1_replies": [],
+        "kind_3_reposts": [],
+        "kind_4_dms": [],
+        "kind_7_likes": [],
+        "kind_30023_published": [],
+        "kind_30023_drafts": [],
+        "kind_30023_deleted": [],
+        "other": []
+    }
+
     for event in events:
+        event["_source"] = ["primal backup"]
         kind = event.get("kind")
+        
         if kind == 1:
-            is_reply = any(tag[0] == "e" and len(tag) > 3 and tag[3] == "reply" for tag in event.get("tags", []))
+            is_reply = any(
+                tag[0] == "e" and len(tag) > 3 and tag[3] == "reply"
+                for tag in event.get("tags", [])
+            )
             if is_reply:
                 summary["replies"] += 1
+                categorized["kind_1_replies"].append(event)
             else:
                 summary["notes"] += 1
-        elif kind == 7:
-            summary["likes"] += 1
+                categorized["kind_1_notes"].append(event)
+
         elif kind == 3:
             summary["reposts"] += 1
+            categorized["kind_3_reposts"].append(event)
+
         elif kind == 4:
             summary["dms"] += 1
+            categorized["kind_4_dms"].append(event)
+
+        elif kind == 7:
+            summary["likes"] += 1
+            categorized["kind_7_likes"].append(event)
+
         elif kind == 30023:
             summary["articles"]["total"] += 1
             content = event.get("content", "")
             if "#draft" in content:
                 summary["articles"]["drafts"] += 1
+                categorized["kind_30023_drafts"].append(event)
             elif "#deleted" in content or not content.strip():
                 summary["articles"]["deleted"] += 1
+                categorized["kind_30023_deleted"].append(event)
             else:
                 summary["articles"]["published"] += 1
+                categorized["kind_30023_published"].append(event)
+
         else:
-            summary["other"] += 1
+            kind_str = f"kind_{kind}"
+            summary["other"].setdefault(kind_str, 0)
+            summary["other"][kind_str] += 1
+            event["kind_str"] = kind_str
+            categorized["other"].append(event)
 
     summary["total"] = len(events)
-    return summary
+
+    # Write categorized events to files
+    for name, data in categorized.items():
+        with open(os.path.join(output_dir, f"{name}.json"), "w") as f:
+            json.dump(data, f, indent=2)
+
+    # Write summary
+    with open(os.path.join(output_dir, "summary.json"), "w") as f:
+        json.dump(summary, f, indent=2)
+
+    return summary    
 
 if __name__ == "__main__":
     print("running fetch_nostr_data")
@@ -74,6 +121,4 @@ if __name__ == "__main__":
     env = load_env()
     events = load_backup()
     summary = summarize_events(events)
-    with open("data/summary.json", "w") as f:
-        json.dump(summary, f, indent=2)
-    print(f"Loaded {len(events)} events and wrote summary.json")
+    print(f"Loaded {len(events)} events, wrote summary.json and kind*.json files")
