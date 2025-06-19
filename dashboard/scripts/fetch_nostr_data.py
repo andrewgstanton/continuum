@@ -1,7 +1,16 @@
 import os
 import gzip
 import json
+import asyncio
+import uuid
+import websockets
+from utils import decode_npub, generate_link, shorten_url
 from dotenv import dotenv_values
+
+def load_env(path="environment.txt"):
+    return dotenv_values(path)
+
+
 
 def load_relays(path="relays.txt", mode="read"):
     relays = []
@@ -14,19 +23,63 @@ def load_relays(path="relays.txt", mode="read"):
                 relays.append(parts[0])
     return relays
 
-def load_env(path="environment.txt"):
-    return dotenv_values(path)
-
 def load_backup(path="data/nostr-content.txt.gz"):
     events = []
     if os.path.exists(path):
         with gzip.open(path, 'rt', encoding='utf-8') as f:
             for line in f:
                 try:
-                    events.append(json.loads(line))
+                    event = json.loads(line)
+                    event["_source"] = ["primal backup"]
+                    events.append(event)
                 except:
                     pass
     return events
+
+async def fetch_from_relay(url, pubkey_hex):
+    events = []
+    try:
+        print("fetching from relay:", url)
+        async with websockets.connect(url) as ws:
+            sub_id = str(uuid.uuid4())
+            await ws.send(json.dumps(["REQ", sub_id, {
+                "kinds": [1, 3, 4, 7, 30023],
+                "authors": [pubkey_hex]
+            }]))
+            while True:
+                try:
+                    msg = json.loads(await asyncio.wait_for(ws.recv(), timeout=5))
+                    if msg[0] == "EVENT" and msg[1] == sub_id:
+                        event = msg[2]
+                        event.setdefault("_source", []).append(url)
+                        events.append(event)
+                    elif msg[0] == "EOSE":
+                        break
+                except asyncio.TimeoutError:
+                    break
+    except Exception as e:
+        print(f"[{url}] Failed: {e}")
+    return events
+
+async def fetch_all_relays(relay_urls, pubkey_hex):
+    tasks = [fetch_from_relay(url, pubkey_hex) for url in relay_urls]
+    results = await asyncio.gather(*tasks)
+    events = []
+    seen_ids = set()
+    for result in results:
+        for event in result:
+            eid = event.get("id")
+            if eid and eid not in seen_ids:
+                seen_ids.add(eid)
+                events.append(event)
+            elif eid:
+                for existing in events:
+                    if existing.get("id") == eid:
+                        existing_sources = set(existing.get("_source", []))
+                        new_sources = set(event.get("_source", []))
+                        existing["_source"] = list(existing_sources.union(new_sources))
+                        break
+    return events    
 
 def summarize_events(events, output_dir="data"):
     os.makedirs(output_dir, exist_ok=True)
@@ -55,7 +108,6 @@ def summarize_events(events, output_dir="data"):
     }
 
     for event in events:
-        event["_source"] = ["primal backup"]
         kind = event.get("kind")
         
         if kind == 1:
@@ -113,12 +165,54 @@ def summarize_events(events, output_dir="data"):
     with open(os.path.join(output_dir, "summary.json"), "w") as f:
         json.dump(summary, f, indent=2)
 
-    return summary    
+    return summary   
+
+def merge_events(backup_events, relay_events):
+    # Merge events by ID, preserving all unique _source values
+    event_map = {}
+
+    for event in backup_events + relay_events:
+        eid = event.get("id")
+        if not eid:
+            continue
+        if eid not in event_map:
+            event_map[eid] = event
+        else:
+            # Merge _source lists
+            existing_sources = set(event_map[eid].get("_source", []))
+            new_sources = set(event.get("_source", []))
+            event_map[eid]["_source"] = list(existing_sources.union(new_sources))
+
+    events = list(event_map.values())     
+
+    return events
+
 
 if __name__ == "__main__":
     print("running fetch_nostr_data")
-    relays = load_relays()
+
     env = load_env()
-    events = load_backup()
+    
+    pubkey = env.get("NPUB")
+    print("Current PUBKEY :", pubkey)
+
+    try:
+        pubkey_hex = decode_npub(pubkey) if pubkey.startswith("npub") else pubkey
+    except Exception as e:
+        print(f"Invalid PUBKEY: {e}", file=sys.stderr)
+        sys.exit(1)
+
+    print("Current PUBKEY (hex):", pubkey_hex)
+
+    backup_events = load_backup()
+    print(f"Loaded {len(backup_events)} events from backup")
+
+
+    relays = load_relays()
+    relay_events = asyncio.run(fetch_all_relays(relays, pubkey_hex))
+    print(f"Loaded {len(relay_events)} events from relays")
+
+
+    events = merge_events(backup_events, relay_events)
     summary = summarize_events(events)
-    print(f"Loaded {len(events)} events, wrote summary.json and kind*.json files")
+    print(f"Loaded {len(events)} events, merging duplicates in backup and relay events, wrote summary.json and kind*.json files")
