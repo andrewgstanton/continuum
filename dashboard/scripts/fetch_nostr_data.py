@@ -43,7 +43,8 @@ async def fetch_from_relay(url, pubkey_hex):
         async with websockets.connect(url) as ws:
             sub_id = str(uuid.uuid4())
             await ws.send(json.dumps(["REQ", sub_id, {
-                "kinds": [1, 3, 4, 7, 30023],
+                # get everything 
+                # "kinds": [1, 3, 4, 7, 9735, 30023],
                 "authors": [pubkey_hex]
             }]))
             while True:
@@ -81,7 +82,24 @@ async def fetch_all_relays(relay_urls, pubkey_hex):
                         break
     return events    
 
-def summarize_events(events, output_dir="data"):
+def get_profile_meta_data(events, output_dir="data"):
+    os.makedirs(output_dir, exist_ok=True)
+
+    categorized = {
+        "kind_0_profile_metadata" : []
+    }
+
+    for event in events:
+        kind = event.get("kind")
+        if kind == 0:
+            categorized["kind_0_profile_metadata"].append(event)
+
+    
+    for name, data in categorized.items():
+        with open(os.path.join(output_dir, f"{name}.json"), "w") as f:
+            json.dump(data, f, indent=2)
+
+def summarize_events(events, pubkey_hex, output_dir="data"):
     os.makedirs(output_dir, exist_ok=True)
 
     summary = {
@@ -90,6 +108,7 @@ def summarize_events(events, output_dir="data"):
         "reposts": 0,
         "likes": 0,
         "dms": 0,
+        "zaps": {"sent": 0, "received" : 0, "total" : 0},
         "articles": {"total": 0, "published": 0, "drafts": 0, "deleted": 0},
         "other": {},
         "total": 0
@@ -101,6 +120,8 @@ def summarize_events(events, output_dir="data"):
         "kind_3_reposts": [],
         "kind_4_dms": [],
         "kind_7_likes": [],
+        "kind_9735_zaps_received" : [],
+        "kind_9735_zaps_sent" : [],
         "kind_30023_published": [],
         "kind_30023_drafts": [],
         "kind_30023_deleted": [],
@@ -109,7 +130,7 @@ def summarize_events(events, output_dir="data"):
 
     for event in events:
         kind = event.get("kind")
-        
+
         if kind == 1:
             is_reply = any(
                 tag[0] == "e" and len(tag) > 3 and tag[3] == "reply"
@@ -133,6 +154,20 @@ def summarize_events(events, output_dir="data"):
         elif kind == 7:
             summary["likes"] += 1
             categorized["kind_7_likes"].append(event)
+
+        elif kind == 9735:
+            summary["zaps"]["total"] += 1
+            
+            tags = event.get("tags", [])
+            zap_from = next((tag[1] for tag in tags if tag[0] == "p"), None)
+            zap_to = next((tag[1] for tag in tags if tag[0] == "e"), None)
+
+            if zap_from == pubkey_hex:
+                summary["zaps"]["sent"] += 1
+                categorized["kind_9735_zaps_sent"].append(event)
+            elif zap_to == pubkey_hex:
+                summary["zaps"]["received"] += 1
+                categorized["kind_9735_zaps_received"].append(event)
 
         elif kind == 30023:
             summary["articles"]["total"] += 1
@@ -187,6 +222,40 @@ def merge_events(backup_events, relay_events):
 
     return events
 
+async def fetch_zaps_from_relay(url, pubkey_hex):
+    zaps = []
+    try:
+        print("fetching zaps from relay:", url)
+        async with websockets.connect(url) as ws:
+            sub_id = str(uuid.uuid4())
+            await ws.send(json.dumps(["REQ", sub_id, {
+                "kinds": [9735]
+            }]))
+            while True:
+                try:
+                    msg = json.loads(await asyncio.wait_for(ws.recv(), timeout=5))
+                    if msg[0] == "EVENT" and msg[1] == sub_id:
+                        event = msg[2]
+                        tags = event.get("tags", [])
+                        p_tag = next((tag for tag in tags if tag[0] == "p"), None)
+                        if p_tag and p_tag[1] == pubkey_hex:
+                            event.setdefault("_source", []).append(url)
+                            zaps.append(event)
+                    elif msg[0] == "EOSE":
+                        break
+                except asyncio.TimeoutError:
+                    break
+    except Exception as e:
+        print(f"[{url}] Failed: {e}")
+    return zaps
+
+async def fetch_all_zaps(relays, pubkey_hex):
+    tasks = [fetch_zaps_from_relay(url, pubkey_hex) for url in relays]
+    results = await asyncio.gather(*tasks)
+    zaps = []
+    for batch in results:
+        zaps.extend(batch)
+    return zaps    
 
 if __name__ == "__main__":
     print("running fetch_nostr_data")
@@ -204,15 +273,21 @@ if __name__ == "__main__":
 
     print("Current PUBKEY (hex):", pubkey_hex)
 
+    relays = load_relays()
+    
+    # zaps = asyncio.run(fetch_all_zaps(relays, pubkey_hex))
+    # print(f"✅ Retrieved {len(zaps)} zaps")
+
     backup_events = load_backup()
+    # backup_events =  []
     print(f"Loaded {len(backup_events)} events from backup")
 
-
-    relays = load_relays()
     relay_events = asyncio.run(fetch_all_relays(relays, pubkey_hex))
     print(f"Loaded {len(relay_events)} events from relays")
 
-
     events = merge_events(backup_events, relay_events)
-    summary = summarize_events(events)
+
+    get_profile_meta_data(events) 
+    print("generated profile meta data in kind_0_profile_metadata.json")
+    summary = summarize_events(events, pubkey_hex)
     print(f"Loaded {len(events)} events, merging duplicates in backup and relay events, wrote summary.json and kind*.json files")
