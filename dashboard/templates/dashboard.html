@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>MyContinuum Nostr/Primal Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+      margin: 0;
+      padding: 2rem;
+    }
+    .dashboard-container {
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .profile-card {
+      max-width: 500px;
+      background-color: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .profile-banner {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+    }
+    .profile-details {
+      padding: 1rem;
+    }
+    .profile-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 2px solid #eee;
+      margin-bottom: 0.5rem;
+    }
+    .profile-name {
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin: 0.5rem 0 0.25rem;
+    }
+    .profile-about {
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 0.5rem;
+    }
+    .profile-link {
+      color: #007bff;
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+    .summary-card {
+      flex-grow: 1;
+      background-color: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 1rem 1.5rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    .summary-card h2 {
+      margin-top: 0;
+      font-size: 1.5rem;
+    }
+    .summary-list {
+      list-style: none;
+      padding-left: 0;
+      font-size: 1rem;
+    }
+    .summary-list li {
+      padding: 0.4rem 0;
+      border-bottom: 1px solid #eee;
+    }
+    .summary-sublist li {
+      
+    }
+
+    @media (max-width: 800px) {
+    .dashboard-container {
+      flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>MyContinuum Nostr/Primal Dashboard</h1>
+  <div class="dashboard-container">
+    <div class="profile-card">
+      <h2>🧾 Profile</h2>
+      <img id="banner" class="profile-banner" src="" alt="Banner" style="width:100%; height:120px; object-fit:cover;">
+      <div style="padding-top: 1rem;">
+        <img id="avatar" class="profile-avatar" src="" alt="Avatar">
+        <h2 id="name"></h2>
+        <p id="about"></p>
+        website: <a id="website" href="#" target="_blank">Website</a>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <h2>🧾 Summary</h2>
+      <ul class="summary-list" id="summary-list">
+        <!-- Populated via JS -->
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    async function renderDashboard() {
+      const summary = await fetch('./data/summary.json').then(res => res.json());
+      const profileData = await fetch('./data/kind_0_profile_metadata.json').then(res => res.json());
+      let profile = {};
+      try {
+        profile = JSON.parse(profileData[0].content || '{}');
+      } catch (e) {
+        console.error("Failed to parse profile content", e);
+      }      
+
+      document.getElementById('name').textContent = profile.display_name || profile.name || 'Nostr User';
+      document.getElementById('about').innerHTML = (profile.about || '').replace(/\n/g, '<br/>');
+      document.getElementById('avatar').src = profile.picture || '';
+      document.getElementById('banner').src = profile.banner || '';
+      document.getElementById('website').href = profile.website || '#';
+      document.getElementById('website').textContent = profile.website || 'View Profile';
+
+      const list = document.getElementById('summary-list');
+      list.innerHTML = `
+        <li>📝 <a href='notes.html'>Notes: ${summary.notes}</a></li>
+        <li>💬 <a href='replies.html'>Replies: ${summary.replies}</a></li>
+        <li>🔁 Reposts: ${summary.reposts}</li>
+        <li>❤️ Likes: ${summary.likes}</li>
+        <li>🔐 DMs: ${summary.dms}</li>
+        <li>📖 Articles: ${summary.articles.total}
+          <ul class="summary-sublist"> 
+              <li>✅ <a href ='articles.html'>Published: ${summary.articles.published}</a></li>
+              <li>🔄 Drafts: ${summary.articles.drafts}</li>
+              <li>🗑️ Deleted: ${summary.articles.deleted}</li>
+          </ul>    
+          <li>Other: ${summary.other.total}</li>
+          <li>📊 <a href='timeline.html'>Total: ${summary.total}</a> (click for timeline)</li>
+      `;
+    }
+
+    renderDashboard();
+  </script>
+</body>
+</html>

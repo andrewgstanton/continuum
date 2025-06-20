@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MyContinuum Timeline</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f4f4f4;
+      padding: 2rem;
+    }
+    .timeline {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .event {
+      background: #fff;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .timestamp {
+      color: #888;
+      font-size: 0.85rem;
+    }
+    .event-type {
+      font-weight: bold;
+      margin-bottom: 0.25rem;
+    }
+    .event-preview {
+      margin: 0.5rem 0;
+    }
+    .event-link {
+      font-size: 0.85rem;
+      color: #007bff;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>🕒 Timeline</h1>
+  <div id="timeline" class="timeline"></div>
+
+  <script>
+    fetch('./data/all_events.json') // replace with correct file if needed
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById('timeline');
+        const sorted = data.sort((a, b) => b.created_at - a.created_at);
+
+        sorted.forEach(evt => {
+          const div = document.createElement('div');
+          div.className = 'event';
+
+          const ts = new Date(evt.created_at * 1000).toLocaleString();
+          const kind = evt.kind;
+          const id = evt.id;
+          let content = (evt.content || '').replace(/\n/g, ' ').slice(0, 200);
+          const isReply = evt.tags && evt.tags.some(tag => tag[0] === 'e');
+          let label = '';
+          let showLink = kind === 1 || kind === 30023;
+
+          if (kind === 1) {
+            label = isReply ? '💬 Reply' : '📝 Note';
+          } else if (kind === 30023) {
+            label = '📖 Article';
+          } else if (kind === 9735) {
+            const sent = evt.pubkey === '<YOUR_HEX_PUBKEY_HERE>'; // optional logic
+            label = sent ? '⚡ Zap Sent' : '⚡ Zap Received';
+          } else if (kind === 3) {
+            label = '🔁 Repost';
+            const repostTarget = evt.tags?.find(tag => tag[0] === "e");
+            content = `Repost of ${repostTarget ? repostTarget[1] : 'unknown event'}`;
+            showLink = false;
+          } else if (kind === 4) { 
+            label = '🔐 Direct Message (not viewable)';
+            content = '[encrypted]';
+            showLink = false;
+          } else if (kind === 7) {
+            label = '❤️ Like (metadata only)';
+            content = 'You liked a post.';
+            showLink = false;
+          } else if (kind === 0) { 
+            label = '👤 Profile Update';
+            content = 'You updated your profile.';
+            showLink = false;
+          } else if (kind === 5) {
+            label = '🗑️ Deletion Event';
+            const targets = evt.tags?.filter(tag => tag[0] === 'e').map(tag => tag[1]) || [];
+            content = targets.length === 1
+            ? `Deleted post: ${targets[0].slice(0, 8)}...`
+            : `Deleted ${targets.length} posts`;
+            showLink = false; 
+          } else {
+            label = `📦 Other (Kind ${kind})`;
+            content = evt.content ? evt.content.slice(0, 80) + '…' : '[No content]';
+            showLink = false;
+          }
+
+          div.innerHTML = `
+            <div class="timestamp">${ts}</div>
+            <div class="event-type">${label}</div>
+            <div class="event-preview">${content}...</div>
+            ${showLink ? `<a class="event-link" href="https://primal.net/e/${id}" target="_blank">View on Primal ↗</a>` : ''}
+          `;
+          container.appendChild(div);
+        });
+      });
+  </script>
+</body>
+</html>

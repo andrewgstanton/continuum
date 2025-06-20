@@ -137,7 +137,7 @@ def summarize_events(events, pubkey_hex, output_dir="data"):
         "dms": 0,
         "zaps": {"sent": 0, "received" : 0, "total" : 0},
         "articles": {"total": 0, "published": 0, "drafts": 0, "deleted": 0},
-        "other": {},
+        "other": {"total" : 0},
         "total": 0
     }
 
@@ -213,6 +213,7 @@ def summarize_events(events, pubkey_hex, output_dir="data"):
             summary["other"].setdefault(kind_str, 0)
             summary["other"][kind_str] += 1
             event["kind_str"] = kind_str
+            summary["other"]["total"] += 1
             categorized["other"].append(event)
 
     summary["total"] = len(events)
@@ -225,6 +226,10 @@ def summarize_events(events, pubkey_hex, output_dir="data"):
     # Write summary
     with open(os.path.join(output_dir, "summary.json"), "w") as f:
         json.dump(summary, f, indent=2)
+
+    # write all events
+    with open(os.path.join(output_dir, "all_events.json"), "w") as f:
+        json.dump(events, f, indent=2)
 
     return summary   
 
@@ -304,8 +309,8 @@ if __name__ == "__main__":
     # zaps = asyncio.run(fetch_all_zaps(relays, pubkey_hex))
     # print(f"✅ Retrieved {len(zaps)} zaps")
 
-    backup_events = load_backup()
-    # backup_events =  []
+    #backup_events = load_backup()
+    backup_events =  []
     print(f"Loaded {len(backup_events)} events from backup")
 
     relay_events = asyncio.run(fetch_all_relays(relays, pubkey_hex))

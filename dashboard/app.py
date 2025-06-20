@@ -22,6 +22,10 @@ def replies():
 def articles():
     return send_from_directory('docs', 'articles.html')
 
+@app.route('/timeline.html')
+def timeline():
+    return send_from_directory('docs', 'timeline.html')    
+
 @app.route('/data/<path:filename>')
 def serve_data(filename):
     return send_from_directory('data', filename)
