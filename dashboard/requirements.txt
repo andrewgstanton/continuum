@@ -1,4 +1,5 @@
 flask
+html
 pandas
 python-dotenv
 markdown

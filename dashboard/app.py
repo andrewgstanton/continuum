@@ -10,5 +10,21 @@ def home():
 def dashboard():
     return send_from_directory("docs", "dashboard.html")
 
+@app.route('/notes.html')
+def notes():
+    return send_from_directory('docs', 'notes.html')
+
+@app.route('/replies.html')
+def replies():
+    return send_from_directory('docs', 'replies.html')
+
+@app.route('/articles.html')
+def articles():
+    return send_from_directory('docs', 'articles.html')
+
+@app.route('/data/<path:filename>')
+def serve_data(filename):
+    return send_from_directory('data', filename)
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)

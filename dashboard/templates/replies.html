@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MyContinuum Replies</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    .note-entry {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .note-entry a {
+      font-size: 1.1rem;
+      text-decoration: none;
+      color: #333;
+    }
+    .note-entry a:hover {
+      text-decoration: underline;
+    }
+    .note-meta {
+      font-size: 0.85rem;
+      color: #777;
+      margin-top: 0.25rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>📝 Replies</h1>
+  <div id="notes"></div>
+
+  <script>
+    fetch('./data/kind_1_replies.json')
+      .then(response => response.json())
+      .then(data => {
+        // Sort descending by created_at
+        data.sort((a, b) => b.created_at - a.created_at);
+
+        const container = document.getElementById('notes');
+        data.forEach(note => {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'note-entry';
+
+          const preview = note.content.split(/\s+/).slice(0, 10).join(' ');
+          const title = preview + "...";
+
+          const link = document.createElement('a');
+          link.href = `https://primal.net/e/${note.id}`;
+          link.textContent = title;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+
+          const timestamp = new Date(note.created_at * 1000).toLocaleString();
+
+          const meta = document.createElement('div');
+          meta.className = 'note-meta';
+          meta.textContent = `Posted: ${timestamp}`;
+
+          wrapper.appendChild(link);
+          wrapper.appendChild(meta);
+          container.appendChild(wrapper);
+        });
+      });
+  </script>
+</body>
+</html>

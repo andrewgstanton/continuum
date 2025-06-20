@@ -89,15 +89,42 @@ def get_profile_meta_data(events, output_dir="data"):
         "kind_0_profile_metadata" : []
     }
 
+    latest_profiles = {}  # key: pubkey, value: latest event
+
     for event in events:
         kind = event.get("kind")
         if kind == 0:
-            categorized["kind_0_profile_metadata"].append(event)
+            pubkey = event.get("pubkey")
+            ts = event.get("created_at", 0)
+            existing = latest_profiles.get(pubkey)
+            if not existing or ts > existing["created_at"]:
+                latest_profiles[pubkey] = event
 
+    categorized["kind_0_profile_metadata"].extend(latest_profiles.values())
     
     for name, data in categorized.items():
         with open(os.path.join(output_dir, f"{name}.json"), "w") as f:
             json.dump(data, f, indent=2)
+
+def deduplicate_articles(events):
+    latest_articles = {}
+    for event in events:
+        if event.get("kind") == 30023:
+            d_tag = None
+            for tag in event.get("tags", []):
+                if tag[0] == "d":
+                    d_tag = tag[1]
+                    break
+            if d_tag:
+                existing = latest_articles.get(d_tag)
+                if not existing or event["created_at"] > existing["created_at"]:
+                    latest_articles[d_tag] = event
+            else:
+                # fallback: use event id as unique if no d-tag
+                latest_articles[event["id"]] = event
+        else:
+            continue  # skip non-article events
+    return list(latest_articles.values())            
 
 def summarize_events(events, pubkey_hex, output_dir="data"):
     os.makedirs(output_dir, exist_ok=True)
@@ -132,10 +159,9 @@ def summarize_events(events, pubkey_hex, output_dir="data"):
         kind = event.get("kind")
 
         if kind == 1:
-            is_reply = any(
-                tag[0] == "e" and len(tag) > 3 and tag[3] == "reply"
-                for tag in event.get("tags", [])
-            )
+
+            is_reply = any(tag and tag[0] == "e" for tag in event.get("tags", []))
+            
             if is_reply:
                 summary["replies"] += 1
                 categorized["kind_1_replies"].append(event)
@@ -202,11 +228,11 @@ def summarize_events(events, pubkey_hex, output_dir="data"):
 
     return summary   
 
-def merge_events(backup_events, relay_events):
+def merge_sources_in_events(events):
     # Merge events by ID, preserving all unique _source values
     event_map = {}
 
-    for event in backup_events + relay_events:
+    for event in events:
         eid = event.get("id")
         if not eid:
             continue
@@ -285,9 +311,17 @@ if __name__ == "__main__":
     relay_events = asyncio.run(fetch_all_relays(relays, pubkey_hex))
     print(f"Loaded {len(relay_events)} events from relays")
 
-    events = merge_events(backup_events, relay_events)
+    combined_events = backup_events + relay_events
 
-    get_profile_meta_data(events) 
+    merged_events = merge_sources_in_events(combined_events)
+
+    # dedup artciles in backup + relay events -- take only latest version of articles in the set
+    deduped_articles = deduplicate_articles(merged_events)
+    # Now combine deduped articles with other events (notes, replies, etc.)
+    non_articles = [e for e in merged_events if e.get("kind") != 30023]
+    final_events = non_articles + deduped_articles
+
+    get_profile_meta_data(final_events) 
     print("generated profile meta data in kind_0_profile_metadata.json")
-    summary = summarize_events(events, pubkey_hex)
-    print(f"Loaded {len(events)} events, merging duplicates in backup and relay events, wrote summary.json and kind*.json files")
+    summary = summarize_events(final_events, pubkey_hex)
+    print(f"Loaded {len(final_events)} events, merging duplicates in backup and relay events, wrote summary.json and kind*.json files")

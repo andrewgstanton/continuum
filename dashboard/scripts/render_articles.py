@@ -1,0 +1,89 @@
+import html
+from pathlib import Path
+
+def render_articles(output_path="docs/articles.html"):
+
+    html = f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <title>Articles – MyContinuum</title>
+    <style>
+        body {{
+        font-family: Arial, sans-serif;
+        padding: 2rem;
+        background: #f9f9f9;
+        }}
+        h1 {{
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+        }}
+        .article {{
+        margin-bottom: 1.2rem;
+        padding-bottom: 0.8rem;
+        border-bottom: 1px solid #eee;
+        }}
+        .article-title {{
+        font-weight: bold;
+        font-size: 1.1rem;
+        text-decoration: none;
+        color: #0077cc;
+        }}
+        .article-meta {{
+        font-size: 0.85rem;
+        color: #666;
+        }}
+        .article-title:hover {{
+        text-decoration: underline;
+        }}
+    </style>
+    </head>
+    <body>
+    <h1>📖 Published Articles</h1>
+    <div id="articles"></div>
+
+    <script>
+        fetch('./data/kind_30023_published.json')
+        .then(response => response.json())
+        .then(data => {{
+            const container = document.getElementById('articles');
+            data.sort((a, b) => b.created_at - a.created_at); // newest first
+
+            data.forEach(article => {{
+            const wrapper = document.createElement('div');
+            wrapper.className = 'article';
+
+            const title = document.createElement('a');
+            title.className = 'article-title';
+            title.href = `https://primal.net/e/${{article.id}}`;
+            
+            const previewText = article.content.split(/\s+/).slice(0, 10).join(' ');
+            title.textContent = previewText + (article.content.split(/\s+/).length > 10 ? '…' : '');
+
+            const meta = document.createElement('div');
+            meta.className = 'article-meta';
+            const timestamp = new Date(article.created_at * 1000).toLocaleString();
+            meta.textContent = `Posted: ${{timestamp}}`;
+
+            wrapper.appendChild(title);
+            wrapper.appendChild(meta);
+            container.appendChild(wrapper);
+            }});
+        }});
+    </script>
+    </body>
+    </html>"""
+
+    output_path = Path("docs/articles.html")
+    output_path.parent.mkdir(parents=True, exist_ok=True)  # ✅ Ensures 'docs/' exists
+
+
+    Path(output_path).write_text(html)
+    print(f"articles.html written to {output_path}")
+
+
+if __name__ == "__main__":
+    print("running render_articles")
+    render_articles()
+

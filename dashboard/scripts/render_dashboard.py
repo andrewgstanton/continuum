@@ -1,9 +1,13 @@
 import json
+import html
 from pathlib import Path
 
 def render_profile_card(profile):
     name = profile.get("display_name") or profile.get("name", "Nostr User")
     about = profile.get("about", "")
+
+    about = html.escape(profile.get("about", "")).replace("\n", "<br/>")
+
     picture = profile.get("picture", "")
     website = profile.get("website", "")
     lud16 = profile.get("lud16", "")
@@ -12,6 +16,7 @@ def render_profile_card(profile):
     zap_html = f'<a href="lightning:{lud16}" title="Zap via Lightning"><img src="https://img.icons8.com/emoji/24/high-voltage.png"/></a>' if lud16 else ""
 
     return f"""
+          <h1>🧾 Profile</h1>
         {'<img src="' + banner + '" class="profile-banner" />' if banner else ''}
         <div class="profile-details">
             {'<img src="' + picture + '" class="profile-avatar" />' if picture else ''}
@@ -26,14 +31,14 @@ def render_summary_card(summary):
     return f"""
       <h1>🧾 Summary</h1>
       <ul class="summary">
-          <li>📝 Notes: {summary['notes']}</li>
-          <li>💬 Replies: {summary['replies']}</li>
+          <li>📝 <a href='notes.html'>Notes: {summary['notes']}</a></li>
+          <li>💬 <a href='replies.html'>Replies: {summary['replies']}</a></li>
           <li>🔁 Reposts: {summary['reposts']}</li>
           <li>❤️ Likes: {summary['likes']}</li>
           <li>🔐 DMs: {summary['dms']}</li>
           <li>📖 Articles: {summary['articles']['total']}</li>
           <ul class="summary-sublist">
-              <li>✅ Published: {summary['articles']['published']}</li>
+              <li>✅ <a href ='articles.html'>Published: {summary['articles']['published']}</a></li>
               <li>🔄 Drafts: {summary['articles']['drafts']}</li>
               <li>🗑️ Deleted: {summary['articles']['deleted']}</li>
           </ul>
@@ -43,7 +48,7 @@ def render_summary_card(summary):
     """
 
 
-def render_dashboard(summary_path="data/summary.json", profile_metadata_path = "data/kind_0_profile_metadata.json", ooutput_path="docs/dashboard.html"):
+def render_dashboard(summary_path="data/summary.json", profile_metadata_path = "data/kind_0_profile_metadata.json", output_path="docs/dashboard.html"):
     
     try:
       with open(summary_path) as f:
@@ -82,11 +87,12 @@ def render_dashboard(summary_path="data/summary.json", profile_metadata_path = "
       align-items: flex-start;
     }}
     .profile-card {{
-      width: 350px;
+      max-width: 500px;
       background-color: #ffffff;
       border: 1px solid #ddd;
       border-radius: 10px;
       overflow: hidden;
+      padding: 1rem 1.5rem;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }}
     .profile-banner {{
@@ -143,9 +149,16 @@ def render_dashboard(summary_path="data/summary.json", profile_metadata_path = "
     .summary-sublist li {{
       
     }}
+
+    @media (max-width: 800px) {{
+    .dashboard-container {{
+      flex-direction: column;
+      }}
+    }}
   </style>
 </head>
 <body>
+   <h1>My Continuum Dashboard With Profile View </h1>
     <div class="dashboard-container">
       <div class="profile-card">
         {profile_card}
@@ -167,3 +180,4 @@ def render_dashboard(summary_path="data/summary.json", profile_metadata_path = "
 if __name__ == "__main__":
     print("running render_dashboard")
     render_dashboard()
+
