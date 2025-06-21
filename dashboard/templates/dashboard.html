@@ -79,6 +79,10 @@
       
     }
 
+    .hidden {
+      display:none;
+    }
+
     @media (max-width: 800px) {
     .dashboard-container {
       flex-direction: column;
@@ -88,7 +92,15 @@
 </head>
 <body>
   <h1>MyContinuum Nostr/Primal Dashboard</h1>
-  <div class="dashboard-container">
+  <div id="npub-container" class="hidden" >
+    <p>NPUB: <span id="npub"></span><p> 
+    <p>NPUB (HEX): <span id="pubkey"></span><p> 
+  </div>
+
+  <button id="trigger-npub-button" onclick="askForNpubAndUpdate()">Load Another NPUB</button>
+  
+  <div id="dashboard-container" class="dashboard-container hidden">
+
     <div class="profile-card">
       <h2>🧾 Profile</h2>
       <img id="banner" class="profile-banner" src="" alt="Banner" style="width:100%; height:120px; object-fit:cover;">
@@ -106,42 +118,101 @@
         <!-- Populated via JS -->
       </ul>
     </div>
+
+
   </div>
-
   <script>
+
+    /* for querying npubin browser */
+    let npub = ''
+    function getQueryParam(name) {
+      return new URLSearchParams(window.location.search).get(name);
+    }
+
+    function askForNpubAndUpdate() {
+      npub = prompt("Enter a Nostr npub to generate the dashboard:");
+      if (npub) {
+        window.location.href = `/update?npub=${encodeURIComponent(npub)}`;
+      }
+    }
+
+    if (getQueryParam("prompt") === "true") {
+      askForNpubAndUpdate();
+    }
+
+    function isEmpty(obj) {
+      for (var prop in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    /* renders dashbboard */
+
     async function renderDashboard() {
-      const summary = await fetch('./data/summary.json').then(res => res.json());
-      const profileData = await fetch('./data/kind_0_profile_metadata.json').then(res => res.json());
-      let profile = {};
+     
+      let summary = {};
+      let profileData = {};
+
+      let profile = '{}';
+      let pubkey = '';
+      let npub = '';
+
       try {
-        profile = JSON.parse(profileData[0].content || '{}');
+        summary = await fetch('./data/summary.json').then(res => res.json());
+        profileData = await fetch('./data/kind_0_profile_metadata.json').then(res => res.json());
       } catch (e) {
-        console.error("Failed to parse profile content", e);
-      }      
+        console.error("Failed to load summary or profile data", e);
+      } 
+     
+      if (!isEmpty(summary) && !isEmpty(profileData) ) {
+        try {
+          profile = JSON.parse(profileData[0].content || '{}');
+        } catch (e) {
+          console.error("Failed to parse profile content", e);
+        }
+      
+        if (profile != '{}' && profile != undefined) {
+          pubkey = profileData[0].pubkey;
+          npub = profileData[0].npub;
+        }
 
-      document.getElementById('name').textContent = profile.display_name || profile.name || 'Nostr User';
-      document.getElementById('about').innerHTML = (profile.about || '').replace(/\n/g, '<br/>');
-      document.getElementById('avatar').src = profile.picture || '';
-      document.getElementById('banner').src = profile.banner || '';
-      document.getElementById('website').href = profile.website || '#';
-      document.getElementById('website').textContent = profile.website || 'View Profile';
+        if ( pubkey != '' && npub != '' ) {
+          document.getElementById('npub-container').classList.remove('hidden');
+          document.getElementById('dashboard-container').classList.remove('hidden');
+      
+          // update npub reference in document
+          document.getElementById('npub').textContent = profileData[0].npub || "NO NPUB";
+          document.getElementById('pubkey').textContent = profileData[0].pubkey || "NO PUBKEY";
+      
+          document.getElementById('name').textContent = profile.display_name || profile.name || 'Nostr User';
+          document.getElementById('about').innerHTML = (profile.about || '').replace(/\n/g, '<br/>');
+          document.getElementById('avatar').src = profile.picture || '';
+          document.getElementById('banner').src = profile.banner || '';
+          document.getElementById('website').href = profile.website || '#';
+          document.getElementById('website').textContent = profile.website || 'View Profile';
 
-      const list = document.getElementById('summary-list');
-      list.innerHTML = `
-        <li>📝 <a href='notes.html'>Notes: ${summary.notes}</a></li>
-        <li>💬 <a href='replies.html'>Replies: ${summary.replies}</a></li>
-        <li>🔁 Reposts: ${summary.reposts}</li>
-        <li>❤️ Likes: ${summary.likes}</li>
-        <li>🔐 DMs: ${summary.dms}</li>
-        <li>📖 Articles: ${summary.articles.total}
-          <ul class="summary-sublist"> 
-              <li>✅ <a href ='articles.html'>Published: ${summary.articles.published}</a></li>
-              <li>🔄 Drafts: ${summary.articles.drafts}</li>
-              <li>🗑️ Deleted: ${summary.articles.deleted}</li>
-          </ul>    
-          <li>Other: ${summary.other.total}</li>
-          <li>📊 <a href='timeline.html'>Total: ${summary.total}</a> (click for timeline)</li>
-      `;
+          const list = document.getElementById('summary-list');
+      
+          list.innerHTML = `
+            <li>📝 <a href='notes.html'>Notes: ${summary.notes}</a></li>
+            <li>💬 <a href='replies.html'>Replies: ${summary.replies}</a></li>
+            <li>🔁 Reposts: ${summary.reposts}</li>
+            <li>❤️ Likes: ${summary.likes}</li>
+            <li>🔐 DMs: ${summary.dms}</li>
+            <li>📖 Articles: ${summary.articles.total}
+              <ul class="summary-sublist"> 
+                  <li>✅ <a href ='articles.html'>Published: ${summary.articles.published}</a></li>
+                  <li>🔄 Drafts: ${summary.articles.drafts}</li>
+                  <li>🗑️ Deleted: ${summary.articles.deleted}</li>
+              </ul>    
+              <li>Other: ${summary.other.total}</li>
+              <li>📊 <a href='timeline.html'>Total: ${summary.total}</a> (click for timeline)</li>
+          `;
+          } 
+      }  
     }
 
     renderDashboard();

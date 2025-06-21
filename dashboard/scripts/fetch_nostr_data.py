@@ -4,6 +4,7 @@ import json
 import asyncio
 import uuid
 import websockets
+import argparse
 from utils import decode_npub, generate_link, shorten_url
 from dotenv import dotenv_values
 
@@ -82,7 +83,7 @@ async def fetch_all_relays(relay_urls, pubkey_hex):
                         break
     return events    
 
-def get_profile_meta_data(events, output_dir="data"):
+def get_profile_meta_data(events, npub, output_dir="data"):
     os.makedirs(output_dir, exist_ok=True)
 
     categorized = {
@@ -96,6 +97,7 @@ def get_profile_meta_data(events, output_dir="data"):
         if kind == 0:
             pubkey = event.get("pubkey")
             ts = event.get("created_at", 0)
+            event["npub"] = npub
             existing = latest_profiles.get(pubkey)
             if not existing or ts > existing["created_at"]:
                 latest_profiles[pubkey] = event
@@ -253,6 +255,11 @@ def merge_sources_in_events(events):
 
     return events
 
+def get_npub_hex_from_backup_source(events):
+    if (len(events)) > 0:
+        pubkey = events[0].get("pubkey")
+        return pubkey
+
 async def fetch_zaps_from_relay(url, pubkey_hex):
     zaps = []
     try:
@@ -288,45 +295,76 @@ async def fetch_all_zaps(relays, pubkey_hex):
         zaps.extend(batch)
     return zaps    
 
+def get_npub_from_argument():
+    parser = argparse.ArgumentParser(description="Optional npub argument")
+    parser.add_argument('--npub', type=str,help="npub argument (optional)")
+    args = parser.parse_args()
+    npub = args.npub
+    return npub
+
 if __name__ == "__main__":
+
     print("running fetch_nostr_data")
 
-    env = load_env()
+    npub_in_arg = get_npub_from_argument()
     
-    pubkey = env.get("NPUB")
+    print("npub in arg", npub_in_arg)
+
+    if npub_in_arg is not None:
+        print("npub in argument detected using as npub")
+        pubkey = npub_in_arg
+    else:                 
+        print("no npub in argument detected using npub in environment.txt")
+        env = load_env()
+        pubkey = env.get("NPUB")
+
     print("Current PUBKEY :", pubkey)
 
-    try:
-        pubkey_hex = decode_npub(pubkey) if pubkey.startswith("npub") else pubkey
-    except Exception as e:
-        print(f"Invalid PUBKEY: {e}", file=sys.stderr)
-        sys.exit(1)
+    if pubkey:
 
-    print("Current PUBKEY (hex):", pubkey_hex)
+        try:
+            pubkey_hex = decode_npub(pubkey) if pubkey.startswith("npub") else pubkey
+        except Exception as e:
+            print(f"Invalid PUBKEY: {e}", file=sys.stderr)
+            sys.exit(1)
 
-    relays = load_relays()
+        print("Current PUBKEY (hex):", pubkey_hex)
+
+        relays = load_relays()
     
-    # zaps = asyncio.run(fetch_all_zaps(relays, pubkey_hex))
-    # print(f"✅ Retrieved {len(zaps)} zaps")
+        # zaps = asyncio.run(fetch_all_zaps(relays, pubkey_hex))
+        # print(f"✅ Retrieved {len(zaps)} zaps")
 
-    #backup_events = load_backup()
-    backup_events =  []
-    print(f"Loaded {len(backup_events)} events from backup")
+        backup_events = load_backup()
 
-    relay_events = asyncio.run(fetch_all_relays(relays, pubkey_hex))
-    print(f"Loaded {len(relay_events)} events from relays")
+        npub_hex_from_backup = get_npub_hex_from_backup_source(backup_events)
 
-    combined_events = backup_events + relay_events
+        if npub_hex_from_backup == pubkey_hex:
+            print("backup events match npub -- using as data source")
+        else:
+            print("backup events don't match npub -- excluding as data source")
+            backup_events = []
 
-    merged_events = merge_sources_in_events(combined_events)
+        print(f"Loaded {len(backup_events)} events from backup")
 
-    # dedup artciles in backup + relay events -- take only latest version of articles in the set
-    deduped_articles = deduplicate_articles(merged_events)
-    # Now combine deduped articles with other events (notes, replies, etc.)
-    non_articles = [e for e in merged_events if e.get("kind") != 30023]
-    final_events = non_articles + deduped_articles
+        relay_events = asyncio.run(fetch_all_relays(relays, pubkey_hex))
+        print(f"Loaded {len(relay_events)} events from relays")
 
-    get_profile_meta_data(final_events) 
-    print("generated profile meta data in kind_0_profile_metadata.json")
-    summary = summarize_events(final_events, pubkey_hex)
-    print(f"Loaded {len(final_events)} events, merging duplicates in backup and relay events, wrote summary.json and kind*.json files")
+        combined_events = backup_events + relay_events
+
+        merged_events = merge_sources_in_events(combined_events)
+
+        # dedup artciles in backup + relay events -- take only latest version of articles in the set
+        deduped_articles = deduplicate_articles(merged_events)
+        # Now combine deduped articles with other events (notes, replies, etc.)
+        non_articles = [e for e in merged_events if e.get("kind") != 30023]
+        final_events = non_articles + deduped_articles
+
+        get_profile_meta_data(final_events,pubkey) 
+        print("generated profile meta data in kind_0_profile_metadata.json")
+        summary = summarize_events(final_events, pubkey_hex)
+        print(f"Loaded {len(final_events)} events, merging duplicates in backup and relay events, wrote summary.json and kind*.json files")
+
+    else:
+        print("no npub key")
+        

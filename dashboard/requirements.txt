@@ -6,3 +6,4 @@ markdown
 requests
 Websockets
 bech32
+subprocess

@@ -1,10 +1,25 @@
-from flask import Flask, send_from_directory
+from flask import Flask, request, redirect, send_from_directory
+import subprocess
+
 
 app = Flask(__name__, static_folder="docs")
 
 @app.route("/")
 def home():
     return "<h1>MyContinuum Dashboard</h1><p>Go to <a href='/dashboard.html'>dashboard.html</a></p>"
+
+@app.route('/update')
+def update_dashboard():
+    npub = request.args.get('npub')
+    print("npub from request: ", npub)
+    if not npub:
+        # redirect to the dashboard with prompt if no npub provided
+        return redirect("/dashboard.html?prompt=true")
+    
+    # optional: convert npub to hex here if needed
+    subprocess.run(["python", "scripts/fetch_nostr_data.py", "--npub", npub])
+
+    return redirect("/dashboard.html")
 
 @app.route("/dashboard.html")
 def dashboard():
