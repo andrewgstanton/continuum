@@ -144,7 +144,7 @@ def summarize_events(events, pubkey_hex, output_dir="data"):
     }
 
     categorized = {
-        "kind_1_notes": [],
+        "kind_1_posts": [],
         "kind_1_replies": [],
         "kind_3_reposts": [],
         "kind_4_dms": [],
@@ -169,7 +169,7 @@ def summarize_events(events, pubkey_hex, output_dir="data"):
                 categorized["kind_1_replies"].append(event)
             else:
                 summary["notes"] += 1
-                categorized["kind_1_notes"].append(event)
+                categorized["kind_1_posts"].append(event)
 
         elif kind == 3:
             summary["reposts"] += 1

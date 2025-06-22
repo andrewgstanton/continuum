@@ -3,48 +3,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>MyContinuum Notes</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
-      margin: 0;
-      padding: 2rem;
-    }
-    h1 {
-      text-align: center;
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-    .note-entry {
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    }
-    .note-entry a {
-      font-size: 1.1rem;
-      text-decoration: none;
-      color: #333;
-    }
-    .note-entry a:hover {
-      text-decoration: underline;
-    }
-    .note-meta {
-      font-size: 0.85rem;
-      color: #777;
-      margin-top: 0.25rem;
-    }
-  </style>
+  <title>MyContinuum Posts</title>
+  <link rel ="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <h1>📝 Notes</h1>
-  <div id="notes"></div>
+    <div class="container">
+    <h1>📝 Posts</h1>
+    <div id="notes"></div>
+  </div>
 
   <script>
-    fetch('./data/kind_1_notes.json')
+    fetch('/data/kind_1_posts.json')
       .then(response => response.json())
       .then(data => {
         // Sort descending by created_at
@@ -53,7 +22,7 @@
         const container = document.getElementById('notes');
         data.forEach(note => {
           const wrapper = document.createElement('div');
-          wrapper.className = 'note-entry';
+          wrapper.className = 'note-entry common-card';
 
           const preview = note.content.split(/\s+/).slice(0, 10).join(' ');
           const title = preview + "..." ;

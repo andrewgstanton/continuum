@@ -3,47 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <title>MyContinuum Timeline</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      background: #f4f4f4;
-      padding: 2rem;
-    }
-    .timeline {
-      max-width: 800px;
-      margin: 0 auto;
-    }
-    .event {
-      background: #fff;
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-    .timestamp {
-      color: #888;
-      font-size: 0.85rem;
-    }
-    .event-type {
-      font-weight: bold;
-      margin-bottom: 0.25rem;
-    }
-    .event-preview {
-      margin: 0.5rem 0;
-    }
-    .event-link {
-      font-size: 0.85rem;
-      color: #007bff;
-      text-decoration: none;
-    }
-  </style>
+  <link rel ="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <h1>🕒 Timeline</h1>
-  <div id="timeline" class="timeline"></div>
+  <div class="container">
+    <h1>📝 Timeline</h1>
+    <div id="timeline" class="timeline"></div>
+  </div>  
 
   <script>
-    fetch('./data/all_events.json') // replace with correct file if needed
+    fetch('/data/all_events.json') // replace with correct file if needed
       .then(res => res.json())
       .then(data => {
         const container = document.getElementById('timeline');
@@ -51,7 +20,7 @@
 
         sorted.forEach(evt => {
           const div = document.createElement('div');
-          div.className = 'event';
+          div.className = 'event common-card';
 
           const ts = new Date(evt.created_at * 1000).toLocaleString();
           const kind = evt.kind;

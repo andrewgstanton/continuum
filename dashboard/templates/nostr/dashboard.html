@@ -3,105 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <title>MyContinuum Nostr/Primal Dashboard</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f8f9fa;
-      margin: 0;
-      padding: 2rem;
-    }
-    .dashboard-container {
-      display: flex;
-      gap: 2rem;
-      align-items: flex-start;
-    }
-    .profile-card {
-      max-width: 500px;
-      background-color: #ffffff;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      overflow: hidden;
-      padding: 1rem 1.5rem;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .profile-banner {
-      width: 100%;
-      height: 120px;
-      object-fit: cover;
-    }
-    .profile-details {
-      padding: 1rem;
-    }
-    .profile-avatar {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      border: 2px solid #eee;
-      margin-bottom: 0.5rem;
-    }
-    .profile-name {
-      font-size: 1.4rem;
-      font-weight: bold;
-      margin: 0.5rem 0 0.25rem;
-    }
-    .profile-about {
-      font-size: 0.9rem;
-      color: #555;
-      margin-bottom: 0.5rem;
-    }
-    .profile-link {
-      color: #007bff;
-      text-decoration: none;
-      font-size: 0.85rem;
-    }
-    .summary-card {
-      flex-grow: 1;
-      background-color: #ffffff;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      padding: 1rem 1.5rem;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    }
-    .summary-card h2 {
-      margin-top: 0;
-      font-size: 1.5rem;
-    }
-    .summary-list {
-      list-style: none;
-      padding-left: 0;
-      font-size: 1rem;
-    }
-    .summary-list li {
-      padding: 0.4rem 0;
-      border-bottom: 1px solid #eee;
-    }
-    .summary-sublist li {
-      
-    }
-
-    .hidden {
-      display:none;
-    }
-
-    @media (max-width: 800px) {
-    .dashboard-container {
-      flex-direction: column;
-      }
-    }
-  </style>
+  <link rel ="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <h1>MyContinuum Nostr/Primal Dashboard</h1>
-  <div id="npub-container" class="hidden" >
-    <p>NPUB: <span id="npub"></span><p> 
-    <p>NPUB (HEX): <span id="pubkey"></span><p> 
-  </div>
+  <div class="container">
+    <h1>MyContinuum Nostr/Primal Dashboard</h1>
+    <div id="npub-container" class="hidden" >
+      <p>NPUB: <span id="npub"></span><p> 
+      <p>NPUB (HEX): <span id="pubkey"></span><p> 
+    </div>
 
-  <button id="trigger-npub-button" onclick="askForNpubAndUpdate()">Load Another NPUB</button>
+    <button id="trigger-npub-button" onclick="askForNpubAndUpdate()">Load Another NPUB</button>
   
   <div id="dashboard-container" class="dashboard-container hidden">
 
-    <div class="profile-card">
+    <div class="profile-card common-card">
       <h2>🧾 Profile</h2>
       <img id="banner" class="profile-banner" src="" alt="Banner" style="width:100%; height:120px; object-fit:cover;">
       <div style="padding-top: 1rem;">
@@ -112,14 +28,12 @@
       </div>
     </div>
 
-    <div class="summary-card">
+    <div class="summary-card common-card">
       <h2>🧾 Summary</h2>
       <ul class="summary-list" id="summary-list">
         <!-- Populated via JS -->
       </ul>
     </div>
-
-
   </div>
   <script>
 
@@ -161,8 +75,8 @@
       let npub = '';
 
       try {
-        summary = await fetch('./data/summary.json').then(res => res.json());
-        profileData = await fetch('./data/kind_0_profile_metadata.json').then(res => res.json());
+        summary = await fetch('/data/summary.json').then(res => res.json());
+        profileData = await fetch('/data/kind_0_profile_metadata.json').then(res => res.json());
       } catch (e) {
         console.error("Failed to load summary or profile data", e);
       } 
@@ -197,19 +111,19 @@
           const list = document.getElementById('summary-list');
       
           list.innerHTML = `
-            <li>📝 <a href='notes.html'>Notes: ${summary.notes}</a></li>
-            <li>💬 <a href='replies.html'>Replies: ${summary.replies}</a></li>
+            <li>📝 <a href='/nostr/posts/'>Posts: ${summary.notes}</a></li>
+            <li>💬 <a href='/nostr/replies/'>Replies: ${summary.replies}</a></li>
             <li>🔁 Reposts: ${summary.reposts}</li>
             <li>❤️ Likes: ${summary.likes}</li>
             <li>🔐 DMs: ${summary.dms}</li>
             <li>📖 Articles: ${summary.articles.total}
               <ul class="summary-sublist"> 
-                  <li>✅ <a href ='articles.html'>Published: ${summary.articles.published}</a></li>
+                  <li>✅ <a href ='/nostr/articles/'>Published: ${summary.articles.published}</a></li>
                   <li>🔄 Drafts: ${summary.articles.drafts}</li>
                   <li>🗑️ Deleted: ${summary.articles.deleted}</li>
               </ul>    
               <li>Other: ${summary.other.total}</li>
-              <li>📊 <a href='timeline.html'>Total: ${summary.total}</a> (click for timeline)</li>
+              <li>📊 <a href='/nostr/timeline/'>Total: ${summary.total}</a> (click for timeline)</li>
           `;
           } 
       }  

@@ -3,42 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <title>Articles – MyContinuum</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 2rem;
-      background: #f9f9f9;
-    }
-    h1 {
-      font-size: 1.8rem;
-      margin-bottom: 1rem;
-    }
-    .article {
-      margin-bottom: 1.2rem;
-      padding-bottom: 0.8rem;
-      border-bottom: 1px solid #eee;
-    }
-    .article-title {
-      font-weight: bold;
-      font-size: 1.1rem;
-      text-decoration: none;
-      color: #0077cc;
-    }
-    .article-meta {
-      font-size: 0.85rem;
-      color: #666;
-    }
-    .article-title:hover {
-      text-decoration: underline;
-    }
-  </style>
+  <link rel ="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <h1>📖 Published Articles</h1>
-  <div id="articles"></div>
+  <div class="container">
+    <h1>📝 Published Articles</h1>
+    <div id="articles"></div>
+  </div>
 
   <script>
-    fetch('./data/kind_30023_published.json')
+    fetch('/data/kind_30023_published.json')
       .then(response => response.json())
       .then(data => {
         const container = document.getElementById('articles');
@@ -46,7 +20,7 @@
 
         data.forEach(article => {
           const wrapper = document.createElement('div');
-          wrapper.className = 'article';
+          wrapper.className = 'article common-card';
 
           const title = document.createElement('a');
           title.className = 'article-title';

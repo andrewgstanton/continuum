@@ -1,0 +1,93 @@
+/* static/style.css */
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f9f9f9;
+  padding: 2rem;
+  margin: 0;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+h1 {
+  text-align: left;
+  font-size: 2rem;
+  margin-bottom: 1.2rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-top: 0;
+}
+
+.common-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+.event-type,
+.article-title,
+.note-entry a {
+  font-weight: bold;
+  color: #0077cc;
+  text-decoration: none;
+}
+
+.article-title:hover,
+.note-entry a:hover {
+  text-decoration: underline;
+}
+
+.timestamp,
+.article-meta,
+.note-meta {
+  font-size: 0.85rem;
+  color: #777;
+}
+
+.summary-list li,
+.summary-sublist li {
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-top: 2rem;
+}
+
+.profile-card,
+.summary-card {
+  flex: 1 1 0;
+  min-width: 320px;
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+}
+
+.profile-banner {
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.hidden {
+  display:none;
+}
