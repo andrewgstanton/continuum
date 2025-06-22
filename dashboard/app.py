@@ -10,6 +10,15 @@ app = Flask(__name__, static_folder="static", template_folder="templates")
 def index():
     return render_template("index.html")
 
+# twitter routes
+@app.route("/twitter/")
+def twitter_dashboard():
+    return render_template("twitter/dashboard.html")
+
+# linkedIn Routes
+@app.route("/linkedin/")
+def linkedin_dashboard():
+    return render_template("linkedin/dashboard.html")
 # nostr routes
 
 @app.route("/nostr/dashboard/")
