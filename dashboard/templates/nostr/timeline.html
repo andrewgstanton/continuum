@@ -3,16 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <title>MyContinuum Timeline</title>
-  <link rel ="stylesheet" href="/static/style.css">
+  <link rel ="stylesheet" href="/static/css/style.css">
 </head>
 <body>
   <div class="container">
     <h1>📝 Timeline</h1>
+    <p class="timezone-note">(Times shown in {{ user_timezone}})</p>    
     <div id="timeline" class="timeline"></div>
   </div>  
 
-  <script>
-    fetch('/data/all_events.json') // replace with correct file if needed
+  <script type="module">
+
+    import { getPubkey } from '/static/js/utils.js';
+
+    const pubkey = await getPubkey();
+    if (!pubkey) {
+      document.getElementById('notes').innerHTML = '<p>Error loading replies (no pubkey found).</p>';
+      throw new Error('No pubkey');
+    }    
+
+    fetch(`/api/timeline/${pubkey}`)
       .then(res => res.json())
       .then(data => {
         const container = document.getElementById('timeline');
@@ -26,6 +36,31 @@
           const kind = evt.kind;
           const id = evt.id;
           let content = (evt.content || '').replace(/\n/g, ' ').slice(0, 200);
+        
+          // get the title from the event for kind =1 events
+          if (kind == 1) content = evt.generated_title;
+
+
+          if (kind == 30023 && Array.isArray(evt.tags)) {
+            let tags = [];
+            try {
+              tags = Array.isArray(evt.tags)
+              ? evt.tags
+              : JSON.parse(evt.tags);
+            } catch (e) {
+              tags = [];
+            }
+
+            // If tags exist and are an array
+            if (Array.isArray(tags)) {
+              const titleTag = tags.find(tag => tag[0] === 'title');
+              if (titleTag && typeof titleTag[1] === 'string') {
+                content = titleTag[1];
+              }
+            }
+
+          }
+
           const isReply = evt.tags && evt.tags.some(tag => tag[0] === 'e');
           let label = '';
           let showLink = kind === 1 || kind === 30023;
@@ -67,12 +102,26 @@
             showLink = false;
           }
 
+          let href = "";
+          if (kind === 30023) {
+            href = `/nostr/view/article/${id}`;
+          } else if (kind === 1 && isReply) {
+            href = `/nostr/view/reply/${id}`;
+          } else if (kind === 1) {
+            href = `/nostr/view/note/${id}`;
+          }
+
+          const previewContent = href
+            ? `<a class="event-link" href="${href}" target="_blank" rel="noopener noreferrer">${content}</a>`
+            : `${content}...`;
+
           div.innerHTML = `
-            <div class="timestamp">${ts}</div>
             <div class="event-type">${label}</div>
-            <div class="event-preview">${content}...</div>
-            ${showLink ? `<a class="event-link" href="https://primal.net/e/${id}" target="_blank">View on Primal ↗</a>` : ''}
+            <div class="standard-link event-preview">${previewContent}</div>
+            <div class="timestamp">Posted: ${ts}</div>
           `;
+
+         
           container.appendChild(div);
         });
       });

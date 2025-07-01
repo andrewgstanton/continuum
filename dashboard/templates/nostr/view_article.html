@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ article.tags | selectattr(0, 'equalto', 'title') | map(attribute=1) | first }}</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <div class="view-article-container">
+
+    <div class="view-article-header">
+      <div>
+        <div class="view-article-title">📖 Article</div>
+        <div class="view-article-meta">
+          <small>(Time shown in {{ user_timezone }})</small> <br /><br />
+          Posted: {{ article.created_at | localtime  }}
+        </div>
+      </div>  
+      <a href="https://primal.net/e/{{ article.id }}" target="_blank">View on Primal ↗</a>
+    </div>
+
+    <hr style="margin: 1em 0;">
+
+    <h1 style="font-size: 2.6em; font-weight: bold;">
+      {{ article.tags | selectattr(0, 'equalto', 'title') | map(attribute=1) | first or 'Untitled Article' }}
+    </h1>
+
+    {% set image_tag = article.tags | selectattr(0, 'equalto', 'image') | map(attribute=1) | first %}
+    {% if image_tag %}
+    <div style="margin: 1.5em 0; text-align: center;">
+      <img src="{{ image_tag }}" alt="Hero image" style="max-width: 100%; border-radius: 12px;">
+    </div>
+    {% endif %}
+
+    <p style="font-style: italic; font-size: 1.1em; color: #555;">
+      {{ article.tags | selectattr(0, 'equalto', 'summary') | map(attribute=1) | first }}
+    </p>
+
+    <div id="markdown-content" class="markdown"></div>
+
+    {% set taglist = article.tags | selectattr(0, 'equalto', 't') | map(attribute=1) | list %}
+    {% if taglist %}
+    <div class="view-article-tags">
+      {% for tag in taglist %}
+        <span class="view-tag">{{ tag }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <script>
+    const markdown = {{ article.content|tojson }};
+    document.getElementById('markdown-content').innerHTML = marked.parse(markdown);
+  </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "npub": "your_npub_here",
+  "nsec": "your_nsec_here_or_blank_for_readonly",
+  "timezone": "America/Los_Angeles",
+  "relays": [
+    "wss://relay.damus.io",
+    "wss://nos.lol",
+    "wss://relay.primal.net",
+    "wss://nostr.bitcoiner.social",
+    "wss://nostr.wine"
+  ]
+}

@@ -3,17 +3,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>MyContinuum Posts</title>
-  <link rel ="stylesheet" href="/static/style.css">
+  <title>MyContinuum Notes</title>
+  <link rel ="stylesheet" href="/static/css/style.css">
 </head>
 <body>
     <div class="container">
-    <h1>📝 Posts</h1>
+    <h1>📝 Notes</h1>
+    <p class="timezone-note">(Times shown in {{ user_timezone}})</p>
     <div id="notes"></div>
   </div>
 
-  <script>
-    fetch('/data/kind_1_posts.json')
+  <script type="module">
+
+    import { getPubkey } from '/static/js/utils.js';
+
+    const pubkey = await getPubkey();
+    if (!pubkey) {
+      document.getElementById('notes').innerHTML = '<p>Error loading replies (no pubkey found).</p>';
+      throw new Error('No pubkey');
+    }    
+
+    fetch(`/api/notes/${pubkey}`)
       .then(response => response.json())
       .then(data => {
         // Sort descending by created_at
@@ -22,13 +32,12 @@
         const container = document.getElementById('notes');
         data.forEach(note => {
           const wrapper = document.createElement('div');
-          wrapper.className = 'note-entry common-card';
+          wrapper.className = 'standard-link note-entry common-card';
 
-          const preview = note.content.split(/\s+/).slice(0, 10).join(' ');
-          const title = preview + "..." ;
-
+          const title = note.generated_title + "..." ;
           const link = document.createElement('a');
-          link.href = `https://primal.net/e/${note.id}`;
+
+          link.href = `/nostr/view/note/${note.id}`; 
           link.textContent = title;
           link.target = '_blank';
           link.rel = 'noopener noreferrer';

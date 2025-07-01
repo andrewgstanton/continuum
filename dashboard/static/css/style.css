@@ -1,0 +1,363 @@
+/* static/style.css */
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f9f9f9;
+  padding: 2rem;
+  margin: 0;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+h1 {
+  text-align: left;
+  font-size: 2rem;
+  margin-bottom: 1.2rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-top: 0;
+}
+
+.common-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+.event-type,
+.article-title,
+.note-entry a {
+  font-weight: bold;
+  color: #0077cc;
+  text-decoration: none;
+}
+
+.article-title:hover,
+.note-entry a:hover {
+  text-decoration: underline;
+}
+
+.timestamp,
+.article-meta,
+.note-meta {
+  font-size: 0.85rem;
+  color: #777;
+}
+
+.summary-list li,
+.summary-sublist li {
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-top: 2rem;
+}
+
+.profile-card,
+.summary-card {
+  flex: 1 1 0;
+  min-width: 320px;
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+}
+
+.profile-banner {
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.hidden {
+  display:none;
+}
+
+#note-preview {
+  border: 1px solid #ddd;
+  font-size: 0.95rem;
+  padding: 1rem;
+  margin-top: 1rem;
+  background-color: #fafafa;
+}
+
+/* view_article.html styles */
+
+.view-article-container {
+  max-width: 800px;
+  margin: 2em auto;
+  padding: 2em;
+  background-color: #fdfdfd;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.view-article-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.view-article-title {
+  font-size: 1.75em;
+  font-weight: bold;
+}
+
+.view-article-meta {
+  color: #666;
+  font-size: 0.9em;
+  margin-top: 0.25em;
+}  
+
+.view-article-tags {
+  margin-top: 1em;
+}
+.view-tag {
+  display: inline-block;
+  background-color: #eee;
+  border-radius: 10px;
+  padding: 2px 8px;
+  margin: 2px;
+  font-size: 0.85em;
+}
+
+/* view_note and view_reply.html styling */
+
+.view-note-container {
+  max-width: 800px;
+  margin: 2em auto;
+  padding: 2em;
+  border-radius: 10px;
+  background-color: #fdfdfd;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+.view-note-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.view-note-title {
+  font-size: 1.75em;
+  font-weight: bold;
+}
+.view-note-meta {
+  color: #666;
+  font-size: 0.9em;
+  margin-top: 0.25em;
+}
+.view-note-tags {
+  margin-top: 1em;
+}
+.view-note-tag {
+  display: inline-block;
+  background-color: #eee;
+  border-radius: 4px;
+  padding: 0.2em 0.6em;
+  margin-right: 0.4em;
+  font-size: 0.85em;
+}
+.view-note-content {
+  margin-top: 1.5em;
+}
+
+/* for button styles */
+
+button.hidden {
+  display: none !important;
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 16px;
+  font-size: 1em;
+  font-weight: 600;
+  color: white;
+  background-color: #007bff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.btn-sm {
+  background-color: transparent;
+  border: 1px solid #ccc;
+  padding: 4px 6px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-sm:hover {
+  background-color: #ffe5e5;
+  border-color: #cc0000;
+  color: #cc0000;
+}
+
+
+.btn-lg {
+  padding: 12px 20px;
+  font-size: 1.15em;
+}
+.btn-group {
+  margin-bottom: 1em;
+}
+
+.btn-link {
+  display: inline-block;
+  padding: 6px 10px;
+  font-size: 0.95em;
+  text-decoration: none;
+  color: #4b0082;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+  transition: background-color 0.2s ease;
+  margin-right: 6px;
+}
+.btn-link:hover {
+  background-color: #f0f0f0;
+}
+
+/* for modal to select different npub */
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: white;
+  margin: 10% auto;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+.modal-content h2 {
+  margin-bottom: 1rem;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-around;
+  gap: 1rem;
+}
+
+.cancel-btn {
+  background-color: #ddd;
+  color: black;
+}
+
+/* dashboard summary links */
+/* edit_note and edit_article draft links */
+/* also the timeline, notes, replies and articles dashboards (standard-link) */
+
+.standard-link a,
+.draft-list a, 
+.summary a {
+  color: #3366cc; /* Soft purple-blue  */
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.standard-link a:hover,
+.draft-list a:hover, 
+.summary a:hover {
+  color: #003399; /* Deeper hover color */
+  text-decoration: underline;
+}
+
+
+
+/* for edit_article, edit_note */
+
+.action-button {
+  background-color: #007bff;  
+  color: white;
+  font-weight: 500;
+  padding: 6px 12px;
+  margin: 4px 4px 0 0;
+  border: none;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.action-button:hover {
+  background-color:  #0056b3;
+}
+
+.action-button:active {
+  background-color: #1e40af; /* Tailwind blue-800 */
+}
+
+.action-button svg {
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+/* for timezone info */
+
+.timezone-note {
+  font-size: 0.9em;
+  color: #666;
+  margin-bottom: 10px;
+}

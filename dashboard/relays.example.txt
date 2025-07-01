@@ -1,7 +1,0 @@
-# Add your relays and their permissions (read/write) below
-# Format: RELAY_URL [read|write|read,write]
-
-wss://relay.damus.io read,write
-wss://nos.lol read
-wss://nostr.bitcoiner.social read,write
-wss://relay.primal.net read

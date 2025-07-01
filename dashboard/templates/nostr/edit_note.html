@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Edit or Create Note – MyContinuum</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <link rel="stylesheet" href="/static/css/modal.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>✍️ Write Note</h1>
+
+    <form id="note-form">
+      <input type="hidden" id="note-id" />
+
+      <label>Title (optional):</label><br />
+      <input type="text" id="title" style="width:100%" /><br /><br />
+
+      <label>Hashtags (comma-separated):</label><br />
+      <input type="text" id="tags" style="width:100%" /><br /><br />
+
+      <label>Note Content:</label><br />
+      <textarea id="content" rows="8" style="width:100%; margin-top: 0.5rem;"></textarea><br /><br />
+
+      {% if has_valid_nsec %}
+        <label><input type="checkbox" id="published" name="published"> Publish this note</label>
+      {% else %}
+        <!-- Hidden input ensures consistent form structure -->
+        <label class="hidden"><input type="checkbox" id="published" name="published" value="off"></label>
+      {% endif %}
+
+
+      <hr />
+      <h3 id="live-preview-header">Live Preview</h3>
+
+      <div id ="note-preview" style="background: #f6f6f6;">
+        <div id="preview-content"></div>
+      </div>
+
+      <br />
+
+      <div class="btn-group">
+        <button type="submit" class="action-button">💾 Save</button>
+        <button id="preview-note-button" type="button" class="action-button" onclick="togglePreviewState()">👁 Hide Live Preview</button>
+      </div>
+
+  </form>
+
+    <hr />
+
+    <h2>📝 Drafts</h2>
+    <ul class="draft-list" id="note-list"></ul>
+  </div>
+
+  <!-- modal for  deleting a note -->
+  <div id="custom-modal" class="modal hidden">
+    <div class="modal-box">
+      <p id="modal-message">Are you sure?</p>
+      <div id="modal-buttons">
+        <button id="modal-cancel" class="btn">Cancel</button>
+        <button id="modal-ok" class="btn btn-danger">OK</button>
+      </div>
+    </div>
+  </div>
+
+    <script>
+
+      function showModalConfirm(message = "Are you sure?") {
+        return new Promise((resolve) => {
+          const modal = document.getElementById("custom-modal");
+          const messageBox = document.getElementById("modal-message");
+          const okBtn = document.getElementById("modal-ok");
+          const cancelBtn = document.getElementById("modal-cancel");
+
+          console.log("showModalConfirm called");
+
+          if (!modal || !messageBox || !okBtn || !cancelBtn) {
+            console.warn("Modal elements not found");
+            return resolve(false);
+          }
+
+          messageBox.textContent = message;
+          modal.classList.remove("hidden");
+
+          function cleanup() {
+            modal.classList.add("hidden");
+            okBtn.removeEventListener("click", onOk);
+            cancelBtn.removeEventListener("click", onCancel);
+            console.log("cleaned up modal");
+          }
+
+          function onOk() {
+            console.log("OK clicked");
+            cleanup();
+            resolve(true);
+          }
+
+          function onCancel() {
+            console.log("Cancel clicked");
+            cleanup();
+            resolve(false);
+          }
+
+          okBtn.addEventListener("click", onOk);
+          cancelBtn.addEventListener("click", onCancel);
+        });
+      }
+
+</script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <script>
+
+    const form = document.getElementById('note-form');
+    const list = document.getElementById('note-list');
+
+    const titleEl  =  document.getElementById('title');
+    const tagsEl =  document.getElementById('tags');
+    const contentEl =  document.getElementById('content');
+    
+    const togglePreview = document.getElementById('preview-note-button');
+
+    let showFullPreviewEnabled = true;
+
+    async function loadNotes() {
+      const res = await fetch('/api/notes');
+      const notes = await res.json();
+
+      list.innerHTML = '';
+      notes.forEach(note => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <a href="#" onclick="event.preventDefault(); loadNote('${note.id}')">${note.preview}</a>
+          &nbsp;
+          <button class="delete-draft-btn btn-sm"  onclick="deleteNote('${note.id}')" style="color:red; font-size: 0.8rem;">🗑</button>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    function updateNoteContent(note, id) {
+      document.getElementById('note-id').value = id;
+      document.getElementById('title').value = note.title || '';
+      document.getElementById('tags').value = (note.tags || []).join(', ');
+      document.getElementById('content').value = note.content || '';
+    }
+
+    async function loadNote(id) {
+      const res = await fetch(`/api/note/${id}`);
+      const note = await res.json();
+
+      updateNoteContent(note, id);
+
+      if (showFullPreviewEnabled) {
+        updatePreview();
+      }
+
+    }
+
+    async function deleteNote(id) {
+
+      console.log("loading modal");
+      
+      const confirmed = await showModalConfirm("Delete this note draft?");
+      console.log("confirmed loaded:" + confirmed);
+      if (!confirmed) return;
+
+      try {
+        const res = await fetch(`/api/note/${id}`, { method: 'DELETE' });
+        const result = await res.json();
+
+        if (res.ok) {
+          console.log("Deleted note:", result.id);
+          form.reset();
+          document.getElementById('note-id').value = '';
+          loadNotes();
+        } else {
+          console.warn("Delete failed:", result.error || "Unknown error");
+        }
+      } catch (err) {
+        console.error("Delete error:", err);
+      }      
+      clearPreview();
+    }
+
+    function togglePreviewState() {
+      const previewBox = document.getElementById('note-preview');
+      const previewHeader = document.getElementById('live-preview-header');
+      const previewNoteButton = document.getElementById("preview-note-button");
+ 
+      if (previewBox.style.display === 'none') {
+        previewNoteButton.textContent = "👁 Hide Live Preview";
+        previewHeader.style.display = 'block';
+        previewBox.style.display = 'block';
+        showFullPreviewEnabled = true;
+        updatePreview();
+        return;
+      } else {
+        previewNoteButton.textContent = "👁 Show Live Preview"; 
+        previewBox.style.display = 'none';
+        previewHeader.style.display = 'none';
+        showFullPreviewEnabled = false;
+      }
+    }
+
+    
+    function updatePreview() {
+
+      const previewContentContainer = document.getElementById('preview-content');
+      const title = document.getElementById('title').value.trim();
+      const content = document.getElementById('content').value.trim();
+      const tagsRaw = document.getElementById('tags').value;
+
+      const hashtags = tagsRaw
+        .split(',')
+        .map(tag => tag.trim())
+        .filter(Boolean)
+        .map(tag => tag.startsWith('#') ? tag : `#${tag}`)
+        .join(' ');
+
+      const previewContent = `${title ?  "# " + title + '\n\n' : ''}${content}${hashtags ? '\n\n' + hashtags : ''}`;
+      previewContentContainer.innerHTML = marked.parse(previewContent);
+    }
+
+    function clearPreview() {
+      document.getElementById('preview-content').innerHmtl = '';
+    }
+
+    togglePreview.addEventListener('change', () => {
+      const previewBox = document.getElementById('note-preview');
+      const previewHeader = document.getElementById('live-preview-header');     
+      
+      if (showFullPreviewEnabled) {
+        updatePreview();
+        previewHeader.style.display = 'block';
+        previewBox.style.display = 'block';
+      } else {
+        previewBox.style.display = 'none';
+        previewHeader.style.display = 'none';
+      }
+    });    
+
+    // Auto-update preview while editing
+    [titleEl, tagsEl, contentEl].forEach(el => {
+      el.addEventListener('input', () => {
+        if (showFullPreviewEnabled) togglePreview.dispatchEvent(new Event('change'));
+      });
+    });
+    
+
+
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+
+      const note_id = document.getElementById('note-id').value;
+      const title = document.getElementById('title').value.trim();
+      const tags = document.getElementById('tags').value.split(',').map(t => t.trim()).filter(Boolean);
+      const content = document.getElementById('content').value;
+      const published = document.getElementById('published').checked;
+      
+      const fullContent = title ? `${title}\n\n${content}` : content;
+
+      const method = note_id ? 'PUT' : 'POST';
+      const url = note_id ? `/api/note/${note_id}` : '/api/note';
+
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, content, tags })
+      });
+
+
+      // 🔁 Publish to relay if flagged
+      if (published) {
+        console.log("publishing note to relays")
+        
+        const identity = await fetch('/api/identity').then(r => r.json());
+        const now = Math.floor(Date.now() / 1000);
+
+        // fallback to pull tags from content if not in the tags field
+        let tagList = tags;
+        if (tagList.length === 0) {
+          tagList = [...content.matchAll(/#(\w+)/g)].map(m => m[1].toLowerCase());
+        }        
+
+        const finalTitle = document.getElementById("title").value.trim();
+        const finalBody = document.getElementById("content").value;
+        const finalContent = finalTitle ? `# ${finalTitle}\n\n${finalBody}` : finalBody;
+
+        const tagsArr = [
+          ...(title ? [['title', finalTitle]] : []),
+          ['published_at', now.toString()],
+          ['client', 'mycontinuum-localhost'],
+          ...tagList.map(tag => ['t', tag.toLowerCase()])
+        ];
+
+        const unsignedEvent = {
+          kind: 1,
+          created_at: now,
+          tags: tagsArr,
+          content: finalContent,
+          pubkey: identity.pubkey
+        };
+
+        const signed = await fetch('/api/sign', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(unsignedEvent)
+        }).then(r => r.json());
+
+        const pubRes = await fetch('/api/publish', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(signed)
+        });
+
+        if (pubRes.ok) {
+          if (note_id) {
+            await fetch(`/api/note/${note_id}`, { method: 'DELETE' });
+          }
+          alert("✅ Note published to relays!");
+          window.location.href = "/nostr/dashboard"; 
+
+        } else {
+          alert("❌ Failed to publish to relays.");
+        }      
+      }
+      
+      form.reset();
+      clearPreview();
+      loadNotes();
+    };
+
+    loadNotes();
+  </script>
+</body>
+</html>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Edit or Create Article – MyContinuum</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+  <link rel="stylesheet" href="/static/css/modal.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>✍️ Write Article</h1>
+
+    <form id="article-form">
+      <input type="hidden" id="article-id" />
+
+      <label>Title:</label><br />
+      <input type="text" id="title" style="width:100%" /><br /><br />
+
+      <label>Summary:</label><br />
+      <input type="text" id="summary" style="width:100%" /><br /><br />
+
+      <label>Tags (comma separated):</label><br />
+      <input type="text" id="tags" style="width:100%" /><br /><br />
+        
+      <label>Content:</label><br />
+      <textarea id="content" rows="20" cols="80" style="width:100%; margin-top: 0.5rem;"></textarea><br /><br />
+
+      {% if has_valid_nsec %}
+        <label><input type="checkbox" id="published" name="published"> Publish this article</label>
+      {% else %}
+        <!-- Hidden input ensures consistent form structure -->
+        <label class="hidden"><input type="checkbox" id="published" name="published" value="off"></label>
+      {% endif %}
+
+      <hr />
+      <h3 id="live-preview-header">Live Preview</h3>
+
+      <div id="full-preview" style="border:1px solid #ccc; padding:1em; margin-top:1em;">
+        <h1 id="preview-title" style="font-size: 2.2em; font-weight: bold; margin-bottom: 0.5em;"></h1>
+        <p id="preview-summary" style="font-style: italic; color: #444;"></p>
+        <div id="preview-content" style="margin-top:1em;"></div>
+        <div id="preview-tags" style="margin-top: 1em;"></div>
+      </div>
+
+      <br />
+
+      <div class="btn-group">
+        <button type="submit" class="action-button">💾 Save</button>
+        <button id="live-preview-article-button" type="button" class="action-button" onclick="togglePreviewState()">👁 Hide Live Preview</button>
+      </div>
+
+    </form>
+
+    <hr />
+
+    <h2>📄 Drafts</h2>
+    <ul class="draft-list" id="draft-list"></ul>
+  </div>
+
+    <!-- modal for  deleting a note -->
+  <div id="custom-modal" class="modal hidden">
+    <div class="modal-box">
+      <p id="modal-message">Are you sure?</p>
+      <div id="modal-buttons">
+        <button id="modal-cancel" class="btn">Cancel</button>
+        <button id="modal-ok" class="btn btn-danger">OK</button>
+      </div>
+    </div>
+  </div>
+
+      <script>
+
+      function showModalConfirm(message = "Are you sure?") {
+        return new Promise((resolve) => {
+          const modal = document.getElementById("custom-modal");
+          const messageBox = document.getElementById("modal-message");
+          const okBtn = document.getElementById("modal-ok");
+          const cancelBtn = document.getElementById("modal-cancel");
+
+          console.log("showModalConfirm called");
+
+          if (!modal || !messageBox || !okBtn || !cancelBtn) {
+            console.warn("Modal elements not found");
+            return resolve(false);
+          }
+
+          messageBox.textContent = message;
+          modal.classList.remove("hidden");
+
+          function cleanup() {
+            modal.classList.add("hidden");
+            okBtn.removeEventListener("click", onOk);
+            cancelBtn.removeEventListener("click", onCancel);
+            console.log("cleaned up modal");
+          }
+
+          function onOk() {
+            console.log("OK clicked");
+            cleanup();
+            resolve(true);
+          }
+
+          function onCancel() {
+            console.log("Cancel clicked");
+            cleanup();
+            resolve(false);
+          }
+
+          okBtn.addEventListener("click", onOk);
+          cancelBtn.addEventListener("click", onCancel);
+        });
+      }
+
+</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+
+    // previewing markdown
+
+    const titleEl = document.getElementById('title');
+    const summaryEl = document.getElementById('summary');
+    const tagsEl = document.getElementById('tags');
+    const contentEl = document.getElementById('content');
+
+    const togglePreview = document.getElementById('live-preview-article-button');
+
+    let showFullPreviewEnabled = true;
+    
+    function clearPreview() {
+        // clear preview fields
+        document.getElementById('preview-title').innerText = '';
+        document.getElementById('preview-summary').innerText = '';
+        document.getElementById('preview-content').innerHTML = '';
+        document.getElementById('preview-tags').innerHTML = '';
+    }
+
+    function updatePreview() {
+        // Render preview fields
+        document.getElementById('preview-title').innerText = titleEl.value;
+        document.getElementById('preview-summary').innerText = summaryEl.value;
+        document.getElementById('preview-content').innerHTML = marked.parse(contentEl.value);
+
+        const tags = tagsEl.value.split(',').map(t => t.trim()).filter(Boolean);
+        document.getElementById('preview-tags').innerHTML = tags.map(t =>
+          `<span style="display:inline-block; background:#eee; border-radius:10px; padding:2px 8px; margin:2px; font-size:0.85em;">${t}</span>`
+        ).join(' ');
+    }
+
+    function togglePreviewState() {
+      const previewBox = document.getElementById('full-preview');
+      const previewHeader = document.getElementById('live-preview-header');
+      const previewArticleButton = document.getElementById("live-preview-article-button");
+
+      if (previewBox.style.display === 'none') {
+        previewArticleButton.textContent = "👁 Hide Live Preview";
+        previewBox.style.display = 'block';
+        previewHeader.style.display = 'block';
+        showFullPreviewEnabled = true;
+        updatePreview();
+        return;
+      } else {
+        previewArticleButton.textContent = "👁 Show Live Preview";        
+        previewBox.style.display = 'none';
+        previewHeader.style.display = 'none';
+        showFullPreviewEnabled = false;
+      }
+    }
+    
+
+    togglePreview.addEventListener('change', () => {
+      const previewBox = document.getElementById('full-preview');
+      const previewHeader = document.getElementById('live-preview-header');      
+      
+      if (showFullPreviewEnabled) {
+        updatePreview();
+        previewHeader.style.display = 'block';
+        previewBox.style.display = 'block';
+      } else {
+        previewHeader.style.display = 'none';
+        previewBox.style.display = 'none';
+      }
+    });
+
+    
+    // Auto-update preview while editing
+    [titleEl, summaryEl, tagsEl, contentEl].forEach(el => {
+      el.addEventListener('input', () => {
+        if (showFullPreviewEnabled) togglePreview.dispatchEvent(new Event('change'));
+      });
+    });
+
+
+    const form = document.getElementById('article-form');
+    const drafts = document.getElementById('draft-list');
+
+    async function loadDrafts() {
+      const res = await fetch('/api/articles');
+      const articles = await res.json();
+
+      drafts.innerHTML = '';
+      articles.forEach(article => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <a href="#" onclick="event.preventDefault(); loadArticle('${article.id}')">${article.preview}</a>
+          &nbsp;
+          <button class="btn-sm"  onclick="deleteDraft('${article.id}')" style="color:red; font-size: 0.8rem;">🗑</button>
+        `;
+        drafts.appendChild(li);
+      });
+    }
+
+    function updateContent(article, id) {
+      document.getElementById('article-id').value = id;
+      document.getElementById('title').value = article.title || '';
+      document.getElementById('summary').value = article.summary || '';
+      document.getElementById('tags').value = (article.tags || []).join(', ');      
+      document.getElementById('content').value = article.content;
+      document.getElementById('published').checked = article.published;
+    }
+
+    async function loadArticle(id) {
+      const res = await fetch(`/api/article/${id}`);
+      const article = await res.json();
+
+      updateContent(article, id);
+     
+      if (showFullPreviewEnabled) {
+        updatePreview();
+      }
+    }
+
+    async function deleteDraft(id) {
+
+      const confirmed = await showModalConfirm("Delete this article draft?");
+      console.log("confirmed loaded:" + confirmed);
+      if (!confirmed) return;
+
+      try {
+        const res = await fetch(`/api/article/${id}`, { method: 'DELETE' });
+        const result = await res.json();
+
+        if (res.ok) {
+          console.log("Deleted article:", result.id);
+          form.reset();
+          document.getElementById('article-id').value = '';
+          loadDrafts();
+        } else {
+          console.warn("Delete failed:", result.error || "Unknown error");
+        }
+      } catch (err) {
+        console.error("Delete error:", err);
+      }  
+
+      /*
+      if (!confirm("Are you sure you want to delete this draft?")) return;
+
+      const res = await fetch(`/api/article/${id}`, { method: 'DELETE' });
+      const result = await res.json();
+
+      if (res.ok) {
+        alert("Deleted draft: " + result.id);
+        form.reset();
+        document.getElementById('article-id').value = ''; // ensure fresh POST on next submit
+        loadDrafts();
+      } else {
+        alert("Delete failed: " + (result.error || "Unknown error"));
+      }
+   
+      */
+
+      clearPreview();
+    }
+
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+
+      const article_id = document.getElementById('article-id').value;
+      const title = document.getElementById('title').value.trim();
+      const summary = document.getElementById('summary').value.trim();
+      const tags = document.getElementById('tags').value.split(',').map(tag => tag.trim()).filter(Boolean);
+      const content = document.getElementById('content').value;
+      const published = document.getElementById('published').checked;
+
+      const method = article_id ? 'PUT' : 'POST';
+      const url = article_id ? `/api/article/${article_id}` : `/api/article`;
+
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, summary, tags, content, published })
+      });
+
+      // 🔁 Publish to relay if flagged
+      if (published) {
+        console.log("publishing to relays")
+        
+        const identity = await fetch('/api/identity').then(r => r.json());
+
+        const now = Math.floor(Date.now() / 1000);
+        const identifier = title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '');
+
+        const tagsArr = [
+          ['d', identifier],
+          ['title', title],
+          ['summary', summary],
+          ['published_at', now.toString()],
+          ['client', 'mycontinuum-localhost'],
+          ...tags.map(tag => ['t', tag.toLowerCase()])
+        ];
+
+        const unsignedEvent = {
+          kind: 30023,
+          created_at: now,
+          tags: tagsArr,
+          content,
+          pubkey: identity.pubkey
+        };
+
+        const signed = await fetch('/api/sign', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(unsignedEvent)
+        }).then(r => r.json());
+
+        const pubRes = await fetch('/api/publish', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(signed)
+        });
+
+        if (pubRes.ok) {
+          if (article_id) {
+            await fetch(`/api/article/${article_id}`, { method: 'DELETE' });
+          }
+          alert("✅ Article published to relays!");
+          window.location.href = "/nostr/dashboard"; 
+
+        } else {
+          alert("❌ Failed to publish to relays.");
+        }
+      }
+
+      form.reset();
+      clearPreview();
+      loadDrafts();
+    };
+
+    loadDrafts();
+  </script>
+</body>
+</html>

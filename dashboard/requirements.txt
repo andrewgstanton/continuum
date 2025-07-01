@@ -7,3 +7,5 @@ requests
 Websockets
 bech32
 subprocess
+secp256k1
+markdown2

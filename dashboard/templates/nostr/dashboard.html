@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>MyContinuum Nostr/Primal Dashboard</title>
-  <link rel ="stylesheet" href="/static/style.css">
+  <link rel ="stylesheet" href="/static/css/style.css">
 </head>
 <body>
   <div class="container">
@@ -11,48 +11,93 @@
     <div id="npub-container" class="hidden" >
       <p>NPUB: <span id="npub"></span><p> 
       <p>NPUB (HEX): <span id="pubkey"></span><p> 
+      <p class="timezone-note">Timezone: {{ user_timezone}}</p>
+    </div>
+  
+    <div class="btn-group">
+      <button class="btn" id="trigger-npub-button" onclick="askForNpubAndUpdate()">Load Another NPUB</button>
+      <button class="btn load-default-npub-button hidden" id="load-default-npub">Load Default NPUB</button>
     </div>
 
-    <button id="trigger-npub-button" onclick="askForNpubAndUpdate()">Load Another NPUB</button>
+    <div id="edit-links" class="hidden" style="margin-top: 1rem;">
+      <a class="btn-link" href="/nostr/articles/edit/">✏️ Edit Articles</a> | 
+      <a class="btn-link" href="/nostr/notes/edit/">✏️ Edit Notes</a>
+    </div>  
   
   <div id="dashboard-container" class="dashboard-container hidden">
 
     <div class="profile-card common-card">
       <h2>🧾 Profile</h2>
-      <img id="banner" class="profile-banner" src="" alt="Banner" style="width:100%; height:120px; object-fit:cover;">
+      <img id="banner" class="profile-banner hidden" src="" alt="Banner" style="width:100%; height:120px; object-fit:cover;">
       <div style="padding-top: 1rem;">
-        <img id="avatar" class="profile-avatar" src="" alt="Avatar">
+        <img id="avatar" class="profile-avatar hidden" src="" alt="Avatar">
         <h2 id="name"></h2>
         <p id="about"></p>
-        website: <a id="website" href="#" target="_blank">Website</a>
+        <span class="website-link-label hidden">website: </span><a id="website" class="website-link hidden" href="#" target="_blank">Website</a>
       </div>
     </div>
 
     <div class="summary-card common-card">
       <h2>🧾 Summary</h2>
-      <ul class="summary-list" id="summary-list">
+      <ul class="summary summary-list" id="summary-list">
         <!-- Populated via JS -->
       </ul>
     </div>
   </div>
-  <script>
 
-    /* for querying npubin browser */
-    let npub = ''
-    function getQueryParam(name) {
-      return new URLSearchParams(window.location.search).get(name);
-    }
+    <!-- modal for selecting a different npub or if queried in browser with ?prompt=true -->
 
-    function askForNpubAndUpdate() {
-      npub = prompt("Enter a Nostr npub to generate the dashboard:");
-      if (npub) {
-        window.location.href = `/update?npub=${encodeURIComponent(npub)}`;
+  <div id="npub-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Enter a Nostr npub</h2>
+      <input type="text" id="npub-input" placeholder="npub..." />
+      <div class="modal-buttons">
+        <button class="btn" id="npub-confirm">OK</button>
+        <button class="btn cancel-btn" onclick="document.getElementById('npub-modal').style.display='none'">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+    <script>
+      // Global npub (optional if needed elsewhere)
+      let npub = '';
+
+      // Utility: get query parameter
+      function getQueryParam(name) {
+        return new URLSearchParams(window.location.search).get(name);
       }
-    }
 
-    if (getQueryParam("prompt") === "true") {
-      askForNpubAndUpdate();
-    }
+      // Show modal and attach event listener
+      function askForNpubAndUpdate() {
+        const modal = document.getElementById("npub-modal");
+        const input = document.getElementById("npub-input");
+        const confirmBtn = document.getElementById("npub-confirm");
+
+        // Only add listener once
+        confirmBtn.onclick = () => {
+          const npubValue = input.value.trim();
+
+          if (npubValue) {
+            const updateLink = `/update?npub=${encodeURIComponent(npubValue)}`;
+            window.location.href = updateLink;
+          } else {
+            alert("Please enter a valid npub.");
+          }
+        };
+
+        // Show modal and focus input
+        modal.style.display = "block";
+        input.value = "";
+        input.focus();
+      }
+
+      // Auto-trigger if ?prompt=true
+      if (getQueryParam("prompt") === "true") {
+        askForNpubAndUpdate();
+      }
+    </script>
+
+    <script type="module">
 
     function isEmpty(obj) {
       for (var prop in obj) {
@@ -65,70 +110,111 @@
 
     /* renders dashbboard */
 
-    async function renderDashboard() {
-     
-      let summary = {};
-      let profileData = {};
+    import { getPubkey, getNpub, getIdentityPubkey, getIdentityNpub } from '/static/js/utils.js';
 
-      let profile = '{}';
-      let pubkey = '';
-      let npub = '';
+    async function renderDashboard() {
+      let summary = {};
+      let profileData = [];
+
+      let profile = {};
+      let pubkey = await getPubkey();
+      let npub = await getNpub();
+      const identityPubkey = await getIdentityPubkey();
+      const identityNpub = await getIdentityNpub();
+
+      if (!pubkey) {
+        console.error("no pubkey found, aborting dashboard render");
+        return;
+      }
+
+      //console.log("Loaded pubkey:", pubkey);
+      //console.log("Identity pubkey:", identityPubkey);
+      // console.log("Keys equal?", pubkey === identityPubkey);
+
+      const editLinks = document.getElementById('edit-links');
+      const defaultBtn = document.getElementById('load-default-npub');
+
+      // show edit links if using default npub
+      if (identityPubkey && pubkey && pubkey.trim() === identityPubkey.trim()) {
+        editLinks.classList.remove('hidden');
+        defaultBtn.classList.add('hidden');
+
+      // show default npub button to reload  
+      } else {
+        editLinks.classList.add('hidden');
+        defaultBtn.classList.remove('hidden');
+      }
+      
+      document.getElementById('load-default-npub').onclick = function() {
+        window.location.href = `/update?npub=${identityNpub}`
+
+      }
 
       try {
-        summary = await fetch('/data/summary.json').then(res => res.json());
-        profileData = await fetch('/data/kind_0_profile_metadata.json').then(res => res.json());
-      } catch (e) {
-        console.error("Failed to load summary or profile data", e);
-      } 
-     
-      if (!isEmpty(summary) && !isEmpty(profileData) ) {
+
+        summary = await fetch(`/api/summary/${pubkey}`).then(res => res.json());
+
         try {
-          profile = JSON.parse(profileData[0].content || '{}');
+          profile = await fetch(`/api/profile/${pubkey}`).then(res => res.json());
         } catch (e) {
-          console.error("Failed to parse profile content", e);
-        }
-      
-        if (profile != '{}' && profile != undefined) {
-          pubkey = profileData[0].pubkey;
-          npub = profileData[0].npub;
+          console.warn("No profile metadata found.");
         }
 
-        if ( pubkey != '' && npub != '' ) {
-          document.getElementById('npub-container').classList.remove('hidden');
-          document.getElementById('dashboard-container').classList.remove('hidden');
-      
-          // update npub reference in document
-          document.getElementById('npub').textContent = profileData[0].npub || "NO NPUB";
-          document.getElementById('pubkey').textContent = profileData[0].pubkey || "NO PUBKEY";
-      
+      } catch (e) {
+        console.error("Failed to load summary or identity", e);
+        return;
+      }
+
+      if (!isEmpty(summary)) {
+        document.getElementById('dashboard-container').classList.remove('hidden');
+        document.getElementById('npub-container').classList.remove('hidden');
+
+        // Show npub + pubkey
+        document.getElementById('npub').textContent = npub || `npub_${pubkey}`;
+        document.getElementById('pubkey').textContent = pubkey || "NO PUBKEY";
+
+        // Only show profile section if data exists
+        if (profile && Object.keys(profile).length > 0) {
+          document.querySelector('.profile-card').classList.remove('hidden');
           document.getElementById('name').textContent = profile.display_name || profile.name || 'Nostr User';
           document.getElementById('about').innerHTML = (profile.about || '').replace(/\n/g, '<br/>');
           document.getElementById('avatar').src = profile.picture || '';
+          if (profile.picture != '') {
+            document.querySelector('.profile-avatar').classList.remove('hidden');
+          }
           document.getElementById('banner').src = profile.banner || '';
-          document.getElementById('website').href = profile.website || '#';
-          document.getElementById('website').textContent = profile.website || 'View Profile';
+          if (profile.banner != '') {
+            document.querySelector('.profile-banner').classList.remove('hidden');
+          }
+          document.getElementById('website').textContent = profile.website || '';
 
-          const list = document.getElementById('summary-list');
-      
-          list.innerHTML = `
-            <li>📝 <a href='/nostr/posts/'>Posts: ${summary.notes}</a></li>
-            <li>💬 <a href='/nostr/replies/'>Replies: ${summary.replies}</a></li>
-            <li>🔁 Reposts: ${summary.reposts}</li>
-            <li>❤️ Likes: ${summary.likes}</li>
-            <li>🔐 DMs: ${summary.dms}</li>
-            <li>📖 Articles: ${summary.articles.total}
-              <ul class="summary-sublist"> 
-                  <li>✅ <a href ='/nostr/articles/'>Published: ${summary.articles.published}</a></li>
-                  <li>🔄 Drafts: ${summary.articles.drafts}</li>
-                  <li>🗑️ Deleted: ${summary.articles.deleted}</li>
-              </ul>    
-              <li>Other: ${summary.other.total}</li>
-              <li>📊 <a href='/nostr/timeline/'>Total: ${summary.total}</a> (click for timeline)</li>
-          `;
-          } 
-      }  
+          if (profile.website != '') {
+            document.querySelector('.website-link').classList.remove('hidden');
+            document.querySelector('.website-link-label').classList.remove('hidden');
+          }
+        } else {
+          document.querySelector('.profile-card').classList.add('hidden');
+        }
+
+        // Populate summary
+        const list = document.getElementById('summary-list');
+        list.innerHTML = `
+          <li>📝 <a href='/nostr/notes/'>Notes: ${summary.notes}</a></li>
+          <li>💬 <a href='/nostr/replies/'>Replies: ${summary.replies}</a></li>
+          <li>🔁 Reposts: ${summary.reposts}</li>
+          <li>❤️ Likes: ${summary.likes}</li>
+          <li>🔐 DMs: ${summary.dms}</li>
+          <li>📖 Articles: ${summary.articles.total}
+            <ul class="summary-sublist"> 
+              <li>✅ <a href ='/nostr/articles/'>Published: ${summary.articles.published}</a></li>
+              <li>🔄 Drafts: ${summary.articles.drafts}</li>
+              <li>🗑️ Deleted: ${summary.articles.deleted}</li>
+            </ul>    
+          </li>
+          <li>📊 <a href='/nostr/timeline/'>Total: ${summary.total}</a> (click for timeline)</li>
+        `;
+      }
     }
-
     renderDashboard();
   </script>
 </body>

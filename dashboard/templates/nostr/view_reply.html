@@ -1,0 +1,47 @@
+<!-- templates/nostr/view_reply.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View Reply</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <div class="view-note-container">
+    <div class="view-note-header">
+      <div class="view-note-title">📝 Reply</div>
+      <a href="https://primal.net/e/{{ note.id }}" target="_blank">View on Primal ↗</a>
+    </div>
+    <div class="view-note-meta">
+      <small>(Time shown in {{ user_timezone }})</small> <br /><br />
+      Posted: {{ note.created_at | localtime }}
+    </div>
+  
+   <hr style="margin: 1em 0;">
+    
+    {% if hero_image %}
+    <div style="text-align:center; margin-bottom: 1em; margin-top: 1em;">
+      <img src="{{ hero_image }}" alt="Note Image" style="max-width:100%; max-height:400px; border-radius: 10px;">
+    </div>
+    {% endif %}
+
+    <div id="view-note-body" class="view-note-content"></div>
+
+    {% if note.tags %}
+      <div class="view-note-tags">
+        {% for tag in note.tags if tag[0] == 't' %}
+          <span class="view-note-tag">#{{ tag[1] }}</span>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+
+  </div>
+
+  <script>
+    const rawContent = {{ note.content | tojson | safe }};
+    document.getElementById("view-note-body").innerHTML = marked.parse(rawContent);
+  </script>
+</body>
+</html>

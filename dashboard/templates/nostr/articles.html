@@ -3,16 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <title>Articles – MyContinuum</title>
-  <link rel ="stylesheet" href="/static/style.css">
+  <link rel ="stylesheet" href="/static/css/style.css">
 </head>
 <body>
   <div class="container">
     <h1>📝 Published Articles</h1>
+    <p class="timezone-note">(Times shown in {{ user_timezone}})</p>
     <div id="articles"></div>
   </div>
 
-  <script>
-    fetch('/data/kind_30023_published.json')
+  <script type="module">
+
+    import { getPubkey } from '/static/js/utils.js';
+
+    const pubkey = await getPubkey();
+    if (!pubkey) {
+      document.getElementById('notes').innerHTML = '<p>Error loading articles (no pubkey found).</p>';
+      throw new Error('No pubkey');
+    }    
+
+    fetch(`/api/articles/${pubkey}`)
       .then(response => response.json())
       .then(data => {
         const container = document.getElementById('articles');
@@ -20,14 +30,42 @@
 
         data.forEach(article => {
           const wrapper = document.createElement('div');
-          wrapper.className = 'article common-card';
+          wrapper.className = 'standard-link article common-card';
 
           const title = document.createElement('a');
           title.className = 'article-title';
-          title.href = `https://primal.net/e/${article.id}`;
+          title.href = `/nostr/view/article/${article.id}`; 
           
-          const previewText = article.content.split(/\s+/).slice(0, 10).join(' ');
+          let previewText = article.content.split(/\s+/).slice(0, 10).join(' ');
+
+          console.log("article:", article)
+
+
+          // console.log("tags:", article.tags);
+
+          if (article.tags) {
+            let tags = [];
+
+            try {
+              tags = Array.isArray(article.tags)
+              ? article.tags
+              : JSON.parse(article.tags);
+            } catch (e) {
+              tags = [];
+            }
+
+            // If tags exist and are an array
+            if (Array.isArray(tags)) {
+              const titleTag = tags.find(tag => tag[0] === 'title');
+              if (titleTag && typeof titleTag[1] === 'string') {
+                previewText = titleTag[1];
+              }
+            }
+          } 
+
           title.textContent = previewText + (article.content.split(/\s+/).length > 10 ? '…' : '');
+          title.target = 'blank';
+          title.rel = 'noopener noreferrer';
 
           const meta = document.createElement('div');
           meta.className = 'article-meta';

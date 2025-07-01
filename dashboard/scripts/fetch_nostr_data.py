@@ -5,24 +5,13 @@ import asyncio
 import uuid
 import websockets
 import argparse
-from utils import decode_npub, generate_link, shorten_url
+import sys
+
+# Add parent directory to path so we can access the utils package
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from utils.utils import decode_npub, generate_link, shorten_url, load_identity, get_npub_data_path, save_state, parse_read_relay_urls
+
 from dotenv import dotenv_values
-
-def load_env(path="environment.txt"):
-    return dotenv_values(path)
-
-
-
-def load_relays(path="relays.txt", mode="read"):
-    relays = []
-    with open(path) as f:
-        for line in f:
-            if line.startswith("#") or not line.strip():
-                continue
-            parts = line.strip().split()
-            if len(parts) == 2 and mode in parts[1]:
-                relays.append(parts[0])
-    return relays
 
 def load_backup(path="data/nostr-content.txt.gz"):
     events = []
@@ -157,8 +146,35 @@ def summarize_events(events, pubkey_hex, output_dir="data"):
         "other": []
     }
 
+    # filter out delete event ids
+    deleted_event_ids = set()
+    # 🔁 First pass: collect all deletion event IDs and add to set
+    for event in events:
+        if event.get("kind") == 5:
+            for tag in event.get("tags", []):
+                if tag[0] == "e":
+                    deleted_event_ids.add(tag[1])
+                elif tag[0] == "a":            
+                    # Handle parameterized deletion: kind:30023:<pubkey>:<d_tag>
+                    kind_str, pubkey, d_tag = tag[1].split(":", 2)
+                    for article in events:
+                        if (article.get("kind") == int(kind_str) and
+                        article.get("pubkey") == pubkey_hex and
+                        any(t[0] == "d" and t[1] == d_tag for t in article.get("tags", []))):
+                            deleted_event_ids.add(article["id"])
+
+
     for event in events:
         kind = event.get("kind")
+        event_id = event.get("id")
+
+        # skip deletion events themselves
+        if kind == 5:
+            continue
+
+        # skips deleted items
+        if event_id in deleted_event_ids:
+            continue
 
         if kind == 1:
 
@@ -218,7 +234,13 @@ def summarize_events(events, pubkey_hex, output_dir="data"):
             summary["other"]["total"] += 1
             categorized["other"].append(event)
 
-    summary["total"] = len(events)
+    # Remove kind:5 and deleted events from final 'all_events'
+    filtered_events = [
+        e for e in events
+        if e.get("kind") != 5 and e.get("id") not in deleted_event_ids
+    ]
+
+    summary["total"] = len(filtered_events)
 
     # Write categorized events to files
     for name, data in categorized.items():
@@ -229,10 +251,10 @@ def summarize_events(events, pubkey_hex, output_dir="data"):
     with open(os.path.join(output_dir, "summary.json"), "w") as f:
         json.dump(summary, f, indent=2)
 
-    # write all events
+    # Write cleaned all events list
     with open(os.path.join(output_dir, "all_events.json"), "w") as f:
-        json.dump(events, f, indent=2)
-
+        json.dump(filtered_events, f, indent=2)
+    
     return summary   
 
 def merge_sources_in_events(events):
@@ -306,32 +328,40 @@ if __name__ == "__main__":
 
     print("running fetch_nostr_data")
 
+    identity = load_identity()
+    npub = identity["npub"]   
+
     npub_in_arg = get_npub_from_argument()
     
     print("npub in arg", npub_in_arg)
 
     if npub_in_arg is not None:
         print("npub in argument detected using as npub")
-        pubkey = npub_in_arg
+        npub = npub_in_arg
     else:                 
-        print("no npub in argument detected using npub in environment.txt")
-        env = load_env()
-        pubkey = env.get("NPUB")
+        print("no npub in argument detected checking npub in identity")
+        
+    if npub:
 
-    print("Current PUBKEY :", pubkey)
+        pubkey = decode_npub(npub)
+        npub_data_path = get_npub_data_path(npub)
 
-    if pubkey:
+        # saving state for current npb
+        save_state(npub)
+        
+        # nsec = identity["nsec"]
+        
+        relays = identity["relays"]  # list of dicts with read/write perms, using set selected in identity
+        relay_urls = parse_read_relay_urls(relays)
 
-        try:
-            pubkey_hex = decode_npub(pubkey) if pubkey.startswith("npub") else pubkey
-        except Exception as e:
-            print(f"Invalid PUBKEY: {e}", file=sys.stderr)
-            sys.exit(1)
+        print("Current PUBKEY :", npub)
+        print("Current PUBKEY (hex):", pubkey)
 
-        print("Current PUBKEY (hex):", pubkey_hex)
+        print("relays:", relays)
+        print("read relay urls:", relay_urls)
+        
+        print("saving current data for npub to: ", npub_data_path)
 
-        relays = load_relays()
-    
         # zaps = asyncio.run(fetch_all_zaps(relays, pubkey_hex))
         # print(f"✅ Retrieved {len(zaps)} zaps")
 
@@ -339,7 +369,7 @@ if __name__ == "__main__":
 
         npub_hex_from_backup = get_npub_hex_from_backup_source(backup_events)
 
-        if npub_hex_from_backup == pubkey_hex:
+        if npub_hex_from_backup == pubkey:
             print("backup events match npub -- using as data source")
         else:
             print("backup events don't match npub -- excluding as data source")
@@ -347,7 +377,7 @@ if __name__ == "__main__":
 
         print(f"Loaded {len(backup_events)} events from backup")
 
-        relay_events = asyncio.run(fetch_all_relays(relays, pubkey_hex))
+        relay_events = asyncio.run(fetch_all_relays(relay_urls, pubkey))
         print(f"Loaded {len(relay_events)} events from relays")
 
         combined_events = backup_events + relay_events
@@ -360,9 +390,11 @@ if __name__ == "__main__":
         non_articles = [e for e in merged_events if e.get("kind") != 30023]
         final_events = non_articles + deduped_articles
 
-        get_profile_meta_data(final_events,pubkey) 
+        get_profile_meta_data(final_events,npub, npub_data_path) 
+
         print("generated profile meta data in kind_0_profile_metadata.json")
-        summary = summarize_events(final_events, pubkey_hex)
+       
+        summary = summarize_events(final_events, pubkey, npub_data_path)
         print(f"Loaded {len(final_events)} events, merging duplicates in backup and relay events, wrote summary.json and kind*.json files")
 
     else:
