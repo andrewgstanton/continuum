@@ -641,6 +641,7 @@ def publish_event_api():
 
         print("refreshing data from relays after publishing artile ...")
         subprocess.run(["python", "scripts/fetch_nostr_data.py"])
+        subprocess.run(["python", "scripts/migrate_json_to_sqlite.py"])
 
         return jsonify({"status": "ok", "relays": result})
     except Exception as e:
