@@ -1,58 +1,55 @@
-# Continuum
+# 🌐 Continuum
 
 > Reclaim your digital life. One post at a time.
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![GitHub Pages](https://img.shields.io/website?down_color=lightgrey&down_message=offline&up_color=brightgreen&up_message=online&url=https%3A%2F%2Fandrewgstanton.github.io%2Fcontinuum)
 
-**Continuum** is a self-hosted, Bitcoin-aligned dashboard that ingests, organizes, and visualizes your content from platforms like Twitter/X, Facebook, LinkedIn, YouTube, and Nostr.
+**Continuum** is a self-hosted, Bitcoin-aligned dashboard that ingests, organizes, and visualizes your Nostr content locally — with full support for notes, articles, Markdown, and offline persistence.
 
-Whether you're a writer, builder, or Bitcoiner, Continuum helps you own your signal, trace your timeline, and future-proof your work.
+Whether you're a writer, builder, or Bitcoiner, Continuum helps you **own your signal**, **trace your timeline**, and **future-proof your work** — without relying on a third-party client.
 
 ---
 
-## ✨ Features
+## ✨ What’s Working in v1.0.0
 
-- 📥 Import your data exports from:
-  - Twitter/X (`.zip`)
-  - Facebook (`.json` or `.html`)
-  - LinkedIn (`.csv` or `.json`)
-  - YouTube (via Google Takeout)
-  - Nostr (`.jsonl`)
-- 🧠 Normalize and tag your content by platform, kind, and theme
-- 📊 View and rank your posts by engagement, zaps, or content type
-- ⚡ Export to Nostr (kind 1 or 30023)
-- 💾 Local-first — your data stays with you
+- ✅ Self-hosted Nostr dashboard (in `dashboard/`)
+- ✅ Note and article editing with full Markdown support
+- ✅ Auto-generated titles for notes
+- ✅ SQLite persistence with relay fallback
+- ✅ Timezone-aware rendering via `local_identity.json`
+- ✅ Dockerized for macOS, Windows (via WSL2), and Linux
+- ✅ Clean UI with mobile-friendly layout and relay-aware views
+
+---
+
+## 📂 Project Structure
+
+- `dashboard/` – The complete Nostr dashboard app
+  - See [`dashboard/DASHBOARD-README.md`](dashboard/DASHBOARD-README.md) for full setup
+  - See [`dashboard/WINDOWS.md`](dashboard/WINDOWS.md) for Windows-specific setup
+- `scripts/` – (Planned) content import/export tools
+- `docs/` – Static HTML pages or GitHub Pages build (optional)
+
+---
+
+## 🚧 Future Vision
+
+This repo is part of a broader vision to:
+
+- 📥 Import data from:
+  - Twitter/X, Facebook, LinkedIn, YouTube (via Takeout)
+- 🧠 Normalize and classify across platforms
+- ⚡ Export insights and content back to Nostr or anywhere
+- 🪙 Integrate Bitcoin-native zaps, tips, and publishing tools
+
+If you're building toward **self-sovereign content infrastructure**, you're in the right place.
 
 ---
 
 ## 🛠️ Getting Started
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/continuum.git
-cd continuum
-```
-
-Setup scripts for imports, database, and dashboard coming soon.
-
-## 🧪 Status
-
-> **Early alpha** — currently under active development.  
-> First milestone: Load, classify, and explore Nostr + Twitter exports.
-
-## 🌐 Live Site
-
-[mycontinuum.xyz](http://mycontinuum.xyz) — clean landing page, coming soon with full dashboard.
-
-## 📜 License
-
-MIT — use freely, attribute honestly.
-
-## 🙏 Author
-
-**Andrew G. Stanton**  
-📍 San Francisco Bay Area  
-🔗 [primal.net/andrewgstanton](https://primal.net/andrewgstanton)  
-⚡ Built with Bitcoin, faith, and proof of work.
-
-
+git clone https://github.com/andrewgstanton/continuum.git
+cd continuum/dashboard
+./run.sh
