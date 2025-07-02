@@ -140,12 +140,12 @@ dashboard/
 
 ## 📘 Next Steps (Post 1.0.0)
 
-- Multi-npub support
-- Relay rebroadcast/restore tools
-- Zaps, reactions, and replies
-- Embedded media manager
-- Article drafts and scheduled publishing
-- Hosted dashboard (optional SaaS tier)
+- Multi-npub support (*planned paid tier via `mycontinuum-pro`*)
+- Relay rebroadcast/restore tools (*planned paid tier via `mycontinuum-pro`*)
+- Zaps, reactions, and replies (*planned paid tier via `mycontinuum-pro`*)
+- Embedded media manager (*planned paid tier via `mycontinuum-pro`*)
+- Article drafts and scheduled publishing (*planned paid tier via `mycontinuum-pro`*)
+- Hosted dashboard (*planned paid tier via `mycontinuum-pro`*)
 
 ## 🙌 Credits
 
