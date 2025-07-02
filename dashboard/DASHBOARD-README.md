@@ -3,7 +3,6 @@
 This is a self-hosted Nostr dashboard for reading, writing, and managing your content across relays. You can post notes, publish articles, edit locally, and view your profile metadata — all from a sovereign, Dockerized local environment.
 
 > ⚠️ This `dashboard/` directory contains the full MyContinuum v1.0.0 app.  
-> The root of this repository is private and not intended for open-source use.
 
 ---
 
