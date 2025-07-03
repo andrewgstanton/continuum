@@ -361,3 +361,14 @@ button.hidden {
   color: #666;
   margin-bottom: 10px;
 }
+
+/* forcing image sizes to be max width 600px (so they don't show too large for articles, notes and replies */
+
+img[src^="http://"],
+img[src^="https://"] {
+  max-width: 600px;
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 1em auto;
+}
