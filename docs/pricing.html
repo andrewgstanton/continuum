@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Continuum Pricing</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 2rem;
+      background: #f9f9f9;
+      color: #1a1a1a;
+    }
+    h1, h2 {
+      color: #333;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 0.75rem;
+      text-align: left;
+    }
+    th {
+      background: #eee;
+    }
+    .highlight {
+      background-color: #f0f9ff;
+    }
+    .note {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #e7f5ff;
+      border-left: 4px solid #0ea5e9;
+    }
+  </style>
+</head>
+<body>
+  <h1>Continuum: Free vs. Pro</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Feature</th>
+        <th>Free (Localhost)</th>
+        <th class="highlight">Pro (Hosted / Private)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Self-hosted dashboard (Docker)</td>
+        <td>✅</td>
+        <td class="highlight">✅</td>
+      </tr>
+      <tr>
+        <td>Publish Notes & Articles</td>
+        <td>✅</td>
+        <td class="highlight">✅</td>
+      </tr>
+      <tr>
+        <td>Multi-npub identity support</td>
+        <td>❌</td>
+        <td class="highlight">✅ (from v1.2.0)</td>
+      </tr>
+      <tr>
+        <td>Relay visibility per event</td>
+        <td>❌</td>
+        <td class="highlight">✅ (from v1.1.0)</td>
+      </tr>
+      <tr>
+        <td>Create new identities (npub/nsec)</td>
+        <td>❌</td>
+        <td class="highlight">✅ (from v1.3.0)</td>
+      </tr>
+      <tr>
+        <td>Markdown preview + smart URL shortening</td>
+        <td>✅</td>
+        <td class="highlight">✅</td>
+      </tr>
+      <tr>
+        <td>Toggle short links in preview</td>
+        <td>❌</td>
+        <td class="highlight">✅ (from v1.3.0)</td>
+      </tr>
+      <tr>
+        <td>Publishing feedback modal</td>
+        <td>❌</td>
+        <td class="highlight">✅ (from v1.3.0)</td>
+      </tr>
+      <tr>
+        <td>Hosted dashboard</td>
+        <td>❌</td>
+        <td class="highlight">✅</td>
+      </tr>
+      <tr>
+        <td>Relay rebroadcasting</td>
+        <td>❌</td>
+        <td class="highlight">🕰️ Coming v1.4+</td>
+      </tr>
+      <tr>
+        <td>Delete events (kind:5)</td>
+        <td>❌</td>
+        <td class="highlight">🕰️ Coming v1.4+</td>
+      </tr>
+      <tr>
+        <td>Subscription/paid article support</td>
+        <td>❌</td>
+        <td class="highlight">🕰️ Coming v1.5+</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Pricing</h2>
+  <p><strong>$15.00 USD / month</strong></p>
+  <p><strong>$13.50 / month</strong> <em>(10% discount if paying in Bitcoin via Lightning ⚡️)</em></p>
+  <p><em>Because we believe in Bitcoin. Save using sats, build sovereign.</em></p>
+
+  <div class="note">
+    <strong>✔ Cancel Anytime:</strong> You will retain access to all Pro features up to the version you paid for.
+    <br><br>
+    <strong>✨ Open Source Commitment:</strong> Once $10,000 in total revenue is reached, all code from v1.1 to v1.5 will be released as open source.
+  </div>
+
+</body>
+</html>
