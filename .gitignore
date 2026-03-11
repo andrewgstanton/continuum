@@ -7,3 +7,7 @@ __pycache__/
 *.pyc
 identity/
 identity/local_identity.json
+docs/downloads/current_release/*.zip
+docs/downloads/current_release/*.sha256.txt
+docs/downloads/previous_releases/**/*.zip
+docs/downloads/previous_releases/**/*.sha256.txt
