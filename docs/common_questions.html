@@ -1,0 +1,404 @@
+<head>
+<meta charset="UTF-8">
+<title>Continuum</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="/styles/style.css">
+</head>
+
+<body>
+
+<div class="page-shell">
+
+    <div class="nav">
+        <a href="/">Home</a>
+        <a href="/overview.html">Overview</a>
+        <a href="/downloads.html">Downloads</a>
+        <a href="/pricing.html">Pricing</a>
+        <a href="/use_cases.html">Who Continuum Is For</a>        
+        <a href="/common_questions.html">Common Questions</a>
+      </div>
+
+<div class="hero">
+  <main class="container">
+    <h1>Running Continuum — Common Questions</h1>
+<p class="byline">Andrew G. Stanton - Friday, March 13, 2026</p>
+<hr />
+<p>Continuum is designed to give users <strong>sovereign custody of identity, writing, and archives</strong> while still publishing to the Nostr network.<br />
+The questions below address common concerns people have when first installing or running the system.</p>
+<hr />
+<h2>What exactly is Continuum?</h2>
+<p>Continuum is a <strong>local-first publishing node</strong> for authors.</p>
+<p>It manages:</p>
+<ul>
+<li>sovereign identity (<code>npub</code>s)</li>
+<li>signed content (articles and notes)</li>
+<li>relay publishing on the Nostr network</li>
+<li>durable local archives of your work</li>
+</ul>
+<p>Continuum runs <strong>entirely on your machine</strong>.</p>
+<p>There are <strong>no cloud dependencies</strong> and no external platform required to operate it.</p>
+<p>You control your keys, your writing, and your archive.</p>
+<hr />
+<h2>Is Continuum a notary or proof-of-authorship service?</h2>
+<p>No.</p>
+<p>Continuum is <strong>not a notarization or timestamping service</strong>.</p>
+<p>Some systems focus on taking content, hashing it, and anchoring a proof to a blockchain to demonstrate authorship.</p>
+<p>Continuum operates at a different layer.</p>
+<p>Instead of proving authorship through a service, Continuum enables <strong>sovereign publishing</strong> by allowing authors to:</p>
+<ul>
+<li>maintain custody of their identities</li>
+<li>sign their content directly</li>
+<li>publish to distributed relays</li>
+<li>maintain a durable local archive</li>
+</ul>
+<p>In other words:</p>
+<pre><code>Continuum = author node
+</code></pre>
+<p>rather than</p>
+<pre><code>notary service
+</code></pre>
+<p>Because all content is <strong>signed</strong>, Continuum could be extended to support notarization workflows if desired, but that is <strong>not its primary purpose</strong>.</p>
+<p>The primary goal is <strong>local custody and durable publishing</strong>, not proof services.</p>
+<hr />
+<h2>Local-first? What if I lose my data?</h2>
+<p>Local-first does <strong>not</strong> mean fragile. It means <strong>you control the primary copy</strong>.</p>
+<p>Continuum protects your work through multiple durability layers:</p>
+<ul>
+<li><strong>Local database</strong> – fast access to your notes and articles</li>
+<li><strong>Nostr relays</strong> – published content is distributed across the network</li>
+<li><strong>Archive export</strong> – your signed history can be reconstructed</li>
+<li><strong>Backups</strong> – you can copy the archive directory anywhere</li>
+</ul>
+<p>Even if your machine fails, your content can usually be <strong>recovered from relays or archives</strong>.</p>
+<p>Local-first gives you <strong>control</strong>, not risk.</p>
+<hr />
+<h2>Multiple keys? What if I get hacked?</h2>
+<p>Continuum reduces risk compared to centralized platforms.</p>
+<p>You can:</p>
+<ul>
+<li>use <strong>separate identities (<code>npub</code>s)</strong> for different roles</li>
+<li>rotate identities if necessary</li>
+<li>isolate publishing identities</li>
+</ul>
+<p>If a key is compromised, you can <strong>stop using it and create a new one</strong>.</p>
+<p>There is no centralized account that can be taken over.</p>
+<hr />
+<h2>What if I lose my keys?</h2>
+<p>Private keys should be backed up, but you have options:</p>
+<ul>
+<li>Continuum stores keys <strong>locally in identity files</strong></li>
+<li>those files can be <strong>copied or encrypted for backup</strong></li>
+<li>multiple identities can be created and used</li>
+</ul>
+<p>Even if a key is lost, <strong>published content remains verifiable</strong> on the Nostr network.</p>
+<p>For experimentation you can also create <strong>throwaway keys</strong>.</p>
+<hr />
+<h2>Docker? Isn’t that complicated?</h2>
+<p>Docker simply runs Continuum in a <strong>self-contained environment</strong>.</p>
+<p>Benefits include:</p>
+<ul>
+<li>no dependency conflicts</li>
+<li>predictable environment</li>
+<li>easier upgrades</li>
+<li>isolation from the rest of your system</li>
+</ul>
+<p>Typical setup:</p>
+<ol>
+<li>Install Docker (one time)</li>
+<li>Run the provided script</li>
+<li>Open the local dashboard</li>
+</ol>
+<p>After that Continuum behaves like a <strong>normal local application</strong>.</p>
+<hr />
+<h2>ZIP download — what about viruses or tampering?</h2>
+<p>Each Continuum release includes a <strong>SHA-256 checksum</strong> so you can verify the download.</p>
+<p>After downloading the archive run:</p>
+<pre><code>shasum -a 256 continuum.zip
+</code></pre>
+<p>This produces a hash value.</p>
+<p>Compare it with the <strong>official hash provided in the release <code>.txt</code> file</strong>.</p>
+<p>If the values match:</p>
+<ul>
+<li>the file downloaded correctly</li>
+<li>the contents have not been modified or corrupted</li>
+</ul>
+<p>If the values do not match, discard the file and download again.</p>
+<p>You can also:</p>
+<ul>
+<li>inspect the ZIP contents</li>
+<li>scan with antivirus tools</li>
+<li>run the software inside Docker isolation</li>
+</ul>
+<hr />
+<h2>Local custody — what about discovery?</h2>
+<p>Local custody <strong>does not isolate your content.</strong></p>
+<p>Continuum publishes to the <strong>Nostr network</strong>, which provides:</p>
+<ul>
+<li>distributed relays</li>
+<li>global discovery</li>
+<li>multiple compatible clients (Primal, Coracle, etc.)</li>
+</ul>
+<p>Your archive stays under your control while your content can still be discovered <strong>across the ecosystem.</strong></p>
+<hr />
+<h2>Can I test Continuum without commitment?</h2>
+<p>Yes.</p>
+<p>You can experiment safely by:</p>
+<ul>
+<li>creating a <strong>new test identity</strong></li>
+<li>publishing a few notes</li>
+<li>exploring the dashboard</li>
+</ul>
+<p>If you decide not to continue, simply delete the folder.</p>
+<p>Nothing persists outside your machine unless you <strong>choose to publish to relays</strong>.</p>
+<hr />
+<h2>The Principle Behind Continuum</h2>
+<p>Continuum follows a simple idea:</p>
+<p><strong>Your identity, your keys, your content.</strong></p>
+<p>Instead of trusting a platform to preserve your work, you maintain <strong>sovereign custody</strong> while still benefiting from a distributed network.</p>
+<p>Continuum prioritizes:</p>
+<ul>
+<li>durability</li>
+<li>portability</li>
+<li>independence</li>
+<li>verifiable authorship</li>
+</ul>
+<p>Running Continuum is closer to operating a <strong>personal publishing node</strong> than signing up for another cloud account.</p>
+<hr />
+<h2>Why not just use a folder of Markdown files and Git?</h2>
+<p>Using Markdown files with Git is a good practice and many developers already work this way.</p>
+<p>Continuum does not replace that idea — it builds on it and extends it into a <strong>sovereign publishing system</strong>.</p>
+<p>A simple Markdown + Git workflow gives you:</p>
+<ul>
+<li>local files</li>
+<li>version history</li>
+<li>backups if you push to a remote repository</li>
+</ul>
+<p>Continuum adds several capabilities that Markdown + Git alone does not provide:</p>
+<h3>Sovereign identity</h3>
+<p>Continuum is built around <strong>cryptographic identity (<code>npub</code>)</strong>.</p>
+<p>Every piece of content is <strong>signed by the author's key</strong>, creating verifiable authorship across the Nostr network.</p>
+<p>Git commits can be signed, but those signatures usually remain within the repository context.</p>
+<p>Continuum signatures travel <strong>with the content itself</strong>.</p>
+<hr />
+<h3>Distributed publishing</h3>
+<p>Git manages repositories.</p>
+<p>Continuum publishes directly to <strong>Nostr relays</strong>, allowing content to be discovered across the network without relying on a central hosting platform.</p>
+<p>Your work becomes part of a <strong>distributed publishing ecosystem</strong> rather than a single repository.</p>
+<hr />
+<h3>Durable archives</h3>
+<p>Continuum maintains <strong>structured archives of signed content</strong> that can be rebuilt if needed.</p>
+<p>This creates a durable record of authorship and publication history that can be recovered independently of any single platform.</p>
+<p>Git preserves file history, but it is not designed as a <strong>long-term publishing and authorship archive</strong>.</p>
+<hr />
+<h3>Multi-identity workflows</h3>
+<p>Continuum allows you to manage <strong>multiple identities (<code>npub</code>s)</strong> in a single environment.</p>
+<p>This makes it possible to publish under different identities while keeping each identity's keys and content organized.</p>
+<p>Git repositories typically assume a <strong>single identity per repository</strong>.</p>
+<hr />
+<h3>Local-first publishing</h3>
+<p>Continuum acts more like a <strong>personal author node</strong> than a repository.</p>
+<p>It manages:</p>
+<ul>
+<li>identity</li>
+<li>signing</li>
+<li>publishing</li>
+<li>relay distribution</li>
+<li>archives</li>
+</ul>
+<p>while still keeping everything <strong>locally under your control</strong>.</p>
+<hr />
+<h3>The difference in perspective</h3>
+<p>A Markdown + Git workflow looks like this:</p>
+<pre><code>Markdown files
+↓
+Git repository
+↓
+Hosting platform
+</code></pre>
+<p>Continuum looks more like this:</p>
+<pre><code>Identity (npub)
+↓
+Signed content
+↓
+Local archive
+↓
+Distributed publishing (Nostr relays)
+</code></pre>
+<p>Both approaches value <strong>local files</strong>, but Continuum integrates identity, publishing, and durability into one coherent system.</p>
+<p>If Markdown + Git already meets all of your needs, you may not need Continuum.</p>
+<p>But many writers and builders want something that provides <strong>sovereign identity and distributed publishing</strong>, not just version control.</p>
+<hr />
+<h2>Why not just use a Nostr client like Primal, Damus, or Coracle?</h2>
+<p>Nostr clients are excellent tools for <strong>reading and interacting with the network</strong>.</p>
+<p>They focus on:</p>
+<ul>
+<li>browsing content</li>
+<li>social interactions</li>
+<li>short-form posting</li>
+<li>following other users</li>
+</ul>
+<p>Continuum serves a different purpose.</p>
+<p>It is designed to function as a <strong>local-first author node</strong> that manages identity, publishing, and archives.</p>
+<h3>Nostr clients</h3>
+<p>Typical Nostr clients provide:</p>
+<ul>
+<li>timeline browsing</li>
+<li>replies and social interaction</li>
+<li>reposts and likes</li>
+<li>ephemeral posting</li>
+</ul>
+<p>Most clients treat content primarily as <strong>social feed activity</strong>.</p>
+<hr />
+<h3>Continuum</h3>
+<p>Continuum focuses on <strong>durable authorship and publishing</strong>.</p>
+<p>It manages:</p>
+<ul>
+<li>sovereign identity (<code>npub</code>s)</li>
+<li>signed articles and notes</li>
+<li>local archives of all published content</li>
+<li>structured publishing workflows</li>
+<li>relay distribution</li>
+<li>recoverable publishing history</li>
+</ul>
+<p>Instead of treating posts as ephemeral feed items, Continuum treats them as <strong>signed artifacts of authorship</strong>.</p>
+<hr />
+<h3>The architectural difference</h3>
+<p>A typical client workflow looks like this:</p>
+<pre><code>User
+↓
+Client app
+↓
+Relays
+↓
+Timeline feeds
+</code></pre>
+<p>Continuum operates more like this:</p>
+<pre><code>Identity (npub)
+↓
+Signed content
+↓
+Local archive
+↓
+Distributed relays
+↓
+Nostr ecosystem
+</code></pre>
+<p>In this model the <strong>author node is primary</strong>, and the network is a distribution layer.</p>
+<hr />
+<h3>Complementary tools</h3>
+<p>Continuum does not replace Nostr clients.</p>
+<p>In fact, many users will:</p>
+<ul>
+<li><strong>publish using Continuum</strong></li>
+<li><strong>read and interact using their favorite Nostr client</strong></li>
+</ul>
+<p>Continuum focuses on <strong>creating durable, signed work</strong>, while clients focus on <strong>consuming and interacting with content</strong>.</p>
+<hr />
+<h3>Why this distinction matters</h3>
+<p>Most social platforms prioritize <strong>engagement and feeds</strong>.</p>
+<p>Continuum prioritizes:</p>
+<ul>
+<li>authorship</li>
+<li>custody</li>
+<li>durability</li>
+<li>verifiable history</li>
+</ul>
+<p>It treats writing more like <strong>published work</strong> than social activity.</p>
+<hr />
+<h2>Why should I care about owning my publishing infrastructure?</h2>
+<p>Most people today publish their work using tools or platforms they do not control.</p>
+<p>Examples include:</p>
+<ul>
+<li>social networks</li>
+<li>blogging platforms</li>
+<li>cloud-based writing tools</li>
+<li>newsletter services</li>
+<li>most Nostr clients</li>
+</ul>
+<p>These tools are convenient, but they come with tradeoffs.</p>
+<p>Your work becomes dependent on:</p>
+<ul>
+<li>the platform’s policies</li>
+<li>the platform’s availability</li>
+<li>the platform’s business model</li>
+<li>the platform’s long-term survival</li>
+</ul>
+<p>Even in decentralized systems like Nostr, most users still rely on <strong>third-party clients</strong>.</p>
+<p>Those clients typically require your <strong>private key or delegated signing authority</strong>, meaning you still trust a third-party tool to perform signing operations.</p>
+<p>Continuum takes a different approach.</p>
+<p>Instead of publishing <strong>through a platform or client</strong>, Continuum allows authors to run their own <strong>local publishing node</strong>.</p>
+<p>This means:</p>
+<ul>
+<li>your identity belongs to you</li>
+<li>your private keys remain under your control</li>
+<li>signing happens locally</li>
+<li>your content is stored locally</li>
+<li>your archive is portable</li>
+<li>publishing happens through a distributed network</li>
+</ul>
+<p>In this model, clients and platforms become <strong>interfaces</strong>, not gatekeepers.</p>
+<p>Your work remains yours regardless of which clients or services exist in the future.</p>
+<hr />
+<h3>The traditional model</h3>
+<p>Most online publishing looks like this:</p>
+<pre><code>Author
+↓
+Platform account
+↓
+Platform database
+↓
+Readers
+</code></pre>
+<p>If the platform disappears, the connection between author and reader disappears as well.</p>
+<hr />
+<h3>The Continuum model</h3>
+<p>Continuum treats authorship differently:</p>
+<pre><code>Author identity
+↓
+Signed content
+↓
+Local archive
+↓
+Distributed relays
+↓
+Multiple clients and readers
+</code></pre>
+<p>Your writing is <strong>not tied to a single platform</strong>.</p>
+<p>It exists as a set of <strong>signed artifacts</strong> that can be distributed and verified across the network.</p>
+<hr />
+<h3>A shift in perspective</h3>
+<p>Continuum is based on a simple idea:</p>
+<p><strong>Writers should own their publishing infrastructure.</strong></p>
+<p>Instead of relying on centralized services, authors can maintain custody of their identity and work while still participating in a global network.</p>
+<p>This approach emphasizes:</p>
+<ul>
+<li>independence</li>
+<li>durability</li>
+<li>portability</li>
+<li>verifiable authorship</li>
+<li>long-term preservation</li>
+</ul>
+<p>It may look different from typical cloud platforms, but it restores something that existed in earlier eras of computing:</p>
+<p><strong>the author runs the node.</strong></p>
+
+  </main>
+</div>
+
+<hr>
+
+<footer style="font-size: 0.9em; color: #555;">
+
+<p>© 2025–2026 Andrew G. Stanton. </p>
+<p>Continuum software and documentation.</p>
+
+<p>Built on Nostr.  Designed for durable authorship. </p>
+<p>Continuum software and documentation are distributed under license.
+See the <a href="/downloads/current_release/LICENSE.txt">license</a>.
+</p>
+
+</footer>
+
+</div>  
+</body>
+</html>
