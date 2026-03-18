@@ -68,7 +68,7 @@ Open Current Release Folder
 <ul>
 <li>
 <a href="https://drive.google.com/file/d/1KRmy7s3fE2tj9lXpTd4dAYgL7Qgy8qbp/view?usp=drive_link" target="_blank" rel="noopener noreferrer">
-Continuum v1.5 Package (ZIP)
+Continuum <version> Package (ZIP)
 </a>
 </li>
 
@@ -142,15 +142,18 @@ Continuum Overview (Markdown)
 <h2>Verify Integrity</h2>
 
 <p>
-It is recommended to verify the integrity of the download before running it.
+It is recommended (but optional) to verify the integrity of the download before running it.
 </p>
 
-<pre>
-shasum -a 256 continuum-pro-test-v1.5.zip
-</pre>
+<h3>Mac</h3>
+<pre>shasum -a 256 continuum-pro-test-<version>.zip</pre>
+
+<h3>Windows (WSL)</h3>
+<pre>sha256sum continuum-pro-test-<version>.zip</pre>
 
 <p>
-Compare the output with the checksum file provided in the current release folder.
+Compare the output with the checksum file provided in the release folder.
+If the values match, the download is valid.
 </p>
 
 <hr>
