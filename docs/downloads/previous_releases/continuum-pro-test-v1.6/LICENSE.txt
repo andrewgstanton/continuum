@@ -1,0 +1,8 @@
+Continuum is proprietary software.
+
+You may download and run this software for personal evaluation and use.
+
+You may not redistribute, reverse engineer, or commercially exploit this software without written permission.
+
+Copyright (c) 2026 Andrew G. Stanton
+All rights reserved.
