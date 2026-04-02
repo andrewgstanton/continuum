@@ -1,208 +1,129 @@
-<head>
-<meta charset="UTF-8">
-<title>Continuum Downloads</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<link rel="stylesheet" href="/styles/style.css">
-</head>
-
-
-<body>
-
 <div class="page-shell">
-
 
     <div class="nav">
         <a href="/">Home</a>
         <a href="/overview.html">Overview</a>
         <a href="/downloads.html">Downloads</a>
         <a href="/pricing.html">Pricing</a>
-        <a href="/use_cases.html">Who Continuum Is For</a>        
+        <a href="/use_cases.html">Who Continuum Is For</a>
         <a href="/common_questions.html">Common Questions</a>
     </div>
 
-<h1>Continuum Downloads</h1>
+    <h1>Download Continuum</h1>
 
+    <p>
+        Continuum is a <strong>local-first publishing and identity environment</strong>
+        built around <strong>self-custody</strong>, durable authorship, and sovereignty-first workflows.
+    </p>
 
+    <hr>
 
-<p>
-Continuum is a <strong>local-first publishing and identity environment</strong>
-built around <strong>self-custody</strong> and durable authorship.
-</p>
+    <h2>Choose Your Platform</h2>
 
-<h2>What you can do with it</h2>
+    <div class="download-grid">
 
-<ul>
-<li>Manage multiple identities (npubs)</li>
-<li>Publish notes and long-form articles</li>
-<li>Maintain a durable local archive</li>
-<li>Work in a sovereignty-first workflow (sign locally, publish intentionally)</li>
-</ul>
+        <div class="download-card">
+            <h3>Mac App</h3>
+            <p>Native macOS application bundle.</p>
+            <p>
+                <a href="MAC_GOOGLE_DRIVE_LINK" target="_blank" rel="noopener noreferrer">
+                    Download Mac (.zip)
+                </a>
+            </p>
 
-<hr>
+            <details>
+                <summary>Mac install instructions</summary>
+                <ol>
+                    <li>Download the zip file</li>
+                    <li>Unzip the archive</li>
+                    <li>Move <code>Continuum.app</code> to Applications or Downloads</li>
+                    <li>Double-click to launch</li>
+                </ol>
+            </details>
+        </div>
 
-<h2>Common Questions</h2>
+        <div class="download-card">
+            <h3>Windows App</h3>
+            <p>Native Windows executable.</p>
+            <p>
+                <a href="WINDOWS_GOOGLE_DRIVE_LINK" target="_blank" rel="noopener noreferrer">
+                    Download Windows (.zip)
+                </a>
+            </p>
 
-<p>
-Here is a list of common questions users might ask about Continuum: </p>
+            <details>
+                <summary>Windows install instructions</summary>
+                <ol>
+                    <li>Download the zip file</li>
+                    <li>Unzip the archive</li>
+                    <li>Double-click the executable</li>
+                    <li>Allow SmartScreen if prompted</li>
+                </ol>
+            </details>
+        </div>
 
-<p><a href="/common_questions.html" target="_blank" rel="noopener noreferrer">
-Common Questions
-</a>
-</p>
+        <div class="download-card">
+            <h3>Docker Package</h3>
+            <p>For advanced users and server environments.</p>
+            <p>
+                <a href="DOCKER_GOOGLE_DRIVE_LINK" target="_blank" rel="noopener noreferrer">
+                    Download Docker Package
+                </a>
+            </p>
 
-<hr>
+            <details>
+                <summary>Docker install instructions</summary>
+                <ol>
+                    <li>Download and unzip the package</li>
+                    <li>Install Docker Desktop</li>
+                    <li>Run <code>./run.sh</code></li>
+                    <li>Open the dashboard locally</li>
+                </ol>
+            </details>
+        </div>
 
-<h2>Current Release</h2>
+    </div>
 
-<p>
-The current Continuum release artifacts are available in the Google Drive folder below:
-</p>
+    <hr>
 
-<p>
-<a href="https://drive.google.com/drive/folders/16WljHJYfJBofcE5jZ1uDhc5cwqwP6W-E?usp=sharing" target="_blank" rel="noopener noreferrer">
-Open Current Release Folder
-</a>
-</p>
+    <h2>Verify Download (Optional)</h2>
 
-<ul>
-<li>
-<a href="https://drive.google.com/file/d/1F_GtQauNkhWQsQ6JveM8KSzQiFZwTozc/view?usp=drive_link" target="_blank" rel="noopener noreferrer">
-Continuum <version> Package (ZIP)
-</a>
-</li>
+    <details>
+        <summary>Checksum verification</summary>
 
-<li>
-<a href="https://drive.google.com/file/d/1UX3rO9EVmHyST33-fZdD3E_BIa7Mn2Qy/view?usp=drive_link" target="_blank" rel="noopener noreferrer">
-SHA256 checksum
-</a>
-</li>
-</ul>
+        <p>Mac:</p>
+        <pre>shasum -a 256 filename.zip</pre>
 
-<p>
-The ZIP package and checksum are hosted in Google Drive for now because the release artifacts are too large for standard GitHub hosting.
-</p>
+        <p>Windows (PowerShell):</p>
+        <pre>Get-FileHash filename.zip -Algorithm SHA256</pre>
 
-<hr>
+        <p>
+            Compare the output to the checksum file in the release folder.
+        </p>
+    </details>
 
-<h2>Installation Guides</h2>
+    <hr>
 
-<ul>
-<li>
-<a href="/downloads/current_release/README_MAC.md">
-Mac Installation Guide
-</a>
-</li>
+    <h2>Need Help?</h2>
 
-<li>
-<a href="/downloads/current_release/README_WINDOWS.md">
-Windows Installation Guide
-</a>
-</li>
+    <p>
+        <a href="/common_questions.html">
+            Common Questions
+        </a>
+    </p>
 
-<li>
-<a href="/downloads/current_release/README.md">
-General README
-</a>
-</li>
-</ul>
+    <p>
+        <a href="/overview.html">
+            Product Overview
+        </a>
+    </p>
 
-<hr>
+    <hr>
 
-<h2>Overview</h2>
+    <footer style="font-size: 0.9em; color: #555;">
+        <p>© 2025–2026 Andrew G. Stanton.</p>
+        <p>Continuum software and documentation.</p>
+        <p>Built on Nostr. Designed for durable authorship.</p>
+    </footer>
 
-<ul>
-<li>
-<a href="/downloads/current_release/continuum-overview.pdf">
-Continuum Overview (PDF)
-</a>
-</li>
-
-<li>
-<a href="/downloads/current_release/continuum-overview.md">
-Continuum Overview (Markdown)
-</a>
-</li>
-</ul>
-
-<hr>
-
-<h2>Install (high level)</h2>
-
-<ol>
-<li>Download the ZIP package from the current release folder</li>
-<li>Unzip the archive</li>
-<li>Install Docker if it is not already installed</li>
-<li>Run <code>./run.sh</code> from the dashboard folder</li>
-<li>Open the dashboard locally in your browser</li>
-</ol>
-
-<hr>
-
-<h2>Verify Integrity</h2>
-
-<p>
-It is recommended (but optional) to verify the integrity of the download before running it.
-</p>
-
-<h3>Mac</h3>
-<pre>shasum -a 256 continuum-pro-test-<version>.zip</pre>
-
-<h3>Windows (WSL)</h3>
-<pre>sha256sum continuum-pro-test-<version>.zip</pre>
-
-<p>
-Compare the output with the checksum file provided in the release folder
-(e.g. continuum-pro-test-<version>.zip.sha256.txt).
-
-Replace <version> with the version you downloaded
-(for example: v1.6).
-
-If the values match, the download is valid.
-</p>
-
-<hr>
-
-<h2>License / Terms</h2>
-
-<p>
-Continuum is distributed under a license. By downloading or using the software,
-you agree to the included terms.
-</p>
-
-<ul>
-<li><a href="/downloads/current_release/LICENSE.txt">License</a></li>
-<li><a href="/downloads/current_release/NOTICE.md">Notice</a></li>
-</ul>
-
-<hr>
-
-<h2>Previous Releases</h2>
-
-<p>
-Older versions of Continuum are archived here:
-</p>
-
-<p>
-<a href="/downloads/previous_releases/">
-Browse Previous Releases
-</a>
-</p>
-
-<hr>
-
-<footer style="font-size: 0.9em; color: #555;">
-
-<p>© 2025–2026 Andrew G. Stanton. </p>
-<p>Continuum software and documentation.</p>
-
-<p>Built on Nostr.  Designed for durable authorship. </p>
-<p>Continuum software and documentation are distributed under license.
-See the <a href="/downloads/current_release/LICENSE.txt">license</a>.
-</p>
-
-</footer>
 </div>
-
-</body>
-</html>
