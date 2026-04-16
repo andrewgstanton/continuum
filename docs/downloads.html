@@ -21,58 +21,63 @@
 
     <h1>Download Continuum</h1>
 
-        <p>
-        Choose the download that best fits how you work.
-        All versions run locally on your own machine and keep your writing under your control.
-        </p>
+    <p>
+        Continuum is for people who want to control their own work — not rely on platforms or accounts to keep it.
+    </p>
 
-        <p>
-        Most users should start with the Mac App or Windows App.
-        Advanced users can also choose local or Docker packages.
-        </p>
+    <div class="download-buttons">
+        <a class="button" href="https://drive.google.com/file/d/1x6qzgRjkqq8NxP3pem5o-IBQC0ATFX3F/view?usp=drive_link">⬇️ Download for Mac (.dmg)</a>
+        <a class="button" href="https://drive.google.com/file/d/1VGUR-mICVkfBOtwPnsDIG3wtA8XQslpi/view?usp=drive_link">⬇️ Download for Windows (.exe)</a>
+    </div>
+
+    <p style="font-size: 0.9em; color: #666;">
+        Version 1.6.7.4
+    </p>
+    <p>
+        Open the file and drag Continuum into Applications (Mac) or run the installer (Windows).
+    </p>
+
     <hr>
 
-    <h2>Choose your platform</h2>
+    <h2>Advanced downloads (optional)</h2>
 
     <div class="download-grid">
 
         <div class="download-card">
-            <h3>Mac App</h3>
-            <p>Native macOS application bundle (dmg).</p>
+            <h3>Mac (full release files)</h3>
+            <p>Version 1.6.7.4</p>
             <p>
                 <a href="https://drive.google.com/drive/folders/1TdB0uejAk0yiYteP5pB6qeIsiBZW_OlP?usp=drive_link" target="_blank" rel="noopener noreferrer">
-                    Open Mac Release Folder (v1.6.7.4)
+                    Open Mac release folder
                 </a>
             </p>
 
             <details>
                 <summary>Mac install instructions</summary>
                 <ol>
-                    <li>Download the zip or dmg file</li>
-                    <li>Unzip the archive (if applicable)</li>
-                    <li>double click the dmg (if applicable)</li>
-                    <li>Optional: download the verify checksum file</li>
-                    <li>Move <code>Continuum.app</code> to Applications or Downloads</li>
+                    <li>Download the dmg file</li>
+                    <li>Double click the dmg</li>
+                    <li>Drag <code>Continuum.app</code> into Applications</li>
                     <li>Double-click to launch</li>
                 </ol>
             </details>
-            <details>       
+
+            <details>
                 <summary>Mac first-time launch help</summary>
                 <ol>
                     <li>Right-click <code>Continuum.app</code></li>
                     <li>Select <strong>Open</strong></li>
                     <li>Click <strong>Open</strong> again when prompted</li>
-                    <li>NOTE: Versions 1.6.6 and beyond are signed dmgs you only need to accept opening an app/dmg from the internet</li>
                 </ol>
             </details>
         </div>
 
         <div class="download-card">
-            <h3>Windows App</h3>
-            <p>Native Windows executable.</p>
+            <h3>Windows (full release files)</h3>
+            <p>Version 1.6.7.4</p>
             <p>
                 <a href="https://drive.google.com/drive/folders/1ZIWij4e-GQIGyyRyOTFYlNVNLcdmqGgX?usp=drive_link" target="_blank" rel="noopener noreferrer">
-                    Open Windows Release Folder (v1.6.7.4)
+                    Open Windows release folder
                 </a>
             </p>
 
@@ -81,7 +86,6 @@
                 <ol>
                     <li>Download the zip file</li>
                     <li>Unzip the archive</li>
-                    <li>Optional: download the verify checksum file</li>
                     <li>Double-click the executable</li>
                     <li>Allow SmartScreen if prompted</li>
                 </ol>
@@ -94,39 +98,37 @@
                     <li>Click <strong>Run anyway</strong></li>
                 </ol>
             </details>
-
         </div>
 
         <div class="download-card">
-            <h3>Local Package</h3>
-            <p>For Linux, macOS, and local development environments. No Docker required. Python 3 required.</p>
+            <h3>Local Package (advanced)</h3>
+            <p>Version 1.6.7.4</p>
+
+            <p>For Linux, macOS, and local development environments. Python 3 required.</p>
             <p>
                 <a href="https://drive.google.com/drive/folders/19aCsFGF2QxpMCMswPBrwQ8S8mWvI_jl3?usp=drive_link" target="_blank" rel="noopener noreferrer">
-                    Open Local Release Folder (v1.6.7.4)
+                    Open Local release folder
                 </a>
             </p>
 
             <details>
                 <summary>Local install instructions</summary>
                 <ol>
-                    <li>Download the zip file</li>
-                    <li>Unzip the archive</li>
-                    <li>Optional: download the verify checksum file</li>
-                    <li>In terminal session navigate to dashboard folder in the unzipped package (cd ~/Downloads/Continuum-local/dashboard)</li>
-                    <li>chmod +x *.sh</li>
-                    <li>./run_local.sh</li>
-                    <li>NOTE: you will need python3 or later installed in your linux or MacOS environment.</li>
+                    <li>Download and unzip the package</li>
+                    <li>Open a terminal in the project folder</li>
+                    <li>Run <code>./run_local.sh</code></li>
                 </ol>
             </details>
-
-        </div>        
+        </div>
 
         <div class="download-card">
-            <h3>Docker Package</h3>
+            <h3>Docker Package (advanced)</h3>
+            <p>Version 1.6.7.4</p>
+            
             <p>For advanced users and server environments.</p>
             <p>
                 <a href="https://drive.google.com/drive/folders/1RspuNPKHoI4wXxu4v3FlBr4IfX_iF7CF?usp=drive_link" target="_blank" rel="noopener noreferrer">
-                    Open Docker Release Folder (v1.6.7.4)
+                    Open Docker release folder
                 </a>
             </p>
 
@@ -135,33 +137,33 @@
                 <ol>
                     <li>Download and unzip the package</li>
                     <li>Install Docker Desktop</li>
-                    <li>Optional: downlad the verify checksum file</li>
                     <li>Run <code>./run.sh</code></li>
-                    <li>Open the dashboard locally</li>
                 </ol>
             </details>
         </div>
+
         <div class="download-card">
-            <h3><a href="https://drive.google.com/drive/folders/146ZG39_9TVOUGW4VWbpzaPrsI1zh2IB1?usp=drive_link" target="_blank" rel="noopener noreferrer"> 
+            <h3>
+                <a href="https://drive.google.com/drive/folders/146ZG39_9TVOUGW4VWbpzaPrsI1zh2IB1?usp=drive_link" target="_blank" rel="noopener noreferrer">
                     Previous Releases
                 </a>
-            </h3>   
+            </h3>
         </div>
 
     </div>
 
     <hr>
 
-    <h2>Verify Download (Optional)</h2>
+    <h2>Verify Download (optional)</h2>
 
     <details>
         <summary>Checksum verification</summary>
 
         <p>Mac:</p>
-        <pre>shasum -a 256 filename.zip</pre>
+        <pre>shasum -a 256 filename</pre>
 
         <p>Windows (PowerShell):</p>
-        <pre>Get-FileHash filename.zip -Algorithm SHA256</pre>
+        <pre>Get-FileHash filename -Algorithm SHA256</pre>
 
         <p>
             Compare the output to the checksum file in the release folder.
@@ -172,17 +174,8 @@
 
     <h2>Need Help?</h2>
 
-    <p>
-        <a href="/common_questions.html">
-            Common Questions
-        </a>
-    </p>
-
-    <p>
-        <a href="/overview.html">
-            Product Overview
-        </a>
-    </p>
+    <p><a href="/common_questions.html">Common Questions</a></p>
+    <p><a href="/overview.html">Product Overview</a></p>
 
     <p>
         Continuum is currently distributed under license during early releases.
@@ -193,12 +186,13 @@
 
     <footer>
 
-    <p>© 2025–2026 Andrew G. Stanton. </p>
+    <p>© 2025–2026 Andrew G. Stanton.</p>
     <p>Continuum software and documentation.</p>
 
-    <p>Built on Nostr.  Designed for durable authorship. </p>
-    <p>Continuum software and documentation are distributed under license.
-    See the <a href="/downloads/current_release/LICENSE.txt">license</a>.
+    <p>Built on Nostr. Designed for durable authorship.</p>
+    <p>
+        Continuum software and documentation are distributed under license.
+        See the <a href="/downloads/current_release/LICENSE.txt">license</a>.
     </p>
 
     </footer>
