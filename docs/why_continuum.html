@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>I Object | Continuum</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Responses to the most common questions and objections about Continuum’s design.">
+
+<link rel="stylesheet" href="/styles/style.css">
+</head>
+
+<body>
+
+<div class="page-shell">
+
+<div class="nav">
+        <a href="/">Home</a>
+        <a href="/overview.html">Overview</a>
+        <a href="https://drive.google.com/file/d/1jzIAHwQc6JCvgPj7anyAwA3uFARqyJ7-/view?usp=drive_link" target="_blank" rel="noopener noreferrer">Demo</a>
+        <a href="/downloads.html">Downloads</a>
+        <a href="/pricing.html">Pricing</a>
+        <a href="/use_cases.html">Who Continuum Is For</a>
+        <a href="/why_continuum.html">Why Continuum ?</a>
+        <a href="/faqs.html">FAQs</a>
+        <a href="/books.html">Books</a>
+        <a href="/open_source.html">Open Source</a>        
+        <a href="https://stories.mycontinuum.xyz/">Stories</a>     
+    </div>
+
+<div class="hero">
+
+  <h1>Why Continuum Works This Way</h1>
+
+  <p>
+    Responses to the most common questions and objections about Continuum’s design.
+  </p>
+  
+</div>
+
+<hr>
+
+<p>Continuum is not trying to be the easiest way to post to Nostr.</p>
+<p>It’s solving a different problem — one that most tools don’t even attempt to address.</p>
+<p>If you’re expecting a typical client, some of the design decisions here may feel unnecessary, or even confusing at first.</p>
+<p>That’s understandable.</p>
+<p>Most software today is designed around convenience, speed, and continuous connectivity. Continuum is designed around something else: authorship, identity, and control that persists beyond any single platform or moment in time.</p>
+<p>This page is a response to the most common questions, concerns, and objections that come up when people first encounter Continuum.</p>
+<p>Not to convince everyone — but to clarify what it is, and why it exists.</p>
+<hr>
+<div class="section">
+<h2>What Continuum is NOT</h2>
+<p>Before getting into specific objections, it helps to be clear about what Continuum is not:</p>
+<ul>
+<li>not a social feed</li>
+<li>not a hosted platform</li>
+<li>not optimized for instant posting</li>
+<li>not trying to replace every Nostr client</li>
+</ul>
+</div>
+<hr>
+<div class="section">
+<h2>“This is harder than a normal Nostr client”</h2>
+<p><strong>Short answer:</strong> Yes — at the beginning. Not where it matters.</p>
+<p>Most Nostr clients are optimized for immediate interaction: open the app, write something, hit publish.</p>
+<p>Continuum introduces a different flow:</p>
+<ul>
+<li>write locally</li>
+<li>manage your identity intentionally</li>
+<li>sign events under your control</li>
+<li>publish when and where you choose</li>
+</ul>
+<p>That adds a small amount of upfront friction.</p>
+<p>But it removes a different kind of friction entirely — the kind that shows up later:</p>
+<ul>
+<li>lost drafts</li>
+<li>fragmented identity</li>
+<li>dependence on a single client or interface</li>
+<li>inability to work offline</li>
+</ul>
+<p>Continuum shifts effort <strong>to the front</strong> so that you’re not paying for it later.</p>
+<p><strong>Principle:</strong> Ease at the start often creates dependence later.</p>
+</div>
+<hr>
+<div class="section">
+<h2>“Does this mean convenience doesn’t matter?”</h2>
+<p><strong>Short answer:</strong> No — it matters a lot.</p>
+<p>Convenience is not the enemy. Poor tradeoffs are.</p>
+<p>Most modern tools optimize heavily for convenience — but often by centralizing control, hiding complexity, and introducing long-term dependency.</p>
+<p>Continuum is taking a different approach:</p>
+<ul>
+<li>preserve control first</li>
+<li>then reduce friction on top of that</li>
+</ul>
+<p>The goal is not to make things harder. The goal is to make things <strong>simpler without giving up ownership</strong>.</p>
+<p>That’s a more difficult problem.</p>
+<p>But it’s the right one to solve.</p>
+<p><strong>Principle:</strong> Convenience should not come at the cost of control.</p>
+</div>
+<hr>
+<div class="section">
+<h2>“When would I actually use this?”</h2>
+<p><strong>Short answer:</strong> When your work matters enough to keep.</p>
+<p>Examples:</p>
+<ul>
+<li>writing articles you don’t want to lose</li>
+<li>maintaining a long-term archive of your work</li>
+<li>publishing without depending on a single platform</li>
+<li>working offline and publishing later</li>
+<li>managing multiple identities across contexts</li>
+</ul>
+<p>Continuum is not for every post.</p>
+<p>It’s for the work that matters.</p>
+</div>
+<hr>
+<div class="section">
+<h2>“Why would I run something locally?”</h2>
+<p><strong>Short answer:</strong> Because what matters should exist under your control first.</p>
+<p>When you run Continuum locally:</p>
+<ul>
+<li>your drafts, identities, and keys remain under your control</li>
+<li>your archive exists independently of any service</li>
+</ul>
+<p>A hosted system can be convenient, but it introduces a dependency:</p>
+<ul>
+<li>on uptime</li>
+<li>on policy</li>
+<li>on access</li>
+<li>on long-term availability</li>
+</ul>
+<p>Continuum doesn’t remove publishing or distribution — it simply makes them <strong>secondary</strong>.</p>
+<p>You still publish to relays. You still interact with the network.</p>
+<p>But the source of truth lives with you.</p>
+<p><strong>Principle:</strong> If it matters, it should exist under your control first.</p>
+</div>
+<hr>
+<div class="section">
+<h2>“I already work locally (Word, Office, backups, etc.) — isn’t that the same thing?”</h2>
+<p><strong>Short answer:</strong> It’s similar — but not the same.</p>
+<p>Working locally with tools like Word or offline editors gives you control over your files:</p>
+<ul>
+<li>you can write without an internet connection</li>
+<li>you can keep drafts and backups</li>
+<li>you’re not dependent on a platform to access your content</li>
+</ul>
+<p>That’s a good foundation.</p>
+<p>But Continuum is solving a different layer of the problem.</p>
+<p>It’s not just about storing files locally — it’s about:</p>
+<ul>
+<li><strong>identity</strong> (who authored this?)</li>
+<li><strong>authorship</strong> (can this be verified?)</li>
+<li><strong>integrity</strong> (has this been altered?)</li>
+<li><strong>portability</strong> (can this move across systems without losing meaning?)</li>
+</ul>
+<p>In a typical local workflow:</p>
+<ul>
+<li>authorship is implied, not proven</li>
+<li>identity is tied to the device or file system</li>
+<li>publishing requires exporting, copying, or trusting another platform</li>
+</ul>
+<p>In Continuum:</p>
+<ul>
+<li>every piece of content is <strong>cryptographically signed</strong></li>
+<li>authorship is <strong>verifiable, not assumed</strong></li>
+<li>identity is <strong>portable and independent of any one machine</strong></li>
+<li>publishing is a separate step — not a dependency</li>
+</ul>
+<p>So yes — working locally is part of the story.</p>
+<p>But Continuum extends that idea into something more complete:</p>
+<ul>
+<li>local control <strong>plus</strong> verifiable identity</li>
+<li>offline writing <strong>plus</strong> independent publishing</li>
+<li>files <strong>plus</strong> signed events</li>
+</ul>
+<p>That’s the difference.</p>
+<p><strong>Principle:</strong> Local storage preserves your files. Signed authorship preserves your identity.</p>
+</div>
+<hr>
+<div class="section">
+<h2>“Most users won’t care about sovereignty”</h2>
+<p><strong>Short answer:</strong> Most users don’t care — until they do.</p>
+<p>If everything works, centralized systems feel fine.</p>
+<p>But when something breaks — access revoked, platform changes, data lost, identity compromised — the lack of control becomes obvious very quickly.</p>
+<p>Continuum is designed for those moments:</p>
+<ul>
+<li>when you need to trust your own system</li>
+<li>when you need your work to persist</li>
+<li>when you need your identity to remain intact</li>
+</ul>
+<p>It’s not built for passive consumption. It’s built for durability.</p>
+<p><strong>Principle:</strong> Systems should be designed for failure conditions, not ideal ones.</p>
+</div>
+<hr>
+<div class="section">
+<h2>“Why not just use Substack or WordPress?”</h2>
+<p><strong>Short answer:</strong> Because those are publishing platforms. Continuum is an authorship system.</p>
+<p>Platforms optimize for:</p>
+<ul>
+<li>engagement</li>
+<li>distribution</li>
+<li>growth</li>
+<li>retention — not ownership</li>
+</ul>
+<p>Continuum optimizes for:</p>
+<ul>
+<li>ownership</li>
+<li>identity</li>
+<li>continuity</li>
+</ul>
+<p>On a platform:</p>
+<ul>
+<li>your work lives there</li>
+<li>your identity is tied to their system</li>
+<li>your distribution is controlled by their rules</li>
+</ul>
+<p>With Continuum:</p>
+<ul>
+<li>your work exists locally first</li>
+<li>your identity is cryptographically yours</li>
+<li>publishing is something you do, not something you depend on</li>
+</ul>
+<p>You can still use platforms. Continuum just ensures you’re not defined by them.</p>
+<p><strong>Principle:</strong> Convenience platforms optimize for engagement, not authorship.</p>
+</div>
+<hr>
+<div class="section">
+<h2>“Why not make this a mobile-first app?”</h2>
+<p><strong>Short answer:</strong> Because writing and identity management are not mobile-first activities.</p>
+<p>Mobile apps are excellent for:</p>
+<ul>
+<li>quick interactions</li>
+<li>short posts</li>
+<li>passive consumption</li>
+</ul>
+<p>They are not ideal for:</p>
+<ul>
+<li>long-form writing</li>
+<li>managing multiple identities</li>
+<li>handling keys and signing</li>
+<li>maintaining an archive</li>
+</ul>
+<p>Continuum is built around the act of authorship — not just posting.</p>
+<p>That said, mobile absolutely matters — and will play a role.</p>
+<p><strong>Principle:</strong> The primary environment should match the primary activity.</p>
+</div>
+<hr>
+<div class="section">
+<h2>“Will Continuum become easier to use?”</h2>
+<p><strong>Short answer:</strong> Yes — significantly.</p>
+<p>Reducing friction is a core focus going forward.</p>
+<p>That includes:</p>
+<ul>
+<li>improving onboarding and identity setup</li>
+<li>simplifying the writing and publishing flow</li>
+<li>reducing unnecessary steps without sacrificing control</li>
+<li>exploring mobile and companion experiences</li>
+</ul>
+<p>The challenge is not whether to make it easier.</p>
+<p>The challenge is how to do that <strong>without breaking the underlying model</strong>.</p>
+<p>That takes time.</p>
+<p>But it’s the direction Continuum is moving.</p>
+<p><strong>Principle:</strong> Ease should be built on top of solid foundations — not used to replace them.</p>
+</div>
+<hr>
+<div class="section">
+<h2>“This feels like overengineering”</h2>
+<p><strong>Short answer:</strong> It feels that way because most tools hide the complexity somewhere else.</p>
+<p>Continuum surfaces things that are usually abstracted away:</p>
+<ul>
+<li>identity</li>
+<li>signing</li>
+<li>storage</li>
+<li>publishing</li>
+</ul>
+<p>Other systems simplify the experience by centralizing these responsibilities.</p>
+<p>Continuum separates them.</p>
+<p>That separation is what makes:</p>
+<ul>
+<li>offline workflows possible</li>
+<li>identity portable</li>
+<li>publishing flexible</li>
+<li>systems durable</li>
+</ul>
+<p>It’s not complexity for its own sake. It’s clarity about where things actually live.</p>
+<p><strong>Principle:</strong> Simplicity on the surface often comes from complexity hidden elsewhere.</p>
+</div>
+<hr>
+<div class="section">
+<h2>“Why separate signing and publishing?”</h2>
+<p><strong>Short answer:</strong> Because authorship should not depend on connectivity.</p>
+<p>In most systems:</p>
+<ul>
+<li>writing and publishing happen together</li>
+<li>you need a connection to complete the act</li>
+</ul>
+<p>In Continuum:</p>
+<ul>
+<li>you can write and sign offline</li>
+<li>the event is complete once signed</li>
+<li>publishing can happen later, from anywhere</li>
+</ul>
+<p>This enables workflows that are otherwise impossible:</p>
+<ul>
+<li>writing without internet access</li>
+<li>transferring work between machines</li>
+<li>publishing on your own schedule</li>
+<li>separating creation from distribution entirely</li>
+</ul>
+<p>This is not a minor detail — it’s a fundamental shift.</p>
+<p><strong>Principle:</strong> Authorship should not depend on connectivity.</p>
+</div>
+<hr>
+<div class="section">
+<h2>“Why would anyone pay for this?”</h2>
+<p><strong>Short answer:</strong> Most people won’t. The right people will.</p>
+<p>Continuum is not designed for:</p>
+<ul>
+<li>everyone</li>
+<li>casual users</li>
+<li>passive consumption</li>
+</ul>
+<p>It’s designed for:</p>
+<ul>
+<li>writers who care about their work</li>
+<li>builders who care about identity</li>
+<li>individuals and organizations who value control</li>
+</ul>
+<p>The value isn’t in convenience. It’s in what you retain:</p>
+<ul>
+<li>ownership</li>
+<li>independence</li>
+<li>durability</li>
+</ul>
+<p>Those are not always visible immediately — but they matter over time.</p>
+<p><strong>Principle:</strong> Not all tools are meant for everyone.</p>
+</div>
+<hr>
+<div class="section">
+<h2>Closing</h2>
+<p>Continuum is not trying to replace every Nostr client. It’s not trying to compete with every platform.</p>
+<p>It exists for a different reason.</p>
+<p>If your goal is speed, convenience, and minimal setup — there are already excellent tools for that.</p>
+<p>If your goal is to own your work, control your identity, and publish without dependency — Continuum will make sense.</p>
+<p>It may take a little longer to see it.</p>
+<p>But once you do, it’s difficult to go back.</p>
+</div>
+
+<hr>
+
+<div class="section">
+
+<h2>Learn more</h2>
+
+<ul>
+<li><a href="/overview.html">Continuum Overview</a></li>
+<li><a href="/downloads.html">Download Continuum</a></li>
+<li><a href="/pricing.html">Support / Patron Options</a></li>
+</ul>
+
+</div>
+
+<hr>
+
+<footer>
+
+<p>© 2025–2026 Andrew G. Stanton.</p>
+<p>Continuum software and documentation.</p>
+
+<p>Built on Nostr. Designed for durable authorship.</p>
+<p>Continuum software and documentation are distributed under license.
+See the <a href="/downloads/current_release/LICENSE.txt">license</a>.
+</p>
+
+</footer>
+
+</div>
+</body>
+</html>
