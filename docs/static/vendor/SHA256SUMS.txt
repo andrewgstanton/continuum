@@ -1,0 +1,5 @@
+acc7e41455a80765b5fd9c7ee1b8078a6d160bbbca455aeae854de65c947d59e  jszip/jszip.min.js
+fe67c3aac744dc6a4b5e59895e66acf71bc198a441a20aac69e2dd566870e4ab  openpgp/openpgp.min.js
+973cc5733cc7432e30ee4682098f413094f494bccf76a567c23908c5035ddbbc  tweetnacl/nacl.min.js
+
+

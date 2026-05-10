@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Continuum - Verify Event</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="/styles/style.css">
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 900px; margin: auto; padding: 2rem; line-height: 1.5; background: #f9fafb; color:#111; }
+    textarea, input { width:100%; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+    textarea { min-height: 260px; }
+    .row { margin: 12px 0; }
+    .box { background:#fff; border:1px solid #e5e7eb; border-radius: 12px; padding: 1rem; }
+    .muted { color:#666; }
+    .ok { color:#0a7a0a; }
+    .bad { color:#b00020; }
+    button { padding: 10px 14px; cursor:pointer; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+  </style>
+
+</head>
+
+<body>
+
+<div class="page-shell">
+
+  <div class="nav">
+    <a href="/">Home</a>
+    <a href="/overview.html">Overview</a>
+    <a href="https://drive.google.com/file/d/1jzIAHwQc6JCvgPj7anyAwA3uFARqyJ7-/view?usp=drive_link" target="_blank" rel="noopener noreferrer">Demo</a>    
+    <a href="/downloads.html">Downloads</a>
+    <a href="/pricing.html">Pricing</a>
+    <a href="/use_cases.html">Who Continuum Is For</a>
+    <a href="/why_continuum.html">Why Continuum?</a>
+    <a href="/faqs.html">FAQs</a>
+    <a href="/books.html">Books</a>
+    <a href="/tools.html">Tools</a>    
+    <a href="/open_source.html">Open Source</a>
+    <a href="/stories.html">Stories</a>
+    <a href="/tools.html">Tools</a>
+  </div>
+
+
+<div class="secion">
+
+  <h1>Verify Nostr Event</h1>
+  <p class="muted">Verification runs locally in your browser. This tool does not query relays; it only verifies pasted archived JSON.</p>
+
+  <div class="row">
+    <label><strong>npub (optional)</strong></label>
+    <input id="npub" placeholder="npub1..." />
+  </div>
+
+  <div class="row">
+    <label><strong>Event JSON</strong></label>
+    <textarea id="eventJson" placeholder='{"id":"...","pubkey":"...","created_at":...,"kind":...,"tags":[...],"content":"...","sig":"..."}'></textarea>
+  </div>
+
+  <div class="row">
+    <button id="verifyBtn">Verify</button>
+  </div>
+
+  <div class="row box" id="output">
+    <div class="muted">Results will appear here.</div>
+  </div>
+
+<script type="module">
+  import {
+    verifyEvent,
+    getEventHash,
+    nip19
+  } from "/static/vendor/nostr-tools/nostr-tools.bundle.mjs";
+
+  const $ = (id) => document.getElementById(id);
+
+  function esc(s) {
+    return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+  }
+  function fmtBool(ok) {
+    return ok ? `<span class="ok">✅ yes</span>` : `<span class="bad">❌ no</span>`;
+  }
+
+  // Keep this strict if you want "archive-only" behavior.
+  // This allows same-origin absolute URLs and relative URLs, but blocks other origins.
+  function validateSrc(src) {
+    const s = (src || "").trim();
+    if (!s) throw new Error("Missing src. Provide a JSON URL/path from this archive.");
+
+    // Disallow obvious external URLs
+    if (s.startsWith("http://") || s.startsWith("https://")) {
+      const u = new URL(s);
+      if (u.origin !== window.location.origin) {
+        throw new Error("src must be same-origin (this archive) or a relative path.");
+      }
+    }
+    if (s.includes("..")) throw new Error("src may not contain '..'");
+
+    return s;
+  }
+
+  async function loadFromSrc() {
+    const out = $("output");
+    out.innerHTML = `<div class="muted">Loading…</div>`;
+
+    const src = validateSrc($("src").value);
+    const res = await fetch(src, { cache: "no-store" });
+    if (!res.ok) throw new Error(`Could not load JSON from src (HTTP ${res.status}): ${src}`);
+
+    const ev = await res.json();
+    $("eventJson").value = JSON.stringify(ev, null, 2);
+    out.innerHTML = `<div class="ok">Loaded JSON from <code>${esc(src)}</code>.</div>`;
+    return ev;
+  }
+
+  function normalizeEvent(ev) {
+    if (typeof ev !== "object" || ev === null) throw new Error("Event JSON must be an object.");
+    const required = ["id","pubkey","created_at","kind","tags","content","sig"];
+    for (const k of required) if (!(k in ev)) throw new Error(`Missing required field: ${k}`);
+    if (!Array.isArray(ev.tags)) throw new Error("Field 'tags' must be an array.");
+    return ev;
+  }
+
+  function decodeNpubToHex(npub) {
+    if (!npub) return null;
+    const decoded = nip19.decode(npub.trim());
+    if (decoded.type !== "npub") throw new Error("Provided value is not a valid npub.");
+    return decoded.data; // pubkey hex
+  }
+
+  function render({ ev, computedId, sigValid, idMatches, npubProvided, pubkeyMatchesNpub }) {
+    const lines = [];
+    lines.push(`<div><strong>Signature valid:</strong> ${fmtBool(sigValid)}</div>`);
+    lines.push(`<div><strong>Event id matches recomputed hash:</strong> ${fmtBool(idMatches)}</div>`);
+    if (npubProvided) {
+      lines.push(`<div><strong>Event pubkey matches npub:</strong> ${fmtBool(pubkeyMatchesNpub)}</div>`);
+    } else {
+      lines.push(`<div class="muted"><strong>npub check:</strong> skipped</div>`);
+    }
+    lines.push(`<hr/>`);
+    lines.push(`<div><strong>kind:</strong> <code>${esc(ev.kind)}</code></div>`);
+    lines.push(`<div><strong>created_at:</strong> <code>${esc(ev.created_at)}</code></div>`);
+    lines.push(`<div><strong>pubkey:</strong> <code>${esc(ev.pubkey)}</code></div>`);
+    lines.push(`<div><strong>id:</strong> <code>${esc(ev.id)}</code></div>`);
+    lines.push(`<div><strong>recomputed id:</strong> <code>${esc(computedId)}</code></div>`);
+
+    const ok = sigValid && idMatches && (npubProvided ? pubkeyMatchesNpub : true);
+    lines.push(`<hr/>`);
+    lines.push(ok
+      ? `<div class="ok"><strong>Conclusion:</strong> This archived event is cryptographically valid${npubProvided ? " and matches the provided npub." : "."}</div>`
+      : `<div class="bad"><strong>Conclusion:</strong> Verification failed (see checks above).</div>`
+    );
+    return lines.join("\n");
+  }
+
+
+  $("verifyBtn").addEventListener("click", async () => {
+    const out = $("output");
+    out.innerHTML = `<div class="muted">Verifying…</div>`;
+
+    try {
+      const raw = $("eventJson").value.trim();
+      if (!raw) throw new Error("Paste event JSON before verifying.");
+
+      const ev = normalizeEvent(JSON.parse(raw));
+      const computedId = getEventHash(ev);
+      const idMatches = computedId === ev.id;
+      const sigValid = verifyEvent(ev);
+
+      const npubHex = decodeNpubToHex($("npub").value.trim());
+      const npubProvided = !!npubHex;
+      const pubkeyMatchesNpub = npubProvided ? (npubHex === ev.pubkey) : null;
+
+      out.innerHTML = render({ ev, computedId, sigValid, idMatches, npubProvided, pubkeyMatchesNpub });
+    } catch (e) {
+      out.innerHTML = `<div class="bad"><strong>Error:</strong> ${esc(e.message || e)}</div>`;
+    }
+  });
+
+  // Prefill from query string: ?src=...&npub=...
+  (async () => {
+    const p = new URLSearchParams(window.location.search);
+    const npub = p.get("npub");
+    if (npub) $("npub").value = npub;
+  })();
+</script>
+
+</div>  <!-- end class secion-->
+
+<hr>
+
+<footer>
+
+<p>© 2025–2026 Andrew G. Stanton.</p>
+<p>Continuum software and documentation.</p>
+
+<p>Built on Nostr. Designed for durable authorship.</p>
+<p>Continuum software and documentation are distributed under license.
+See the <a href="/downloads/current_release/LICENSE.txt">license</a>.
+</p>
+
+</footer>
+</div>
+
+</body>
+</html>
