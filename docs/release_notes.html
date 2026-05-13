@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Continuum — What's New</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="/styles/style.css">
+<script src="/static/js/marked.min.js"></script>
+</head>
+
+<body>
+
+<div class="page-shell">
+
+<div class="nav">
+    <a href="/">Home</a>
+    <a href="/overview.html">Overview</a>
+    <a href="/release_notes.html">Release Notes</a>
+
+    <a href="https://drive.google.com/file/d/1jzIAHwQc6JCvgPj7anyAwA3uFARqyJ7-/view?usp=drive_link"
+       target="_blank"
+       rel="noopener noreferrer">Demo</a>
+
+    <a href="/downloads.html">Downloads</a>
+    <a href="/pricing.html">Pricing</a>
+    <a href="/use_cases.html">Who Continuum Is For</a>
+    <a href="/why_continuum.html">Why Continuum ?</a>
+    <a href="/faqs.html">FAQs</a>
+    <a href="/books.html">Books</a>
+    <a href="/tools.html">Tools</a>
+    <a href="/open_source.html">Open Source</a>
+    <a href="https://stories.mycontinuum.xyz/">Stories</a>
+</div>
+
+
+<div class="hero">
+  <h1>What’s New in Continuum</h1>
+  <p>Release notes and recent changes.</p>
+</div>
+
+<hr>
+
+<div class="section" id="content">
+  <p>Loading release notes...</p>
+</div>
+
+<footer>
+  <p>© 2025–2026 Andrew G. Stanton.</p>
+  <p>Continuum software and documentation.</p>
+  <p>Built on Nostr. Designed for durable authorship.</p>
+</footer>
+
+</div>
+
+<script>
+fetch("/release_notes.md")
+  .then(response => {
+    if (!response.ok) throw new Error("Could not load release_notes.md");
+    return response.text();
+  })
+  .then(markdown => {
+    document.getElementById("content").innerHTML = marked.parse(markdown);
+  })
+  .catch(error => {
+    document.getElementById("content").innerHTML =
+      "<p>Unable to load release notes.</p>";
+    console.error(error);
+  });
+</script>
+
+</body>
+</html>
