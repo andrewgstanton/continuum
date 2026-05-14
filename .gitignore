@@ -13,15 +13,15 @@ docs/downloads/previous_releases/**/*.zip
 docs/downloads/previous_releases/**/*.sha256.txt
 
 # Cloudflare Worker dependencies/build artifacts
-docs/workers/cloudflare/continuum-auth-demo/node_modules/
-docs/workers/cloudflare/continuum-auth-demo/.wrangler/
-docs/workers/cloudflare/continuum-auth-demo/dist/
-docs/workers/cloudflare/continuum-auth-demo/build/
+workers/cloudflare/continuum-auth-demo/node_modules/
+workers/cloudflare/continuum-auth-demo/.wrangler/
+workers/cloudflare/continuum-auth-demo/dist/
+workers/cloudflare/continuum-auth-demo/build/
 
 # Local env/secrets
-docs/workers/cloudflare/continuum-auth-demo/.env
-docs/workers/cloudflare/continuum-auth-demo/.env.*
-docs/workers/cloudflare/continuum-auth-demo/.dev.vars
+workers/cloudflare/continuum-auth-demo/.env
+workers/cloudflare/continuum-auth-demo/.env.*
+workers/cloudflare/continuum-auth-demo/.dev.vars
 
 # macOS
 .DS_Store
