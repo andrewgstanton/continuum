@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Continuum Auth Demo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="/styles/style.css">
+</head>
+
+<body>
+
+<div class="page-shell">
+
+<div class="nav">
+    <a href="/">Home</a>
+    <a href="/overview.html">Overview</a>
+    <a href="/release_notes.html">Release Notes</a>
+
+    <a href="https://drive.google.com/file/d/1jzIAHwQc6JCvgPj7anyAwA3uFARqyJ7-/view?usp=drive_link"
+       target="_blank"
+       rel="noopener noreferrer">Demo</a>
+
+    <a href="/downloads.html">Downloads</a>
+    <a href="/pricing.html">Pricing</a>
+    <a href="/use_cases.html">Who Continuum Is For</a>
+    <a href="/why_continuum.html">Why Continuum ?</a>
+    <a href="/faqs.html">FAQs</a>
+    <a href="/books.html">Books</a>
+    <a href="/tools.html">Tools</a>
+    <a href="/open_source.html">Open Source</a>
+    <a href="https://stories.mycontinuum.xyz/">Stories</a>
+</div>
+
+<div class="hero">
+
+  <h1>Manual Nostr Auth Demo</h1>
+
+  <p>
+    This page demonstrates passwordless authentication using a Nostr public key.
+  </p>
+
+  <p>
+    The website requests a challenge payload. You paste that payload into a compatible signing tool.
+    The tool extracts the challenge string, signs it, and returns a verification payload.
+  </p>
+
+  <p>
+    No password is created. No username is required. No private key is sent to the server.
+  </p>
+
+</div>
+
+<hr>
+
+<div class="section">
+
+<h2>1. Enter your Nostr public key</h2>
+
+<p>
+Enter an <code>npub</code> or 64-character hex public key.
+</p>
+
+<input id="pubkey" placeholder="npub1... or 64-character hex pubkey" style="width:100%; padding:10px;">
+
+<p>
+<button id="requestChallengeBtn">Request Challenge Payload</button>
+</p>
+
+</div>
+
+<div class="section">
+
+<h2>2. Copy the challenge payload</h2>
+
+<p>
+Copy this full payload and paste it into a compatible signing tool.
+</p>
+
+<p>
+The signing tool should extract the <code>challenge</code> string internally and sign that exact string.
+</p>
+
+<textarea id="challengeBox" readonly style="width:100%; min-height:220px; padding:10px;"></textarea>
+
+<p>
+<button id="copyChallengeBtn">Copy Challenge Payload</button>
+</p>
+
+</div>
+
+<div class="section">
+
+<h2>3. Paste signed verification payload</h2>
+
+<p>
+Paste the signed verification payload returned by your signer.
+</p>
+
+<p>
+Expected format:
+</p>
+
+<pre style="white-space:pre-wrap; overflow:auto;">{
+  "pubkey": "...",
+  "challenge": "...",
+  "signature": "..."
+}</pre>
+
+<textarea id="proofBox" style="width:100%; min-height:220px; padding:10px;" placeholder='{"pubkey":"...","challenge":"...","signature":"..."}'></textarea>
+
+<p>
+<button id="verifyProofBtn">Verify Proof</button>
+</p>
+
+</div>
+
+<div class="section">
+
+<h2>4. Session check</h2>
+
+<p>
+After a successful verification, check whether the API recognizes the browser session.
+</p>
+
+<p>
+<button id="getMeBtn">Call /api/me</button>
+<button id="logoutBtn">Logout</button>
+</p>
+
+<p id="status"><strong>Status:</strong> Ready.</p>
+
+</div>
+
+<div class="section">
+
+<h2>Result</h2>
+
+<pre id="result" style="white-space:pre-wrap; overflow:auto;">{}</pre>
+
+</div>
+
+<hr>
+
+<footer>
+
+<p>© 2025–2026 Andrew G. Stanton.</p>
+<p>Continuum software and documentation.</p>
+
+<p>Built on Nostr. Designed for durable authorship.</p>
+<p>
+This demo shows how authentication can work through signed proof rather than stored passwords.
+</p>
+
+</footer>
+
+</div>
+
+<script type="module">
+import { nip19 } from "https://esm.sh/nostr-tools";
+
+const API_BASE = "https://api.mycontinuum.xyz";
+
+let currentChallenge = null;
+
+function normalizeNostrPubkey(input) {
+  const value = input.trim();
+
+  if (/^[0-9a-fA-F]{64}$/.test(value)) {
+    return value.toLowerCase();
+  }
+
+  if (value.startsWith("npub1")) {
+    try {
+      const decoded = nip19.decode(value);
+
+      if (decoded.type !== "npub") {
+        throw new Error("Not an npub.");
+      }
+
+      return decoded.data.toLowerCase();
+    } catch (err) {
+      throw new Error("Invalid npub.");
+    }
+  }
+
+  throw new Error("Enter a valid npub or 64-character hex pubkey.");
+}
+
+function showResult(data) {
+  document.getElementById("result").textContent =
+    JSON.stringify(data, null, 2);
+}
+
+function setStatus(message) {
+  document.getElementById("status").innerHTML =
+    "<strong>Status:</strong> " + message;
+}
+
+async function requestChallenge() {
+  let pubkey;
+
+  try {
+    pubkey = normalizeNostrPubkey(
+      document.getElementById("pubkey").value
+    );
+  } catch (err) {
+    setStatus(err.message);
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}/api/challenge`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        method: "nostr",
+        pubkey: pubkey
+      })
+    });
+
+    const data = await res.json();
+    currentChallenge = data;
+
+    document.getElementById("challengeBox").value =
+      JSON.stringify(data, null, 2);
+
+    setStatus("Challenge payload received.");
+    showResult(data);
+  } catch (err) {
+    setStatus("Failed to request challenge payload.");
+    showResult({ error: String(err) });
+  }
+}
+
+async function copyChallenge() {
+  const text = document.getElementById("challengeBox").value;
+
+  if (!text) {
+    setStatus("No challenge payload to copy yet.");
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(text);
+    setStatus("Challenge payload copied.");
+  } catch (err) {
+    setStatus("Could not copy challenge payload.");
+    showResult({ error: String(err) });
+  }
+}
+
+async function verifyProof() {
+  const proofText = document.getElementById("proofBox").value.trim();
+
+  if (!proofText) {
+    setStatus("Paste a signed verification payload first.");
+    return;
+  }
+
+  let proof;
+
+  try {
+    proof = JSON.parse(proofText);
+  } catch (err) {
+    setStatus("Signed verification payload is not valid JSON.");
+    showResult({ error: String(err) });
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}/api/verify`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include",
+      body: JSON.stringify(proof)
+    });
+
+    const data = await res.json();
+
+    setStatus(data.verified ? "Proof verified." : "Proof verification failed.");
+    showResult(data);
+  } catch (err) {
+    setStatus("Failed to verify proof.");
+    showResult({ error: String(err) });
+  }
+}
+
+async function getMe() {
+  try {
+    const res = await fetch(`${API_BASE}/api/me`, {
+      method: "GET",
+      credentials: "include"
+    });
+
+    const data = await res.json();
+
+    setStatus(data.authenticated ? "Authenticated." : "Not authenticated.");
+    showResult(data);
+  } catch (err) {
+    setStatus("Failed to call /api/me.");
+    showResult({ error: String(err) });
+  }
+}
+
+async function logout() {
+  try {
+    const res = await fetch(`${API_BASE}/api/logout`, {
+      method: "POST",
+      credentials: "include"
+    });
+
+    const data = await res.json();
+
+    setStatus("Logged out.");
+    showResult(data);
+  } catch (err) {
+    setStatus("Failed to logout.");
+    showResult({ error: String(err) });
+  }
+}
+
+document.getElementById("requestChallengeBtn").addEventListener("click", requestChallenge);
+document.getElementById("copyChallengeBtn").addEventListener("click", copyChallenge);
+document.getElementById("verifyProofBtn").addEventListener("click", verifyProof);
+document.getElementById("getMeBtn").addEventListener("click", getMe);
+document.getElementById("logoutBtn").addEventListener("click", logout);
+</script>
+
+</body>
+</html>
