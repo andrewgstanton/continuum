@@ -1,4 +1,4 @@
-import { schnorr } from "@noble/secp256k1";
+import { schnorr } from "@noble/curves/secp256k1.js";
 
 export default {
   async fetch(request, env, ctx) {
@@ -76,6 +76,26 @@ async function handleChallenge(request) {
   });
 }
 
+function hexToBytes(hex) {
+  if (hex.length % 2 !== 0) {
+    throw new Error("Invalid hex string");
+  }
+
+  const bytes = new Uint8Array(hex.length / 2);
+
+  for (let i = 0; i < bytes.length; i++) {
+    bytes[i] = parseInt(hex.slice(i * 2, i * 2 + 2), 16);
+  }
+
+  return bytes;
+}
+
+function bytesToHex(bytes) {
+  return [...bytes]
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
 async function handleVerify(request, env) {
   let body;
 
@@ -120,7 +140,11 @@ async function handleVerify(request, env) {
   let verified = false;
 
   try {
-    verified = await schnorr.verify(signature, challengeHash, pubkey);
+    verified = await schnorr.verify(
+      hexToBytes(signature),
+      challengeHash,
+      hexToBytes(pubkey)
+    );
   } catch (err) {
     return jsonResponse({
       verified: false,
@@ -133,7 +157,10 @@ async function handleVerify(request, env) {
     return jsonResponse({
       verified: false,
       method: "nostr",
-      pubkey
+      pubkey,
+      challenge_sha256: bytesToHex(challengeHash),
+      signature_length: signature.length,
+      pubkey_length: pubkey.length
     }, 401);
   }
 

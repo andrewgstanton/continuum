@@ -13,6 +13,7 @@
     "wrangler": "^3.114.17"
   },
   "dependencies": {
+    "@noble/curves": "^2.2.0",
     "@noble/secp256k1": "^3.1.0"
   }
 }
