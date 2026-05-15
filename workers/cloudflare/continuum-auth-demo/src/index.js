@@ -52,7 +52,7 @@ async function handleChallenge(request) {
   }
 
   const now = Math.floor(Date.now() / 1000);
-  const expiresAt = now + 60;
+  const expiresAt = now + 300;
 
   const nonce = randomHex(32);
 
@@ -275,7 +275,7 @@ function makeSessionCookie(token) {
     `continuum_session=${token}`,
     "HttpOnly",
     "Secure",
-    "SameSite=Lax",
+    "SameSite=None",
     "Path=/",
     "Max-Age=3600"
   ].join("; ");
@@ -286,7 +286,7 @@ function clearSessionCookie() {
     "continuum_session=",
     "HttpOnly",
     "Secure",
-    "SameSite=Lax",
+    "SameSite=None",
     "Path=/",
     "Max-Age=0"
   ].join("; ");
