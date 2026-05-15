@@ -9,7 +9,7 @@ export default {
     }
 
     if (url.pathname === "/" && request.method === "GET") {
-      return jsonResponse({
+      return jsonResponse(request, {
         service: "Continuum Auth Demo API",
         status: "ok",
         endpoints: ["/api/challenge", "/api/verify", "/api/me", "/api/logout"]
@@ -29,10 +29,10 @@ export default {
     }
 
     if (url.pathname === "/api/logout" && request.method === "POST") {
-      return handleLogout();
+      return handleLogout(request);
     }
 
-    return jsonResponse({ error: "Not found" }, 404);
+    return jsonResponse(request, { error: "Not found" }, 404);
   }
 };
 
@@ -42,18 +42,17 @@ async function handleChallenge(request) {
   try {
     body = await request.json();
   } catch {
-    return jsonResponse({ error: "Invalid JSON" }, 400);
+    return jsonResponse(request, { error: "Invalid JSON" }, 400);
   }
 
   const pubkey = body.pubkey;
 
   if (!isHex(pubkey, 64)) {
-    return jsonResponse({ error: "Invalid Nostr pubkey. Expected 64-char hex." }, 400);
+    return jsonResponse(request, { error: "Invalid Nostr pubkey. Expected 64-char hex." }, 400);
   }
 
   const now = Math.floor(Date.now() / 1000);
   const expiresAt = now + 300;
-
   const nonce = randomHex(32);
 
   const challenge = [
@@ -66,7 +65,7 @@ async function handleChallenge(request) {
     `origin=https://api.mycontinuum.xyz`
   ].join("\n");
 
-  return jsonResponse({
+  return jsonResponse(request, {
     method: "nostr",
     pubkey,
     nonce,
@@ -102,37 +101,37 @@ async function handleVerify(request, env) {
   try {
     body = await request.json();
   } catch {
-    return jsonResponse({ verified: false, error: "Invalid JSON" }, 400);
+    return jsonResponse(request, { verified: false, error: "Invalid JSON" }, 400);
   }
 
   const { pubkey, challenge, signature } = body;
 
   if (!isHex(pubkey, 64)) {
-    return jsonResponse({ verified: false, error: "Invalid pubkey" }, 400);
+    return jsonResponse(request, { verified: false, error: "Invalid pubkey" }, 400);
   }
 
   if (!challenge || typeof challenge !== "string") {
-    return jsonResponse({ verified: false, error: "Missing challenge" }, 400);
+    return jsonResponse(request, { verified: false, error: "Missing challenge" }, 400);
   }
 
   if (!isHex(signature, 128)) {
-    return jsonResponse({ verified: false, error: "Invalid signature" }, 400);
+    return jsonResponse(request, { verified: false, error: "Invalid signature" }, 400);
   }
 
   const parsed = parseChallenge(challenge);
 
   if (parsed.method !== "nostr") {
-    return jsonResponse({ verified: false, error: "Challenge method is not nostr" }, 400);
+    return jsonResponse(request, { verified: false, error: "Challenge method is not nostr" }, 400);
   }
 
   if (parsed.pubkey !== pubkey) {
-    return jsonResponse({ verified: false, error: "Pubkey does not match challenge" }, 400);
+    return jsonResponse(request, { verified: false, error: "Pubkey does not match challenge" }, 400);
   }
 
   const now = Math.floor(Date.now() / 1000);
 
   if (!parsed.exp || Number(parsed.exp) < now) {
-    return jsonResponse({ verified: false, error: "Challenge expired" }, 400);
+    return jsonResponse(request, { verified: false, error: "Challenge expired" }, 400);
   }
 
   const challengeHash = await sha256Bytes(challenge);
@@ -146,7 +145,7 @@ async function handleVerify(request, env) {
       hexToBytes(pubkey)
     );
   } catch (err) {
-    return jsonResponse({
+    return jsonResponse(request, {
       verified: false,
       error: "Signature verification failed",
       detail: String(err)
@@ -154,7 +153,7 @@ async function handleVerify(request, env) {
   }
 
   if (!verified) {
-    return jsonResponse({
+    return jsonResponse(request, {
       verified: false,
       method: "nostr",
       pubkey,
@@ -165,7 +164,7 @@ async function handleVerify(request, env) {
   }
 
   if (!env.SESSION_SECRET) {
-    return jsonResponse({
+    return jsonResponse(request, {
       verified: true,
       authenticated: false,
       error: "SESSION_SECRET is not configured"
@@ -177,7 +176,7 @@ async function handleVerify(request, env) {
     method: "nostr"
   }, env.SESSION_SECRET);
 
-  return jsonResponse({
+  return jsonResponse(request, {
     verified: true,
     authenticated: true,
     method: "nostr",
@@ -193,13 +192,13 @@ async function handleMe(request, env) {
   const token = getCookie(request, "continuum_session");
 
   if (!token) {
-    return jsonResponse({
+    return jsonResponse(request, {
       authenticated: false
     }, 401);
   }
 
   if (!env.SESSION_SECRET) {
-    return jsonResponse({
+    return jsonResponse(request, {
       authenticated: false,
       error: "SESSION_SECRET is not configured"
     }, 500);
@@ -208,13 +207,13 @@ async function handleMe(request, env) {
   const session = await verifySessionToken(token, env.SESSION_SECRET);
 
   if (!session) {
-    return jsonResponse({
+    return jsonResponse(request, {
       authenticated: false,
       error: "Invalid or expired session"
     }, 401);
   }
 
-  return jsonResponse({
+  return jsonResponse(request, {
     authenticated: true,
     pubkey: session.pubkey,
     method: session.method,
@@ -223,8 +222,8 @@ async function handleMe(request, env) {
   });
 }
 
-function handleLogout() {
-  return jsonResponse({
+function handleLogout(request) {
+  return jsonResponse(request, {
     logged_out: true
   }, 200, {
     "Set-Cookie": clearSessionCookie()
@@ -430,10 +429,10 @@ function timingSafeEqual(a, b) {
   return result === 0;
 }
 
-function jsonResponse(data, status = 200, extraHeaders = {}) {
+function jsonResponse(request, data, status = 200, extraHeaders = {}) {
   return new Response(JSON.stringify(data, null, 2), {
     status,
-    headers: corsHeaders({
+    headers: corsHeaders(request, {
       "Content-Type": "application/json",
       ...extraHeaders
     })
@@ -443,17 +442,32 @@ function jsonResponse(data, status = 200, extraHeaders = {}) {
 function handleOptions(request) {
   return new Response(null, {
     status: 204,
-    headers: corsHeaders()
+    headers: corsHeaders(request)
   });
 }
 
-function corsHeaders(extra = {}) {
-  return {
-    "Access-Control-Allow-Origin": "http://localhost:5000",
+const ALLOWED_ORIGINS = [
+  "http://localhost",
+  "http://localhost:5000",
+  "http://localhost:8000",
+  "https://mycontinuum.xyz"
+];
+
+function corsHeaders(request, extra = {}) {
+  const origin = request.headers.get("Origin");
+
+  const headers = {
     "Access-Control-Allow-Credentials": "true",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Authorization",
     "Access-Control-Max-Age": "86400",
     ...extra
   };
+
+  if (origin && ALLOWED_ORIGINS.includes(origin)) {
+    headers["Access-Control-Allow-Origin"] = origin;
+    headers["Vary"] = "Origin";
+  }
+
+  return headers;
 }
