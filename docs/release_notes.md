@@ -1,5 +1,261 @@
 # Continuum — What's New
 
+## v1.6.7.8 - May 20, 2026
+
+### Highlights
+
+### PDF Export Support Across All Build Types
+
+PDF export is now supported consistently across all Continuum build types.
+
+This includes:
+
+- native macOS builds
+- native Windows builds
+- local source installs
+- Docker deployments
+
+Docker builds continue to use `WeasyPrint` for HTML-to-PDF rendering.
+
+Native and local builds now automatically fall back to a built-in `ReportLab` export pipeline when `WeasyPrint` is unavailable.
+
+This removes the earlier limitation where PDF export was primarily tied to Docker-based environments.
+
+---
+
+### Environment Configuration Support Across All Build Types
+
+Continuum now supports runtime environment configuration consistently across:
+
+- native builds
+- local source installs
+- Docker deployments
+
+Environment variables are now loaded from:
+
+```
+data/env/continuum.env
+```
+
+Environment configuration is intentionally kept outside of:
+
+- workspace backup
+- workspace restore
+- workspace encryption
+- workspace decryption
+
+The environment configuration is treated as runtime-specific application configuration rather than portable workspace state.
+
+This allows different installations, devices, or deployments to maintain independent runtime configuration without affecting encrypted workspace portability.
+
+
+---
+
+### Environment Settings Improvements
+
+The environment settings page now supports viewing runtime environment configuration directly from within Continuum.
+
+---
+
+## Why This Matters
+
+Continuum is continuing to separate:
+
+- portable workspace state
+- runtime-specific environment configuration
+- optional deployment dependencies
+
+The important distinction introduced in this release is simple:
+
+> The workspace is portable.  
+> The runtime environment is local.
+
+This improves portability across:
+
+- native builds
+- Docker environments
+- local source installs
+- encrypted workspace transfers
+
+while still allowing each runtime environment to maintain its own local configuration.
+
+PDF export support is now also available consistently across all supported build types rather than depending on a specific deployment environment.
+
+---
+
+## Philosophy Reminder
+
+Continuum continues to build around a simple principle:
+
+> The workspace belongs to the user.
+
+The workspace can move between environments.
+
+The runtime environment remains local to the machine or deployment where Continuum runs.
+
+Publishing remains optional.
+
+Authority remains local.
+
+---
+
+### Coming Next
+
+- Relay list editing for identities
+- Archive sync service + dashboard export tooling improvements
+- Runtime-managed archive synchronization flows
+
+---
+
+## v1.6.7.7 - May 18, 2026
+
+### Highlights
+
+### Full Encrypted Workspace Packaging
+
+Continuum now supports full-folder encrypted workspace packaging.
+
+The local `data/` workspace can be packaged into a single encrypted workspace file.
+
+This includes:
+
+- identities
+- drafts
+- tombstones
+- nostr event db
+- vault data
+
+This makes it possible to export the Continuum workspace in encrypted form instead of creating a plaintext backup.
+
+---
+
+### Locked / Unlocked Workspace Flow
+
+Continuum now has a clearer locked and unlocked workspace flow.
+
+When the workspace is locked, the local data folder is encrypted.
+
+When the workspace is unlocked, the encrypted workspace is restored back into the local data folder so Continuum can use it normally.
+
+This gives Continuum a practical encrypted-at-rest workflow for the local workspace.
+
+---
+
+### Encrypted Workspace Import / Export
+
+Continuum now supports importing and exporting encrypted workspace files.
+
+This makes it easier to:
+
+- back up an encrypted workspace
+- restore an encrypted workspace
+- move a workspace between machines or environments
+
+---
+
+### Auth Demo Flow
+
+Continuum now includes a working authentication demo flow built around signed Nostr challenges.
+
+This includes support for:
+
+- requesting a challenge
+- signing the challenge locally
+- verifying the signed proof
+- authenticating using signing authority tied to a public key
+
+The goal of this demo is to illustrate a different authentication model based on cryptographic signing rather than traditional username/password systems.
+
+---
+
+### Manual Auth Signing Demo
+
+A separate manual authentication signing demo was also added.
+
+This flow allows users to:
+
+- request a challenge manually
+- copy the challenge payload
+- sign it locally
+- submit the signed proof for verification
+
+The manual flow makes the authentication process more transparent and easier to inspect step-by-step. :contentReference[oaicite:1]{index=1}
+
+---
+
+### Workspace Management UI Improvements
+
+The empty-state workspace controls have been reorganized and clarified.
+
+Workspace actions are now grouped more clearly around:
+
+- unlock
+- export
+- import
+- clear
+
+Identity actions remain separate:
+
+- view an identity in read-only mode
+- create a managed signing identity
+
+This makes the startup flow easier to understand when no identity is loaded yet.
+
+---
+
+### Database + Path Handling Improvements
+
+Continuum now handles missing workspace paths more safely.
+
+This includes improvements around:
+
+- creating missing data directories
+- creating the nostr event database path when needed
+- reset behavior when the database file does not already exist
+- import behavior when the expected data directory or database path is missing
+
+These changes make the workspace flows more reliable across local, portable, and mounted environments.
+
+---
+
+## Why This Matters
+
+Continuum is becoming a more portable local-first workspace.
+
+The important change in this release is simple:
+
+> The workspace can now be exported, stored, and restored in encrypted form.
+
+That matters because Continuum stores important local state, including signing identities, drafts, events, tombstones, and vault data.
+
+This release also expands the practical authentication demonstrations around local signing authority and challenge-response verification.
+
+The goal is to continue building toward workflows where:
+
+- author locally
+- store locally
+- sign locally
+- authenticate locally
+- publish when ready
+
+---
+
+## Philosophy Reminder
+
+Continuum continues to build around a simple principle:
+
+> The workspace belongs to the user.
+
+Publishing is optional.
+
+Authority is local.
+
+### Coming Next
+
+- Relay list editing for identities
+
+---
+
 ## v1.6.7.6 - May 11, 2026
 
 ### Highlights
@@ -66,10 +322,6 @@ The vault is intended for sensitive local information such as:
 - Better handling of detecting **offline** status
 
 Continuum now handles offline detection more reliably across different environments and unstable network conditions.
-
-### Coming Next
-
-- Relay list editing for identities
 
 ---
 
