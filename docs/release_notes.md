@@ -1,5 +1,257 @@
 # Continuum — What's New
 
+## v1.6.7.9 - May 31, 2026
+
+### Highlights
+
+### Archive Sync Service + Queue Manager
+
+Continuum now includes a dedicated archive synchronization service capable of processing events through a managed archive queue.
+
+The archive system now supports:
+
+- queue-based processing
+- archive synchronization for notes (kind:1)
+- archive synchronization for profiles (kind:0)
+- archive synchronization for articles (kind:30023)
+- queue management and inspection
+- archive synchronization status tracking
+- tombstone-aware processing
+
+This provides a more reliable foundation for maintaining long-term event archives and synchronization workflows.
+
+---
+
+### Archive Runtime Refactoring
+
+The internal archive and restore tooling was refactored to use direct Python function calls instead of launching bundled Continuum scripts through `sys.executable`.
+
+This change improves reliability across:
+
+- Docker deployments
+- local Python development environments
+- native macOS builds
+- native Windows builds
+
+Benefits include:
+
+- improved native build compatibility
+- fewer background process launches
+- better real-time console log streaming
+- simpler error handling and debugging
+- more consistent behavior across all build types
+
+This refactoring also removes an entire class of issues caused by native builds attempting to relaunch the Continuum executable when performing archive operations.
+
+---
+
+### Archive Runtime + Logging Improvements
+
+Archive restore and synchronization workflows received additional runtime and infrastructure improvements.
+
+This includes:
+
+- added reusable logger utilities:
+  - `ConsoleLogWriter` for runtime console logging
+  - scoped `LogWriter` support for operation-specific logging
+- improved separation between application console output and operation-specific logs
+- improved visibility into long-running restore and synchronization operations
+
+Archive restore performance was also significantly improved.
+
+Continuum now:
+
+- detects locally mounted archive repositories automatically
+- reads archived event payloads directly from local archive files when available
+- falls back to remote archive repositories only when local archives are unavailable
+
+Archive infrastructure configuration was also improved.
+
+Continuum now:
+
+- checks environment settings for archive repository availability
+- supports configurable remote archive endpoints through:
+  - `ARCHIVE_REMOTE_BASE_URL`
+  - `ARCHIVE_REMOTE_EVENT_BASE_URL`
+- removes hardcoded references to remote archive URLs
+- disables archive restore actions when required archive configuration is unavailable
+
+These changes improve portability and consistency across Docker, native macOS, native Windows, and local development environments.
+
+---
+
+### Archive Queue Dashboard
+
+A dedicated archive queue page has been added.
+
+Users can now:
+
+- view pending archive items
+- monitor queue activity
+- clear queue entries
+- trigger archive operations
+- inspect archive synchronization state
+
+A live console log viewer was also added to make archive processing easier to observe while running.
+
+---
+
+### Import Existing Event
+
+Continuum can now import an existing signed Nostr event directly into the local database.
+
+Supported event kinds currently include:
+
+- Profiles (kind:0)
+- Notes (kind:1)
+- Articles (kind:30023)
+
+Imported events are:
+
+- signature verified
+- checked against tombstones
+- checked for duplicates
+- restored with local metadata preserved
+
+This is particularly useful for recovering events that are no longer present in the local database, including unpublished content.
+
+---
+
+### Restore Events From Archive
+
+Continuum can now restore archived events directly back into the local database.
+
+Supported event kinds currently include:
+
+- Profiles (kind:0)
+- Notes (kind:1)
+- Articles (kind:30023)
+
+The restore operation:
+
+- removes the selected identity's local copies of supported archived event types
+- reloads those events from the archive repository
+- rebuilds the local database state from archived content
+- preserves the archive as the source of truth
+
+This is useful when:
+
+- recovering accidentally deleted events
+- rebuilding a local workspace from archived content
+- synchronizing the local database with archived event history
+- restoring unpublished or previously archived content
+
+The restore action is intentionally scoped to supported archivable event types and does not affect unrelated workspace data.
+
+---
+
+### Raw Event JSON Export + Viewing
+
+Continuum now supports viewing and exporting the raw JSON representation of supported Nostr events.
+
+Supported event kinds include:
+
+- Profiles (kind:0)
+- Notes (kind:1)
+- Articles (kind:30023)
+
+Users can now:
+
+- view raw event JSON
+- copy event JSON directly
+- export event JSON as a file
+- re-import exported events later
+
+This complements the archive and recovery workflows introduced in this release.
+
+---
+
+### Article Search
+
+The Articles page now supports full search capabilities.
+
+Users can search article content directly from the top of the Articles page.
+
+Search results include result counts and integrate with existing article browsing workflows.
+
+---
+
+### Relay List Management
+
+Relay management has been expanded.
+
+Users can now:
+
+- add relays to an identity
+- enable relays
+- disable relays
+- persist relay changes directly to the identity JSON file
+
+This makes relay configuration easier to manage without editing identity files manually.
+
+---
+
+### UI Cleanup and Refactoring
+
+Several interface improvements were made throughout the application.
+
+This includes:
+
+- minimizing Identity Controls by default
+- minimizing Tools by default
+- cleaner dashboard organization
+- additional reusable templates and partials
+- improved button visibility and enable/disable behavior
+- reduced dashboard clutter
+
+These changes help surface the most important actions while reducing visual noise.
+
+---
+
+## Why This Matters
+
+This release continues to improve Continuum's ability to function as a long-term local-first workspace.
+
+The most important change is the ability to move events more freely between:
+
+- local databases
+- archive storage
+- exported JSON files
+- future Continuum workspaces
+
+The new archive queue system, event import/export capabilities, and relay management improvements make Continuum more resilient when working with long-lived content and multiple publishing environments.
+
+---
+
+## Philosophy Reminder
+
+Continuum continues to build around a simple principle:
+
+> The event belongs to the author.
+
+Events can be:
+
+- created locally
+- signed locally
+- archived locally
+- exported locally
+- restored locally
+
+Publishing remains optional.
+
+Authority remains local.
+
+---
+
+### Coming Next
+
+- Additional archive tooling improvements
+- Event metadata cleanup and normalization
+- Continued dashboard and UI simplification
+- Further relay management enhancements
+
+----
+
 ## v1.6.7.8 - May 20, 2026
 
 ### Highlights
