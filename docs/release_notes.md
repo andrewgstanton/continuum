@@ -1,5 +1,121 @@
 # Continuum — What's New
 
+## v1.6.8.0 - June 3, 2026
+
+### Highlights
+
+### Runtime Controls
+
+Continuum now includes additional runtime controls directly from the dashboard.
+
+Users can now:
+
+- cleanly shut down the local Continuum runtime
+- avoid manually terminating processes
+- manage application lifecycle directly from the UI
+
+A dedicated **Shutdown Application** action has been added to improve native and local deployment workflows.
+
+This is particularly useful for:
+
+- native macOS builds
+- native Windows builds
+- local Python environments
+- long-running local sessions
+
+---
+
+### Application Console Window
+
+A dedicated application console window has been added.
+
+Users can now:
+
+- open the application console directly from the dashboard
+- inspect application output in real time
+- monitor runtime activity without opening terminal windows
+
+This improves visibility into local runtime behavior and makes debugging easier across build types.
+
+---
+
+### Logging Separation + Cleanup
+
+Logging infrastructure has been reorganized for clearer separation of concerns.
+
+Continuum now maintains dedicated logs for:
+
+- `console.log`
+  - application runtime output
+  - runtime stdout output
+  - application console activity
+
+- `archive_sync.log`
+  - archive synchronization activity only
+
+- `restore_archive.log`
+  - archive restore activity only
+
+Runtime stdout output is no longer mixed into archive-specific logs.
+
+This makes logs easier to inspect and reduces noise during archive and restore workflows.
+
+---
+
+### Dashboard Organization + Context Improvements
+
+The dashboard received additional UI cleanup and organization to improve discoverability and reduce clutter.
+
+This includes improvements across:
+
+- Identity Controls
+- Tools
+- Author Card
+- Runtime Controls
+
+Changes include:
+
+- reorganized buttons into clearer functional groupings
+- moved related actions closer together
+- reduced visual clutter across the dashboard
+- added short explanatory help text beneath sections
+- improved separation between identity actions, tooling, and runtime management
+- improved visibility of common workflows
+- cleaner layout for local-first application management
+
+These changes aim to make Continuum easier to understand and navigate without requiring users to memorize where functionality lives.
+
+---
+
+## Why This Matters
+
+Continuum continues evolving toward a local-first application experience where runtime management, authoring, publishing, and tooling exist together in one workspace.
+
+This release improves:
+
+- runtime visibility
+- clean application shutdown
+- operational debugging
+- dashboard usability
+- feature discoverability
+
+The goal remains simple:
+
+> Observe locally.  
+> Control locally.  
+> Organize clearly.
+
+---
+
+### Coming Next
+
+- additional runtime management improvements
+- continued dashboard simplification
+- archive tooling refinements
+- expanded local monitoring controls
+
+---
+
 ## v1.6.7.9 - May 31, 2026
 
 ### Highlights
