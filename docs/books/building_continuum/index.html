@@ -6,6 +6,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link rel="stylesheet" href="/styles/style.css">
+
+<style>
+@media (max-width: 800px) {
+    .book-hero-grid {
+        display: block !important;
+    }
+
+    .book-cover {
+        max-width: 320px;
+        margin: 0 0 32px 0;
+    }
+}
+</style>
 </head>
 
 <body>
@@ -33,23 +46,34 @@
         <p><strong>Local Authority in a Networked World</strong></p>
     </div>
 
-    <div class="section">
+    <div class="section" style="display:grid; grid-template-columns: minmax(260px, 360px) 1fr; gap:48px; align-items:start;">
 
-        <h2>About the Book</h2>
+        <div>
+            <img
+                src="https://media.mycontinuum.xyz/2026/pro/nostr/npub19wvckp8z58lxs4djuz43pwujka6tthaq77yjd3axttsgppnj0ersgdguvd/images/building-continuum-cover-print.jpg"
+                alt="Building Continuum book cover"
+                style="width:100%; border-radius:8px; box-shadow:0 10px 28px rgba(0,0,0,0.18);"
+            >
+        </div>
 
-        <p>
-        <em>Building Continuum: Local Authority in a Networked World</em> is a short book about digital sovereignty, authorship, and why your writing should not depend entirely on platforms you do not control.
-        </p>
+        <div>
+            <h2>About the Book</h2>
 
-        <p>
-        This is not a software manual. It explains the deeper thinking behind Continuum and the kind of work it is meant to support.
-        </p>
+            <p>
+            <em>Building Continuum: Local Authority in a Networked World</em> is a short book about digital sovereignty, authorship, and why your writing should not depend entirely on platforms you do not control.
+            </p>
 
-        <p>
-        The book explores local-first publishing, identity, memory, and the importance of keeping durable authority over your own work.
-        </p>
+            <p>
+            This is not a software manual. It explains the deeper thinking behind Continuum and the kind of work it is meant to support.
+            </p>
+
+            <p>
+            The book explores local-first publishing, identity, memory, and the importance of keeping durable authority over your own work.
+            </p>
+        </div>
 
     </div>
+
 
     <hr>
 
