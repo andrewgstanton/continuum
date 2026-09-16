@@ -116,3 +116,71 @@ body {
   }
 
 }
+
+/* PSBT preview mode */
+.preview-panel {
+  margin: 0 auto;
+  max-width: 620px;
+}
+
+.preview-intro {
+  margin: -18px 0 22px;
+  color: #70695e;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.psbt-input {
+  width: 100%;
+  min-height: 150px;
+  box-sizing: border-box;
+  padding: 14px;
+  border: 1px solid #d8d1c5;
+  border-radius: 8px;
+  background: #fff;
+  color: #222;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.preview-button {
+  margin-top: 16px;
+  padding: 10px 22px;
+  border: 1px solid #6b5a43;
+  border-radius: 7px;
+  background: #fffdf9;
+  color: #6b5a43;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.preview-button:hover {
+  background: #f5f1e8;
+}
+
+.preview-notice {
+  margin-bottom: 8px;
+  color: #8a342d;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.preview-detail {
+  color: #70695e;
+  font-size: 0.88rem;
+}
+
+.preview-back {
+  display: inline-block;
+  margin-top: 22px;
+  color: #355c96;
+  font-size: 0.88rem;
+  text-decoration: none;
+}
+
+.preview-back:hover {
+  text-decoration: underline;
+}

@@ -22,11 +22,30 @@
       Loading memorial…
     </div>
 
+    <section id="preview-panel" class="preview-panel" hidden>
+      <div class="preview-intro">
+        Paste an unsigned PSBT to preview the exact OP_RETURN message
+        contained in the transaction before signing or broadcasting.
+      </div>
+
+      <textarea
+        id="psbt-input"
+        class="psbt-input"
+        spellcheck="false"
+        autocomplete="off"
+        placeholder="Paste PSBT beginning with cHNidP…"
+      ></textarea>
+
+      <button id="preview-button" class="preview-button" type="button">
+        Preview inscription
+      </button>
+    </section>
+
     <article id="memorial" class="memorial" hidden>
 
       <div id="message" class="memorial-message"></div>
 
-      <div class="permanence">
+      <div id="permanence" class="permanence">
         Permanently recorded on the Bitcoin network
       </div>
 
@@ -39,6 +58,18 @@
       >
         Verify on Bitcoin →
       </a>
+
+      <div id="preview-meta" hidden>
+        <div class="preview-notice">
+          PREVIEW — NOT YET RECORDED ON BITCOIN
+        </div>
+        <div class="preview-detail">
+          Decoded directly from the unsigned transaction contained in this PSBT.
+        </div>
+        <a id="preview-back" class="preview-back" href="./">
+          Preview another inscription
+        </a>
+      </div>
 
     </article>
 
