@@ -1,0 +1,1 @@
+QR encoder uses QRCode for JavaScript, Copyright (c) 2009 Kazuhiko Arase, MIT License. Adapted from qrcode-terminal, Apache License 2.0. Original license notices retained in qr.js.

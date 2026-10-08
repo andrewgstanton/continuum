@@ -254,3 +254,27 @@ body {
 #milestone-image { margin: 0 auto; max-height: none; width: auto; height: auto; }
 .record-details + .onchain-section { border-top: 1px solid #e8e1d6; padding-top: 32px; }
 .record-details[hidden] + .onchain-section { border-top: 0; padding-top: 0; }
+
+/* Discreet, locally generated sharing QR */
+.share-section { border-top: 1px solid #e8e1d6; margin: 38px auto 0; padding-top: 30px; text-align: center; }
+.share-section h2 { font: normal 1.15rem Georgia, "Times New Roman", serif; color: #6b5a43; margin: 0 0 17px; }
+.share-qr { width: 172px; height: 172px; margin: 0 auto; background: white; }
+.share-qr svg { display: block; width: 100%; height: 100%; }
+.share-caption { font-size: .85rem; color: #70695e; margin: 12px 0 18px; }
+.share-actions { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.share-actions button { padding: 9px 13px; border: 1px solid #c9bdac; border-radius: 6px; background: #fffdf9; color: #355c96; font: inherit; font-size: .87rem; cursor: pointer; }
+.share-actions button:hover { background: #f5f1e8; }
+.share-copy-fallback { display: block; width: 100%; margin: 12px auto 0; box-sizing: border-box; }
+.collection-title { font: normal 1.35rem Georgia, serif; text-align: center; margin: 0 0 18px; }
+#collection-share-slot .share-section { border-top: 0; margin: 0 0 36px; padding-top: 0; }
+
+/* Main catalog: collections are links, not QR panels. */
+.collections-heading { font: normal 1.4rem Georgia, serif; margin: 0 0 12px; }
+.collection-link { display: block; padding: 15px 17px; border: 1px solid #e8e1d6; border-radius: 9px; color: #355c96; text-decoration: none; line-height: 1.5; }
+.collection-link:hover, .collection-link:focus-visible { background: #f8f4ed; text-decoration: underline; }
+.collection-back { display: inline-block; color: #355c96; margin: 0 0 22px; font-size: .9rem; }
+.collection-description { text-align: center; color: #70695e; line-height: 1.6; }
+#collection-share-slot .share-section { border-top: 1px solid #e8e1d6; margin: 34px 0 0; padding-top: 30px; }
+
+/* Hide categories without records on collection pages. */
+.catalog-section[hidden] { display: none; }

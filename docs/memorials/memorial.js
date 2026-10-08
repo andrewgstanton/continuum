@@ -1,3 +1,58 @@
+// QR codes encode the canonical public viewer URL, not an explorer URL.
+function shareUrl(kind, value) {
+  const url = new URL(window.location.href);
+  url.search = "";
+  url.hash = "";
+  url.searchParams.set(kind, value);
+  return url.href;
+}
+
+function renderShare(slotId, url, label) {
+  const slot = document.getElementById(slotId);
+  if (!slot || !window.ContinuumQR) return;
+  slot.replaceChildren();
+  const section = document.createElement("section");
+  section.className = "share-section";
+  section.setAttribute("aria-label", "Share this " + label);
+  const heading = document.createElement("h2");
+  heading.textContent = "Share this " + label;
+  const qr = document.createElement("div");
+  qr.className = "share-qr";
+  try { qr.innerHTML = window.ContinuumQR.makeSVG(url); }
+  catch (error) { console.warn("QR generation failed", error); return; }
+  const caption = document.createElement("p");
+  caption.className = "share-caption";
+  caption.textContent = "Scan to view this " + label;
+  const buttons = document.createElement("div");
+  buttons.className = "share-actions";
+  const copy = document.createElement("button");
+  copy.type = "button";
+  copy.textContent = "Copy link";
+  copy.addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(url); copy.textContent = "Copied!"; }
+    catch (error) {
+      const input = document.createElement("input"); input.value = url;
+      input.className = "share-copy-fallback"; section.append(input);
+      input.select(); copy.textContent = "Select and copy link";
+    }
+  });
+  const download = document.createElement("button");
+  download.type = "button";
+  download.textContent = "Download QR code";
+  download.addEventListener("click", () => {
+    const blob = new Blob([qr.innerHTML], {type: "image/svg+xml;charset=utf-8"});
+    const objectUrl = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = objectUrl;
+    anchor.download = "continuum-" + label.replace(/[^a-z0-9]+/gi, "-") + "-qr.svg";
+    document.body.append(anchor); anchor.click(); anchor.remove();
+    setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+  });
+  buttons.append(copy, download);
+  section.append(heading, qr, caption, buttons);
+  slot.append(section);
+}
+
 async function loadCatalog() {
   const status = document.getElementById("status");
   const catalog = document.getElementById("catalog");
@@ -24,17 +79,50 @@ async function loadCatalog() {
       throw new Error("This record has not been published to Bitcoin yet.");
     }
     const list = requestedCollection ? visible.filter(r => (r.collections || []).includes(requestedCollection)) : visible;
-    if (!requestedCollection) {
-      for (const c of collections.filter(c => c.visibility === "public")) {
-        if (!visible.some(r => (r.collections || []).includes(c.id))) continue;
-        const a = document.createElement("a");
-        a.href = "?collection=" + encodeURIComponent(c.id);
-        a.textContent = c.title || c.id;
-        const item = document.createElement("p"); item.append(a); collectionList.append(item);
+    if (requestedCollection) {
+      const collection = collections.find(c => c.id === requestedCollection && c.visibility === "public");
+      if (!collection) throw new Error("Collection not found.");
+      const back = document.createElement("a");
+      back.href = "./";
+      back.className = "collection-back";
+      back.textContent = "← All memorials and milestones";
+      collectionList.append(back);
+      const title = document.createElement("h2");
+      title.className = "collection-title";
+      title.textContent = collection.title || collection.id;
+      collectionList.append(title);
+      if (collection.description) {
+        const description = document.createElement("p");
+        description.className = "collection-description";
+        description.textContent = collection.description;
+        collectionList.append(description);
+      }
+      // QR sharing belongs on the collection view, below its records.
+      renderShare("collection-share-slot", shareUrl("collection", requestedCollection), "collection");
+    } else {
+      const publicCollections = collections.filter(c => c.visibility === "public" &&
+        visible.some(r => (r.collections || []).includes(c.id)));
+      if (publicCollections.length) {
+        const heading = document.createElement("h2");
+        heading.className = "collections-heading";
+        heading.textContent = "Collections";
+        collectionList.append(heading);
+        for (const c of publicCollections) {
+          const a = document.createElement("a");
+          a.className = "collection-link";
+          a.href = "?collection=" + encodeURIComponent(c.id);
+          a.textContent = c.title || c.id;
+          collectionList.append(a);
+        }
       }
     }
     function renderRecords(type, container) {
       const records = list.filter(r => r.type === type);
+      // A collection should only display categories that contain records.
+      // Keep the usual empty-state message on the main public catalog.
+      const section = container.closest(".catalog-section");
+      if (section) section.hidden = Boolean(requestedCollection && records.length === 0);
+      if (!records.length && requestedCollection) return;
       if (!records.length) {
         const empty = document.createElement("p");
         empty.className = "catalog-empty";
@@ -500,6 +588,7 @@ async function showBitcoinMemorial(txid, record = null) {
       links.append(a);
     }
     verification.hidden = false;
+    renderShare("record-share-slot", shareUrl("txid", txid), record?.type === "milestone" ? "milestone" : "memorial");
     document.getElementById("catalog").hidden = true;
     status.hidden = true;
     memorial.hidden = false;
