@@ -1,7 +1,14 @@
 {
   "version": 1,
   "name": "Continuum Memorials and Milestones",
-  "collections": [],
+  "collections": [
+    {
+      "id": "stanton-family",
+      "title": "Stanton Family Memorials and Milestones",
+      "description": null,
+      "visibility": "public"
+    }
+  ],
   "records": [
     {
       "id": "bill-williams-002",
@@ -25,7 +32,7 @@
       "visibility": "public",
       "collections": [],
       "description": null,
-      "image": null,
+      "image": "https://media.mycontinuum.xyz/2026/pro/nostr/npub19wvckp8z58lxs4djuz43pwujka6tthaq77yjd3axttsgppnj0ersgdguvd/images/continuum-logo.jpg",
       "bitcoin": {
         "txid": "8cb51eef284c9ed536bac8b8d7128fb4079a7911bcc5a2e51f5a26e1ef180f76",
         "psbt": null
@@ -37,7 +44,9 @@
       "title": "Daphne Chun — Scripture",
       "status": "published",
       "visibility": "public",
-      "collections": [],
+      "collections": [
+        "stanton-family"
+      ],
       "description": null,
       "image": null,
       "bitcoin": {
@@ -51,21 +60,25 @@
       "title": "Daphne Chun — Memorial",
       "status": "published",
       "visibility": "public",
-      "collections": [],
+      "collections": [
+        "stanton-family"
+      ],
       "description": null,
       "image": null,
       "bitcoin": {
         "txid": "5b1cad1375d04980d8d8ff042556aef343ce05dd9a4c058436cdc93da8245c43",
         "psbt": null
       }
-    },           
+    },
     {
       "id": "james-stanton-005",
       "type": "memorial",
       "title": "James Andrew Stanton — Scripture",
       "status": "published",
       "visibility": "public",
-      "collections": [],
+      "collections": [
+        "stanton-family"
+      ],
       "description": null,
       "image": null,
       "bitcoin": {
@@ -79,7 +92,9 @@
       "title": "James Andrew Stanton",
       "status": "published",
       "visibility": "public",
-      "collections": [],
+      "collections": [
+        "stanton-family"
+      ],
       "description": null,
       "image": null,
       "bitcoin": {
@@ -93,7 +108,9 @@
       "title": "Champ and Whiskers — Scripture",
       "status": "published",
       "visibility": "public",
-      "collections": [],
+      "collections": [
+        "stanton-family"
+      ],
       "description": null,
       "image": null,
       "bitcoin": {
@@ -107,7 +124,9 @@
       "title": "Champ",
       "status": "published",
       "visibility": "public",
-      "collections": [],
+      "collections": [
+        "stanton-family"
+      ],
       "description": null,
       "image": null,
       "bitcoin": {
@@ -121,9 +140,11 @@
       "title": "Whiskers",
       "status": "published",
       "visibility": "public",
-      "collections": [],
+      "collections": [
+        "stanton-family"
+      ],
       "description": null,
-      "image": null,
+      "image": "https://media.mycontinuum.xyz/2026/pro/nostr/npub19wvckp8z58lxs4djuz43pwujka6tthaq77yjd3axttsgppnj0ersgdguvd/images/img-4975.jpg",
       "bitcoin": {
         "txid": "c02600edf54198fbac11f24e08983d9e1c62080457e7eef90c68e9d53dee2b98",
         "psbt": null
