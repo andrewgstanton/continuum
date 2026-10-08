@@ -184,3 +184,25 @@ body {
 .preview-back:hover {
   text-decoration: underline;
 }
+
+/* Milestone builder */
+.mode-links {margin-bottom: 22px; font-size: .9rem;}
+.mode-links a {color:#355c96;}
+#builder-panel {text-align:left;}
+#builder-panel h2 {text-align:center;font-family:Georgia,serif;font-weight:normal;}
+#builder-panel label {display:block;margin:12px 0;font-size:.92rem;color:#6b5a43;}
+#builder-panel input, #builder-panel textarea {display:block;width:100%;box-sizing:border-box;padding:10px;margin-top:5px;border:1px solid #d8d1c5;border-radius:6px;font:inherit;color:#222;background:#fff;}
+#builder-result {margin:16px 0;line-height:1.5;}
+#generated-psbt {min-height:80px;}
+.explorer-links {display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:15px 0;}
+.explorer-links a {color:#355c96;}
+#milestone-image {max-width:100%;height:auto;border-radius:8px;}
+#milestone-description {white-space:pre-line;line-height:1.6;}
+
+/* Clear, visitor-friendly Bitcoin verification area */
+.verification { margin-top: 16px; text-align: center; }
+.verification-heading { font-size: 0.96rem; font-weight: 600; color: #49443d; }
+.verification .explorer-links { margin: 10px 0 9px; gap: 24px; }
+.verification .explorer-links a { font-size: 0.94rem; }
+.verification-help { font-size: 0.83rem; color: #70695e; }
+.verification-source { font-size: 0.78rem; color: #857e74; margin-top: 15px; }

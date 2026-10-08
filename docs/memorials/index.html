@@ -1,63 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-
-  <title>Continuum Memorials</title>
-
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-
-  <main class="page-shell">
-
-    <div class="brand">
-      Continuum Memorials And Milestones
-    </div>
-
-    <div id="status" class="status">
-      Loading memorial…
-    </div>
-
-    <section id="preview-panel" class="preview-panel" hidden>
-      <div class="preview-intro">
-        Paste an unsigned PSBT to preview the exact OP_RETURN message
-        contained in the transaction before signing or broadcasting.
-      </div>
-
-      <textarea
-        id="psbt-input"
-        class="psbt-input"
-        spellcheck="false"
-        autocomplete="off"
-        placeholder="Paste PSBT beginning with cHNidP…"
-      ></textarea>
-
-      <button id="preview-button" class="preview-button" type="button">
-        Preview inscription
-      </button>
-    </section>
-
-    <article id="memorial" class="memorial" hidden>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Continuum Memorials &amp; Milestones</title><link rel="stylesheet" href="style.css?v=4"></head>
+<body><main class="page-shell"><div class="brand">Continuum Memorials And Milestones</div>
+<div id="status" class="status">Loading memorials…</div>
+<section id="catalog" hidden><h2>Memorials &amp; Milestones</h2><div id="collections"></div><div id="records"></div></section>
+<article id="memorial" class="memorial" hidden>
 
       <div id="message" class="memorial-message"></div>
 
-      <div id="permanence" class="permanence">
+<div id="fuller-content" hidden><img id="milestone-image" alt="Milestone image" hidden><p id="milestone-description"></p></div>
+<div id="permanence" class="permanence">
         Permanently recorded on the Bitcoin network
       </div>
 
-      <a
-        id="verify-link"
-        class="verify-link"
-        href="#"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Verify on Bitcoin →
-      </a>
+      <section id="verification" class="verification" hidden aria-label="Bitcoin verification">
+        <div class="verification-heading">Verify on Bitcoin</div>
+        <div id="explorer-links" class="explorer-links"></div>
+        <div class="verification-help">Both links let you independently verify this Bitcoin transaction.</div>
+        <div id="explorer-source" class="verification-source"></div>
+      </section>
 
       <div id="preview-meta" hidden>
         <div class="preview-notice">
@@ -72,10 +33,4 @@
       </div>
 
     </article>
-
-  </main>
-
-  <script src="memorial.js"></script>
-
-</body>
-</html>
+</main><script src="memorial.js?v=4"></script></body></html>

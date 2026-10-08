@@ -1,3 +1,47 @@
+async function loadCatalog() {
+  const status = document.getElementById("status");
+  const catalog = document.getElementById("catalog");
+  const collectionList = document.getElementById("collections");
+  const recordList = document.getElementById("records");
+  try {
+    const response = await fetch("index.json", {cache: "no-store"});
+    if (!response.ok) throw new Error("Cannot load memorial catalog (HTTP " + response.status + ")");
+    const data = await response.json();
+    const all = Array.isArray(data.records) ? data.records : [];
+    const visible = all.filter(r => r.status === "published" && r.visibility === "public");
+    const params = new URLSearchParams(location.search);
+    const requestedCollection = params.get("collection");
+    const requestedId = params.get("id");
+    const collections = Array.isArray(data.collections) ? data.collections : [];
+    const selected = requestedId ? all.find(r => r.id === requestedId) : null;
+    if (requestedId) {
+      if (!selected) throw new Error("Memorial not found.");
+      if (selected.bitcoin?.txid) {
+        const url = new URL(location.href); url.search = "?txid=" + encodeURIComponent(selected.bitcoin.txid);
+        location.replace(url.href); return;
+      }
+      throw new Error("This memorial has not been published to Bitcoin yet.");
+    }
+    const list = requestedCollection ? visible.filter(r => (r.collections || []).includes(requestedCollection)) : visible;
+    if (!requestedCollection) {
+      for (const c of collections.filter(c => c.visibility === "public")) {
+        if (!visible.some(r => (r.collections || []).includes(c.id))) continue;
+        const a = document.createElement("a");
+        a.href = "?collection=" + encodeURIComponent(c.id);
+        a.textContent = c.title || c.id;
+        const item = document.createElement("p"); item.append(a); collectionList.append(item);
+      }
+    }
+    for (const r of list) {
+      const item = document.createElement("p");
+      const a = document.createElement("a"); a.href = "?id=" + encodeURIComponent(r.id);
+      a.textContent = r.title || r.id; item.append(a); recordList.append(item);
+    }
+    if (!list.length) recordList.textContent = "No published memorials to display yet.";
+    status.hidden = true; catalog.hidden = false;
+  } catch (e) { status.textContent = e.message; status.hidden = false; status.classList.add("error"); }
+}
+
 function hexToUtf8(hex) {
   if (!hex || hex.length % 2 !== 0) {
     throw new Error("Invalid OP_RETURN data.");
@@ -282,67 +326,12 @@ function extractOpReturnHexFromRawTransaction(transaction) {
 }
 
 
-function renderPreview(psbtText) {
-  const status = document.getElementById("status");
-  const previewPanel = document.getElementById("preview-panel");
-  const memorial = document.getElementById("memorial");
-  const message = document.getElementById("message");
-  const permanence = document.getElementById("permanence");
-  const verifyLink = document.getElementById("verify-link");
-  const previewMeta = document.getElementById("preview-meta");
-
-  const unsignedTransaction =
-    extractUnsignedTransactionFromPsbt(psbtText);
-
-  const opReturnHex =
-    extractOpReturnHexFromRawTransaction(unsignedTransaction);
-
-  const memorialText = hexToUtf8(opReturnHex);
-
-  message.textContent = memorialText;
-
-  permanence.hidden = true;
-  verifyLink.hidden = true;
-  previewMeta.hidden = false;
-
-  status.hidden = true;
-  previewPanel.hidden = true;
-  memorial.hidden = false;
-}
-
-
-function showPreviewForm() {
-  const status = document.getElementById("status");
-  const previewPanel = document.getElementById("preview-panel");
-  const previewButton = document.getElementById("preview-button");
-  const psbtInput = document.getElementById("psbt-input");
-
-  status.hidden = true;
-  previewPanel.hidden = false;
-
-  previewButton.addEventListener("click", () => {
-    try {
-      status.classList.remove("error");
-      renderPreview(psbtInput.value);
-    } catch (error) {
-      console.error(error);
-
-      status.textContent =
-        error.message || "Unable to preview inscription.";
-
-      status.classList.add("error");
-      status.hidden = false;
-    }
-  });
-}
-
-
 async function loadMemorial() {
   const status = document.getElementById("status");
   const memorial = document.getElementById("memorial");
   const message = document.getElementById("message");
   const permanence = document.getElementById("permanence");
-  const verifyLink = document.getElementById("verify-link");
+  const verification = document.getElementById("verification");
   const previewMeta = document.getElementById("preview-meta");
 
   const params = new URLSearchParams(window.location.search);
@@ -353,7 +342,7 @@ async function loadMemorial() {
    * No TXID now means preview mode rather than an error.
    */
   if (!txid) {
-    showPreviewForm();
+    await loadCatalog();
     return;
   }
 
@@ -365,15 +354,22 @@ async function loadMemorial() {
 
   try {
 
-    const response = await fetch(
-      `https://mempool.space/api/tx/${txid}`
-    );
-
-    if (!response.ok) {
-      throw new Error("Bitcoin transaction not found.");
+    const explorers = [
+      {name: "mempool.space", api: `https://mempool.space/api/tx/${txid}`, page: `https://mempool.space/tx/${txid}`},
+      {name: "Blockstream", api: `https://blockstream.info/api/tx/${txid}`, page: `https://blockstream.info/tx/${txid}`},
+      {name: "mempool.space (onion mirror not supported in browser)", api: null, page: null}
+    ];
+    let transaction, source, lastError;
+    for (const explorer of explorers.filter(x => x.api)) {
+      try {
+        const response = await fetch(explorer.api, {signal: AbortSignal.timeout(8000)});
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const candidate = await response.json();
+        if (!Array.isArray(candidate.vout)) throw new Error("Unexpected transaction data");
+        transaction = candidate; source = explorer; break;
+      } catch (e) { lastError = e; }
     }
-
-    const transaction = await response.json();
+    if (!transaction) throw new Error("No explorer could provide the transaction: " + (lastError?.message || "unknown error"));
 
     const opReturnOutput = transaction.vout.find(output =>
       output.scriptpubkey_type === "op_return"
@@ -399,10 +395,19 @@ async function loadMemorial() {
 
     permanence.hidden = false;
     previewMeta.hidden = true;
-    verifyLink.hidden = false;
-    verifyLink.href =
-      `https://mempool.space/tx/${txid}`;
-
+    const sourceLabel = document.getElementById("explorer-source");
+    sourceLabel.textContent = `Inscription retrieved from ${source.name}`;
+    const links = document.getElementById("explorer-links");
+    links.replaceChildren();
+    for (const explorer of explorers.filter(x => x.page)) {
+      const a = document.createElement("a");
+      a.href = explorer.page;
+      a.textContent = explorer.name + " ↗";
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      links.append(a);
+    }
+    verification.hidden = false;
     status.hidden = true;
     memorial.hidden = false;
 
@@ -418,4 +423,4 @@ async function loadMemorial() {
 }
 
 
-loadMemorial();
+if (document.getElementById("catalog")) loadMemorial();
