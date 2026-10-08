@@ -2,7 +2,8 @@ async function loadCatalog() {
   const status = document.getElementById("status");
   const catalog = document.getElementById("catalog");
   const collectionList = document.getElementById("collections");
-  const recordList = document.getElementById("records");
+  const memorialList = document.getElementById("memorial-records");
+  const milestoneList = document.getElementById("milestone-records");
   try {
     const response = await fetch("index.json", {cache: "no-store"});
     if (!response.ok) throw new Error("Cannot load memorial catalog (HTTP " + response.status + ")");
@@ -13,14 +14,14 @@ async function loadCatalog() {
     const requestedCollection = params.get("collection");
     const requestedId = params.get("id");
     const collections = Array.isArray(data.collections) ? data.collections : [];
-    const selected = requestedId ? all.find(r => r.id === requestedId) : null;
     if (requestedId) {
-      if (!selected) throw new Error("Memorial not found.");
+      const selected = all.find(r => r.id === requestedId);
+      if (!selected) throw new Error("Memorial or milestone not found.");
       if (selected.bitcoin?.txid) {
-        const url = new URL(location.href); url.search = "?txid=" + encodeURIComponent(selected.bitcoin.txid);
-        location.replace(url.href); return;
+        await showBitcoinMemorial(selected.bitcoin.txid, selected);
+        return;
       }
-      throw new Error("This memorial has not been published to Bitcoin yet.");
+      throw new Error("This record has not been published to Bitcoin yet.");
     }
     const list = requestedCollection ? visible.filter(r => (r.collections || []).includes(requestedCollection)) : visible;
     if (!requestedCollection) {
@@ -32,12 +33,48 @@ async function loadCatalog() {
         const item = document.createElement("p"); item.append(a); collectionList.append(item);
       }
     }
-    for (const r of list) {
-      const item = document.createElement("p");
-      const a = document.createElement("a"); a.href = "?id=" + encodeURIComponent(r.id);
-      a.textContent = r.title || r.id; item.append(a); recordList.append(item);
+    function renderRecords(type, container) {
+      const records = list.filter(r => r.type === type);
+      if (!records.length) {
+        const empty = document.createElement("p");
+        empty.className = "catalog-empty";
+        empty.textContent = type === "memorial" ? "No public memorials listed yet." : "No public milestones listed yet.";
+        container.append(empty);
+        return;
+      }
+      for (const record of records) {
+        const a = document.createElement("a");
+        a.className = "catalog-card";
+        a.href = "?id=" + encodeURIComponent(record.id);
+        if (record.image) {
+          const img = document.createElement("img");
+          img.className = "catalog-thumbnail";
+          img.src = record.image;
+          img.alt = "";
+          img.loading = "lazy";
+          a.append(img);
+        } else {
+          const placeholder = document.createElement("span");
+          placeholder.className = "catalog-thumbnail catalog-placeholder";
+          placeholder.textContent = type === "memorial" ? "♡" : "★";
+          placeholder.setAttribute("aria-hidden", "true");
+          a.append(placeholder);
+        }
+        const info = document.createElement("span");
+        info.className = "catalog-card-content";
+        const title = document.createElement("span");
+        title.className = "catalog-card-title";
+        title.textContent = record.title || record.id;
+        const action = document.createElement("span");
+        action.className = "catalog-card-action";
+        action.textContent = type === "memorial" ? "View memorial →" : "View milestone →";
+        info.append(title, action);
+        a.append(info);
+        container.append(a);
+      }
     }
-    if (!list.length) recordList.textContent = "No published memorials to display yet.";
+    renderRecords("memorial", memorialList);
+    renderRecords("milestone", milestoneList);
     status.hidden = true; catalog.hidden = false;
   } catch (e) { status.textContent = e.message; status.hidden = false; status.classList.add("error"); }
 }
@@ -326,34 +363,83 @@ function extractOpReturnHexFromRawTransaction(transaction) {
 }
 
 
+// The catalog metadata is intentionally separate from the on-chain inscription.
+// textContent prevents user-authored descriptions/titles from becoming HTML.
+function renderRecordMetadata(record) {
+  const section = document.getElementById("record-details");
+  const image = document.getElementById("milestone-image");
+  const descWrap = document.getElementById("record-description-wrap");
+  const brand = document.getElementById("site-brand");
+  const defaultBrand = "Continuum Memorials And Milestones";
+  brand.textContent = defaultBrand;
+  section.hidden = true;
+  image.hidden = true;
+  image.removeAttribute("src");
+  descWrap.hidden = true;
+  document.getElementById("record-details-heading").textContent = "";
+  document.getElementById("milestone-description").textContent = "";
+  if (!record || typeof record !== "object") return;
+
+  if (record.type === "memorial") brand.textContent = "Continuum Memorial";
+  else if (record.type === "milestone") brand.textContent = "Continuum Milestone";
+
+  const title = typeof record.title === "string" ? record.title.trim() : "";
+  const description = typeof record.description === "string" ? record.description.trim() : "";
+  const imageUrl = typeof record.image === "string" ? record.image.trim() : "";
+  if (!title && !description && !imageUrl) return;
+
+  document.getElementById("record-details-heading").textContent = title ||
+    (record.type === "memorial" ? "About this memorial" : "About this milestone");
+  if (imageUrl) {
+    image.src = imageUrl;
+    image.alt = title ? `Image for ${title}` : "Memorial or milestone image";
+    image.hidden = false;
+  }
+  if (description) {
+    document.getElementById("milestone-description").textContent = description;
+    descWrap.hidden = false;
+  }
+  section.hidden = false;
+}
+
+async function findRecordByTxid(txid) {
+  // A direct ?txid= URL must work even when the catalog is absent or offline.
+  try {
+    const response = await fetch("index.json", {cache: "no-store"});
+    if (!response.ok) return null;
+    const data = await response.json();
+    return (Array.isArray(data.records) ? data.records : []).find(
+      r => r.bitcoin?.txid?.toLowerCase() === txid.toLowerCase()
+    ) || null;
+  } catch (error) {
+    console.warn("Optional catalog metadata unavailable:", error);
+    return null;
+  }
+}
+
 async function loadMemorial() {
+  const params = new URLSearchParams(window.location.search);
+  const txid = params.get("txid");
+  if (!txid) {
+    await loadCatalog();
+    return;
+  }
+  await showBitcoinMemorial(txid, await findRecordByTxid(txid));
+}
+
+async function showBitcoinMemorial(txid, record = null) {
   const status = document.getElementById("status");
   const memorial = document.getElementById("memorial");
   const message = document.getElementById("message");
   const permanence = document.getElementById("permanence");
   const verification = document.getElementById("verification");
   const previewMeta = document.getElementById("preview-meta");
-
-  const params = new URLSearchParams(window.location.search);
-
-  const txid = params.get("txid");
-
-  /*
-   * No TXID now means preview mode rather than an error.
-   */
-  if (!txid) {
-    await loadCatalog();
-    return;
-  }
-
   if (!/^[0-9a-fA-F]{64}$/.test(txid)) {
     status.textContent = "The Bitcoin transaction ID is invalid.";
     status.classList.add("error");
     return;
   }
-
   try {
-
     const explorers = [
       {name: "mempool.space", api: `https://mempool.space/api/tx/${txid}`, page: `https://mempool.space/tx/${txid}`},
       {name: "Blockstream", api: `https://blockstream.info/api/tx/${txid}`, page: `https://blockstream.info/tx/${txid}`},
@@ -392,6 +478,7 @@ async function loadMemorial() {
     const memorialText = hexToUtf8(hex);
 
     message.textContent = memorialText;
+    renderRecordMetadata(record);
 
     permanence.hidden = false;
     previewMeta.hidden = true;
@@ -408,6 +495,7 @@ async function loadMemorial() {
       links.append(a);
     }
     verification.hidden = false;
+    document.getElementById("catalog").hidden = true;
     status.hidden = true;
     memorial.hidden = false;
 

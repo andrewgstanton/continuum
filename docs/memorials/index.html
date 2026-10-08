@@ -1,14 +1,24 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Continuum Memorials &amp; Milestones</title><link rel="stylesheet" href="style.css?v=4"></head>
-<body><main class="page-shell"><div class="brand">Continuum Memorials And Milestones</div>
+<title>Continuum Memorials &amp; Milestones</title><link rel="stylesheet" href="style.css?v=9"></head>
+<body><main class="page-shell"><div class="brand" id="site-brand">Continuum Memorials And Milestones</div>
 <div id="status" class="status">Loading memorials…</div>
-<section id="catalog" hidden><h2>Memorials &amp; Milestones</h2><div id="collections"></div><div id="records"></div></section>
+<section id="catalog" class="catalog" hidden><div id="collections"></div><section class="catalog-section" aria-labelledby="memorials-heading"><h2 id="memorials-heading">Memorials</h2><p class="catalog-intro">Remembering loved ones and preserving their stories.</p><div id="memorial-records" class="catalog-records"></div></section><section class="catalog-section" aria-labelledby="milestones-heading"><h2 id="milestones-heading">Milestones</h2><p class="catalog-intro">Celebrating moments worth remembering.</p><div id="milestone-records" class="catalog-records"></div></section></section>
 <article id="memorial" class="memorial" hidden>
 
-      <div id="message" class="memorial-message"></div>
+<section id="record-details" class="record-details" hidden aria-labelledby="record-details-heading">
+        <h2 id="record-details-heading"></h2>
+        <div id="record-description-wrap" hidden><p id="milestone-description"></p></div>
+        <img id="milestone-image" alt="" hidden>
+      </section>
 
-<div id="fuller-content" hidden><img id="milestone-image" alt="Milestone image" hidden><p id="milestone-description"></p></div>
+      <section class="onchain-section" aria-labelledby="onchain-heading">
+        <h2 id="onchain-heading">Recorded on Bitcoin</h2>
+        
+        <div id="message" class="memorial-message"></div>
+      </section>
+
+
 <div id="permanence" class="permanence">
         Permanently recorded on the Bitcoin network
       </div>
@@ -19,6 +29,8 @@
         <div class="verification-help">Both links let you independently verify this Bitcoin transaction.</div>
         <div id="explorer-source" class="verification-source"></div>
       </section>
+
+
 
       <div id="preview-meta" hidden>
         <div class="preview-notice">
@@ -33,4 +45,4 @@
       </div>
 
     </article>
-</main><script src="memorial.js?v=4"></script></body></html>
+</main><script src="memorial.js?v=9"></script></body></html>

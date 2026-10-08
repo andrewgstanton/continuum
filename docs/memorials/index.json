@@ -2,5 +2,20 @@
   "version": 1,
   "name": "Continuum Memorials and Milestones",
   "collections": [],
-  "records": []
+  "records": [
+    {
+      "id": "bill-williams-002",
+      "type": "milestone",
+      "title": "Bill Williams — From Coming Soon to SOLD",
+      "status": "published",
+      "visibility": "public",
+      "collections": [],
+      "description": null,
+      "image": "https://media.mycontinuum.xyz/2026/pro/nostr/npub19wvckp8z58lxs4djuz43pwujka6tthaq77yjd3axttsgppnj0ersgdguvd/images/bill-willams-sold.png",
+      "bitcoin": {
+        "txid": "2cd3e1578811531f0925d643e5afcf4da46aab49fc6ef8f16ab2d0df09eab9d3",
+        "psbt": null
+      }
+    }
+  ]
 }

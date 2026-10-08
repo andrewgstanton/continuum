@@ -206,3 +206,51 @@ body {
 .verification .explorer-links a { font-size: 0.94rem; }
 .verification-help { font-size: 0.83rem; color: #70695e; }
 .verification-source { font-size: 0.78rem; color: #857e74; margin-top: 15px; }
+
+/* Public archive: distinct memorial and milestone galleries */
+.catalog { text-align: left; }
+.catalog-section { margin: 0 0 30px; }
+.catalog-section + .catalog-section { border-top: 1px solid #e8e1d6; padding-top: 28px; }
+.catalog-section h2 { margin: 0 0 8px; font-family: Georgia, "Times New Roman", serif; font-size: 1.55rem; font-weight: normal; }
+.catalog-intro { margin: 0 0 20px; color: #70695e; font-size: .92rem; line-height: 1.5; }
+.catalog-records { display: grid; gap: 12px; }
+.catalog-card { display: flex; align-items: center; gap: 18px; padding: 13px; border: 1px solid #e8e1d6; border-radius: 9px; color: inherit; text-decoration: none; transition: background .15s; }
+.catalog-card:hover, .catalog-card:focus-visible { background: #f8f4ed; }
+.catalog-thumbnail { flex: 0 0 90px; width: 90px; height: 90px; object-fit: cover; border-radius: 7px; background: #f3eee6; }
+.catalog-placeholder { display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #86765d; }
+.catalog-card-content { display: flex; flex-direction: column; align-items: flex-start; gap: 9px; min-width: 0; }
+.catalog-card-title { font-weight: 600; font-size: 1rem; line-height: 1.4; }
+.catalog-card-action { color: #355c96; font-size: .87rem; }
+.catalog-empty { color: #857e74; font-size: .9rem; }
+#collections:not(:empty) { margin-bottom: 26px; }
+#collections a { color: #355c96; }
+@media (max-width: 480px) { .catalog-thumbnail { flex-basis: 72px; width: 72px; height: 72px; } .catalog-card { gap: 12px; } }
+
+/* Explicit separation of optional catalog metadata and Bitcoin inscription */
+.record-details { text-align: left; border: 1px solid #e7dfd3; background: #fbf8f2; padding: 24px; border-radius: 10px; margin: 0 0 34px; }
+.record-details h2, .onchain-section h2 { font-family: Georgia, "Times New Roman", serif; font-size: 1.2rem; font-weight: normal; margin: 0 0 10px; }
+.record-origin, .onchain-explainer { font-size: .84rem; color: #70695e; line-height: 1.55; margin: 0 0 20px; }
+#milestone-image { display: block; max-width: 100%; max-height: 460px; object-fit: contain; margin: 0 auto 22px; border-radius: 8px; }
+#milestone-image[hidden] { display: none; }
+.record-fields { margin: 0; }
+.record-fields > div { margin: 0 0 13px; }
+.record-fields dt { color: #857e74; font-size: .78rem; margin-bottom: 4px; }
+.record-fields dd { margin: 0; line-height: 1.5; font-size: 1rem; }
+#record-description-wrap h3 { font-size: .86rem; font-weight: 600; color: #70695e; margin: 15px 0 5px; }
+#milestone-description { margin: 0; overflow-wrap: anywhere; }
+.onchain-section { border-top: 1px solid #e8e1d6; padding-top: 28px; }
+.onchain-section h2 { color: #6b5a43; }
+.onchain-section .memorial-message { margin-top: 28px; }
+
+/* Extra details follow the permanent inscription and its verification. */
+.record-details { margin: 34px 0 0; }
+.onchain-section { border-top: 0; padding-top: 0; }
+
+/* Story first: optional catalog details lead, Bitcoin inscription follows. */
+.record-details { border: 0; background: transparent; padding: 0; margin: 0 0 42px; text-align: center; }
+.record-details h2 { font-size: clamp(1.25rem, 2.5vw, 1.65rem); margin: 0 0 18px; }
+#record-description-wrap { margin: 0 auto 22px; max-width: 640px; text-align: left; line-height: 1.65; }
+#milestone-description { white-space: pre-line; }
+#milestone-image { margin: 0 auto; max-height: none; width: auto; height: auto; }
+.record-details + .onchain-section { border-top: 1px solid #e8e1d6; padding-top: 32px; }
+.record-details[hidden] + .onchain-section { border-top: 0; padding-top: 0; }
