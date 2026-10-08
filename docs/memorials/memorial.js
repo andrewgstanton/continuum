@@ -45,7 +45,12 @@ async function loadCatalog() {
       for (const record of records) {
         const a = document.createElement("a");
         a.className = "catalog-card";
-        a.href = "?id=" + encodeURIComponent(record.id);
+        // Published Bitcoin transactions get canonical, shareable TXID links.
+        // Keep the record ID as a fallback for previews or missing TXIDs.
+        const recordTxid = record.bitcoin?.txid;
+        a.href = typeof recordTxid === "string" && /^[0-9a-fA-F]{64}$/.test(recordTxid)
+          ? "?txid=" + encodeURIComponent(recordTxid)
+          : "?id=" + encodeURIComponent(record.id);
         if (record.image) {
           const img = document.createElement("img");
           img.className = "catalog-thumbnail";
