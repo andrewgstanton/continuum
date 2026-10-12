@@ -39,7 +39,10 @@
       "bitcoin": {
         "txid": "8cb51eef284c9ed536bac8b8d7128fb4079a7911bcc5a2e51f5a26e1ef180f76",
         "psbt": null
-      }
+      },
+      "nostr": {
+        "event_id": "90294fd9df902511dba330110a51c6816ef9fa2cea68c192fdb44bef3400f073"
+      }       
     },
     {
       "id": "daphone-chun-005",
@@ -55,7 +58,10 @@
       "bitcoin": {
         "txid": "52890dd212f27edd8f05412165e409932b36f229a9fba274cd22d5fb531939d5",
         "psbt": null
-      }
+      },
+      "nostr": {
+        "event_id": "3f4c326f5c83c19e66dfe1aa53d141c0d9693c3c1de2a8d5ddd92f2a3d6dcd21"
+      }       
     },
     {
       "id": "daphone-chun-004",
@@ -71,7 +77,10 @@
       "bitcoin": {
         "txid": "5b1cad1375d04980d8d8ff042556aef343ce05dd9a4c058436cdc93da8245c43",
         "psbt": null
-      }
+      },
+      "nostr": {
+        "event_id": "92d8eefa8bb10155db0fa7e06c8aa9a04e91a6b7559ecaf0172f1934c45fd113"
+      }         
     },
     {
       "id": "james-stanton-005",
@@ -87,7 +96,10 @@
       "bitcoin": {
         "txid": "86f83606061e46dc5f3777f39f5d8451edf12c252cee9be771dafd6acf54f29e",
         "psbt": null
-      }
+      },
+      "nostr": {
+        "event_id": "ca8eeb1bf101c148da166b02e84226c1a89ce152d2749498d9a138d5f5261d95"
+      }         
     },
     {
       "id": "james-stanton-004",
@@ -103,7 +115,10 @@
       "bitcoin": {
         "txid": "5085e45a3db08845100bf55bebdf886558ea45bbf7601a945fbbe8bc41c80571",
         "psbt": null
-      }
+      },
+      "nostr": {
+        "event_id": "9b8e63fd46e5863b807f464702449e2048f684a8b8209242389038cb65e8f607"
+      }         
     },
     {
       "id": "champ-whiskers-scripture-003",
@@ -119,7 +134,10 @@
       "bitcoin": {
         "txid": "e957fd78abb51396dc855664963256ed8336d4647b4dbb4cc49d7516fc47f3c0",
         "psbt": null
-      }
+      },
+      "nostr": {
+        "event_id": "454e99e038d0d46e1e65a85f8d4c4e4a9d6d956f4fc8964449c8599c56989f70"
+      }          
     },
     {
       "id": "champ-memorial-002",
@@ -135,7 +153,10 @@
       "bitcoin": {
         "txid": "bcbab7a0c18667bcca3b764cd8e7886ca691631e10e094de33249d1167e6cebb",
         "psbt": null
-      }
+      },
+      "nostr": {
+        "event_id": "83dc42a7426338b25096fdb4cc8794331aa1b9b3e129c815dddc6ff9aaeb875d"
+      }          
     },
     {
       "id": "whiskers-memorial-001",
@@ -151,7 +172,10 @@
       "bitcoin": {
         "txid": "c02600edf54198fbac11f24e08983d9e1c62080457e7eef90c68e9d53dee2b98",
         "psbt": null
-      }
+      },
+      "nostr": {
+        "event_id": "8b27e669e2d15f0531133704049c8b77e82be8e3b5c8374e3a3b1b13bdd7ac84"
+      }           
     }
   ]
 }
