@@ -32,6 +32,14 @@
 
 
 
+      <div id="nostr-links" class="verification" hidden aria-label="Nostr publication" style="margin-top:0.75rem">
+        <div class="verification-heading">View on Nostr</div>
+        <div class="explorer-links">
+          <a id="nostr-primal" target="_blank" rel="noopener noreferrer">Primal</a>
+          <a id="nostr-njump" target="_blank" rel="noopener noreferrer">njump</a>
+        </div>
+      </div>
+
       <div id="record-share-slot"></div>
       <div id="preview-meta" hidden>
         <div class="preview-notice">
@@ -46,4 +54,28 @@
       </div>
 
     </article>
-</main><script src="qr.js?v=1"></script><script src="memorial.js?v=11"></script></body></html>
+</main><script src="qr.js?v=1"></script><script src="memorial.js?v=11"></script><script>
+// Optional Nostr links for published records; absent for previews and records without an event ID.
+(async function () {
+  const section = document.getElementById('nostr-links');
+  const txid = new URLSearchParams(window.location.search).get('txid');
+  if (!txid || !/^[a-f0-9]{64}$/i.test(txid)) return;
+  try {
+    const response = await fetch('index.json', { cache: 'no-cache' });
+    if (!response.ok) return;
+    const index = await response.json();
+    // Supports a top-level array or an object with a records array.
+    const records = Array.isArray(index) ? index : index.records;
+    if (!Array.isArray(records)) return;
+    const record = records.find(item => item && item.bitcoin &&
+      typeof item.bitcoin.txid === 'string' && item.bitcoin.txid.toLowerCase() === txid.toLowerCase());
+    const eventId = record && record.nostr && record.nostr.event_id;
+    if (typeof eventId !== 'string' || !/^[a-f0-9]{64}$/i.test(eventId)) return;
+    document.getElementById('nostr-primal').href = 'https://primal.net/e/' + eventId;
+    document.getElementById('nostr-njump').href = 'https://njump.me/' + eventId;
+    section.hidden = false;
+  } catch (_) {
+    // No Nostr section if the index cannot be loaded.
+  }
+})();
+</script></body></html>

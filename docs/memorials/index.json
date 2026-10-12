@@ -22,7 +22,10 @@
       "bitcoin": {
         "txid": "2cd3e1578811531f0925d643e5afcf4da46aab49fc6ef8f16ab2d0df09eab9d3",
         "psbt": null
-      }
+      },
+      "nostr": {
+        "event_id": "2d96a744cbc0f6b4cd58ab728cf36f22cd8a4c02aee92b472cf190bb894fcc79"
+      }      
     },
     {
       "id": "continuum-founding-001",
