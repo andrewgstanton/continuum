@@ -85,7 +85,7 @@ async function loadCatalog() {
       const back = document.createElement("a");
       back.href = "./";
       back.className = "collection-back";
-      back.textContent = "← All memorials and milestones";
+      back.textContent = "â† All memorials and milestones";
       collectionList.append(back);
       const title = document.createElement("h2");
       title.className = "collection-title";
@@ -149,7 +149,7 @@ async function loadCatalog() {
         } else {
           const placeholder = document.createElement("span");
           placeholder.className = "catalog-thumbnail catalog-placeholder";
-          placeholder.textContent = type === "memorial" ? "♡" : "★";
+          placeholder.textContent = type === "memorial" ? "â™¡" : "â˜…";
           placeholder.setAttribute("aria-hidden", "true");
           a.append(placeholder);
         }
@@ -160,7 +160,7 @@ async function loadCatalog() {
         title.textContent = record.title || record.id;
         const action = document.createElement("span");
         action.className = "catalog-card-action";
-        action.textContent = type === "memorial" ? "View memorial →" : "View milestone →";
+        action.textContent = type === "memorial" ? "View memorial â†’" : "View milestone â†’";
         info.append(title, action);
         a.append(info);
         container.append(a);
@@ -520,6 +520,34 @@ async function loadMemorial() {
   await showBitcoinMemorial(txid, await findRecordByTxid(txid));
 }
 
+// Build links with DOM nodes so inscription text is never interpreted as HTML.
+function renderInscription(element, text) {
+  element.replaceChildren();
+  const websites = /\b(?:https?:\/\/)?(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,63}(?::\d{1,5})?(?:[/?#][^\s<>"']*)?/gi;
+  let offset = 0;
+  for (const match of text.matchAll(websites)) {
+    // Avoid treating email addresses or non-web schemes as website references.
+    if (match.index > 0 && /[@\w/:-]/.test(text[match.index - 1])) continue;
+    const label = match[0].replace(/[.,;:!?\)\]\}]+$/, "");
+    const href = /^https?:\/\//i.test(label) ? label : "https://" + label;
+    try {
+      const url = new URL(href);
+      if (url.protocol !== "https:" && url.protocol !== "http:") continue;
+      element.append(document.createTextNode(text.slice(offset, match.index)));
+      const link = document.createElement("a");
+      link.href = url.href;
+      link.textContent = label;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      element.append(link);
+      offset = match.index + label.length;
+    } catch (_) {
+      // Leave malformed references as plain text.
+    }
+  }
+  element.append(document.createTextNode(text.slice(offset)));
+}
+
 async function showBitcoinMemorial(txid, record = null) {
   const status = document.getElementById("status");
   const memorial = document.getElementById("memorial");
@@ -570,7 +598,7 @@ async function showBitcoinMemorial(txid, record = null) {
 
     const memorialText = hexToUtf8(hex);
 
-    message.textContent = memorialText;
+    renderInscription(message, memorialText);
     renderRecordMetadata(record);
 
     permanence.hidden = false;
@@ -582,7 +610,7 @@ async function showBitcoinMemorial(txid, record = null) {
     for (const explorer of explorers.filter(x => x.page)) {
       const a = document.createElement("a");
       a.href = explorer.page;
-      a.textContent = explorer.name + " ↗";
+      a.textContent = explorer.name + " â†—";
       a.target = "_blank";
       a.rel = "noopener noreferrer";
       links.append(a);
