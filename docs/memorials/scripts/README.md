@@ -52,3 +52,42 @@ sh update_json.sh --input ../index.json --output index_changed.json --timeout 20
 If Python reports CERTIFICATE_VERIFY_FAILED, the updater automatically retries
 with curl, keeping HTTPS certificate verification enabled. macOS includes curl.
 If curl also fails, the command reports the error without writing the output.
+
+
+# Generate unsigned Nostr events
+
+Requires Python 3.8+ only. No network access or signing keys needed.
+
+From the scripts folder:
+
+```sh
+sh generate_events.sh
+```
+
+Or from the memorials folder:
+
+```sh
+sh scripts/generate_events.sh
+```
+
+Defaults use `index_changed_json` beside the script and write to
+`unsigned-events/` beside the script, regardless of your working directory.
+Run `update_json.sh` first when inscription text needs refreshing.
+
+Output: one unsigned kind-1 event per public, published record,
+`all-events.json`, and `preview.txt`. Each note includes title, optional
+description, image, inscription, viewer link, and both Bitcoin explorer links.
+Existing event IDs and signatures are not reused; the input is unchanged.
+The default public key is the ContinuumMilestones identity from your sample.
+Sign and broadcast with that identity in Continuum.
+
+Optional paths (relative to your current working directory):
+
+```sh
+sh generate_events.sh ../index.json --output unsigned-events-next
+```
+
+Use `--pubkey HEX_PUBLIC_KEY` to select another signing identity, or
+`--created-at UNIX_SECONDS` to override the generation timestamp.
+Existing output directories are refused; select a new directory for each run.
+No signing or broadcasting occurs.
