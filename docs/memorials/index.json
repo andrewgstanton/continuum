@@ -11,6 +11,21 @@
   ],
   "records": [
     {
+      "id": "heather-moretzsohn-001",
+      "type": "memorial",
+      "title": "Fabio Moretzsohn",
+      "status": "published",
+      "visibility": "private",
+      "collections": [],
+      "description": null,
+      "image": "",
+      "bitcoin": {
+        "txid": "",
+        "psbt": "cHNidP8BAHcCAAAAAcjakpQIRcDgalXVAxKCJk6zJk+/ouRrETMdJNoM/f0KAAAAAAD/////AgAAAAAAAAAAHGoaRmFiaW8gLSAgQSBMaWZlIFJlbWVtYmVyZWRFXgAAAAAAABYAFDGoU4ApOIRC49ZaeX1Qt9SdNsMAAAAAAAAAAAA=",
+        "inscription": ""
+      }
+    },    
+    {
       "id": "bill-williams-002",
       "type": "milestone",
       "title": "Bill Williams — From Coming Soon to SOLD",

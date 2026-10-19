@@ -76,6 +76,10 @@ async function loadCatalog() {
         await showBitcoinMemorial(selected.bitcoin.txid, selected);
         return;
       }
+      if (typeof selected.bitcoin?.psbt === "string" && selected.bitcoin.psbt.trim()) {
+        showPsbtMemorial(selected.bitcoin.psbt, selected);
+        return;
+      }
       throw new Error("This record has not been published to Bitcoin yet.");
     }
     const list = requestedCollection ? visible.filter(r => (r.collections || []).includes(requestedCollection)) : visible;
@@ -85,7 +89,7 @@ async function loadCatalog() {
       const back = document.createElement("a");
       back.href = "./";
       back.className = "collection-back";
-      back.textContent = "â† All memorials and milestones";
+      back.textContent = "\u2190 All memorials and milestones";
       collectionList.append(back);
       const title = document.createElement("h2");
       title.className = "collection-title";
@@ -149,7 +153,7 @@ async function loadCatalog() {
         } else {
           const placeholder = document.createElement("span");
           placeholder.className = "catalog-thumbnail catalog-placeholder";
-          placeholder.textContent = type === "memorial" ? "â™¡" : "â˜…";
+          placeholder.textContent = type === "memorial" ? "\u2661" : "\u2605";
           placeholder.setAttribute("aria-hidden", "true");
           a.append(placeholder);
         }
@@ -160,7 +164,7 @@ async function loadCatalog() {
         title.textContent = record.title || record.id;
         const action = document.createElement("span");
         action.className = "catalog-card-action";
-        action.textContent = type === "memorial" ? "View memorial â†’" : "View milestone â†’";
+        action.textContent = type === "memorial" ? "View memorial \u2192" : "View milestone \u2192";
         info.append(title, action);
         a.append(info);
         container.append(a);
@@ -548,6 +552,22 @@ function renderInscription(element, text) {
   element.append(document.createTextNode(text.slice(offset)));
 }
 
+function showPsbtMemorial(psbt, record = null) {
+  const transaction = extractUnsignedTransactionFromPsbt(psbt);
+  const text = hexToUtf8(extractOpReturnHexFromRawTransaction(transaction));
+  renderInscription(document.getElementById("message"), text);
+  renderRecordMetadata(record);
+  document.getElementById("onchain-heading").textContent = "Inscription preview";
+  document.getElementById("permanence").hidden = true;
+  document.getElementById("verification").hidden = true;
+  document.getElementById("nostr-links").hidden = true;
+  document.getElementById("record-share-slot").replaceChildren();
+  document.getElementById("preview-meta").hidden = false;
+  document.getElementById("catalog").hidden = true;
+  document.getElementById("status").hidden = true;
+  document.getElementById("memorial").hidden = false;
+}
+
 async function showBitcoinMemorial(txid, record = null) {
   const status = document.getElementById("status");
   const memorial = document.getElementById("memorial");
@@ -601,6 +621,7 @@ async function showBitcoinMemorial(txid, record = null) {
     renderInscription(message, memorialText);
     renderRecordMetadata(record);
 
+    document.getElementById("onchain-heading").textContent = "Recorded on Bitcoin";
     permanence.hidden = false;
     previewMeta.hidden = true;
     const sourceLabel = document.getElementById("explorer-source");
@@ -610,7 +631,7 @@ async function showBitcoinMemorial(txid, record = null) {
     for (const explorer of explorers.filter(x => x.page)) {
       const a = document.createElement("a");
       a.href = explorer.page;
-      a.textContent = explorer.name + " â†—";
+      a.textContent = explorer.name + " \u2197";
       a.target = "_blank";
       a.rel = "noopener noreferrer";
       links.append(a);
