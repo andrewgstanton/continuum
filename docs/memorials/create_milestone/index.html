@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Create Milestone — Continuum</title><link rel="stylesheet" href="../style.css"></head>
-<body><main class="page-shell"><div class="brand">Continuum Memorials And Milestones</div>
-<nav class="mode-links"><a href="../">← Public memorials</a></nav>
+<body><main class="page-shell"><div class="brand" id="site-brand"><span class="brand-infinity" aria-hidden="true">∞</span> Continuum Memorials And Milestones</div>
+<nav class="mode-links admin-nav" aria-label="Milestone administration navigation"><a href="../">← Browse memorials &amp; milestones</a><a href="../order/">Order page</a></nav><div class="admin-heading"><span class="admin-eyebrow">CONTINUUM · ADMINISTRATIVE TOOL</span><h1>Create unsigned milestone PSBT</h1><p>Prepare and preview a Bitcoin milestone inscription before signing.</p></div>
 <div id="status" class="status" hidden></div>
 <section id="builder-panel" class="preview-panel" hidden>
-<h2>Create unsigned milestone PSBT</h2>
+<h2>Transaction details</h2>
 <p class="preview-intro">Offline generation; no private keys. Mainnet, one confirmed P2WPKH UTXO, one OP_RETURN, one P2WPKH change output.</p>
 <label>Milestone ID <input id="record-id" placeholder="bill-williams-001"></label>
 <label>Funding TXID <input id="funding-txid" placeholder="64 hex characters"></label>

@@ -67,6 +67,8 @@ async function loadCatalog() {
     const visible = all.filter(r => r.status === "published" && r.visibility === "public");
     const params = new URLSearchParams(location.search);
     const requestedCollection = params.get("collection");
+    const requestedView = params.get("view");
+    if (requestedView && !["collections", "memorials", "milestones"].includes(requestedView)) throw new Error("Unknown directory view.");
     const requestedId = params.get("id");
     const collections = Array.isArray(data.collections) ? data.collections : [];
     if (requestedId) {
@@ -83,6 +85,64 @@ async function loadCatalog() {
       throw new Error("This record has not been published to Bitcoin yet.");
     }
     const list = requestedCollection ? visible.filter(r => (r.collections || []).includes(requestedCollection)) : visible;
+    const publicCollections = collections.filter(c => c.visibility === "public" &&
+      visible.some(r => (r.collections || []).includes(c.id)));
+    const memorialCount = visible.filter(r => r.type === "memorial").length;
+    const milestoneCount = visible.filter(r => r.type === "milestone").length;
+    const nav = document.getElementById("directory-nav");
+    const home = !requestedCollection && !requestedView;
+    const hero = document.getElementById("catalog-intro");
+    if (hero) hero.hidden = !home;
+    function makeLink(href, label, className) {
+      const a = document.createElement("a");
+      a.href = href; a.textContent = label; a.className = className;
+      return a;
+    }
+    if (home) {
+      nav.hidden = false;
+      const cards = [
+        ["Collections", "Memories and milestones brought together.", publicCollections.length, "collection", "collections"],
+        ["Memorials", "Remembering loved ones and preserving their stories.", memorialCount, "memorial", "memorials"],
+        ["Milestones", "Celebrating achievements, beginnings, and meaningful moments.", milestoneCount, "milestone", "milestones"]
+      ];
+      for (const [title, description, count, singular, view] of cards) {
+        const a = makeLink("?view=" + view, "", "directory-card");
+        const h = document.createElement("h2"); h.textContent = title;
+        const desc = document.createElement("p"); desc.textContent = description;
+        const total = document.createElement("span"); total.className = "directory-count";
+        total.textContent = count + " " + (count === 1 ? singular : title.toLowerCase());
+        const action = document.createElement("span"); action.className = "directory-action"; action.textContent = "Explore " + title + " →";
+        a.append(h, desc, total, action); nav.append(a);
+      }
+      document.querySelectorAll(".catalog-section").forEach(section => section.hidden = true);
+      status.hidden = true; catalog.hidden = false;
+      return;
+    }
+    if (!requestedCollection) {
+      collectionList.append(makeLink("./", "← All categories", "collection-back"));
+      const heading = document.createElement("h1");
+      heading.className = "directory-heading";
+      const viewCounts = { collections: publicCollections.length, memorials: memorialCount, milestones: milestoneCount };
+      const viewNames = { collections: "Collections", memorials: "Memorials", milestones: "Milestones" };
+      heading.textContent = viewNames[requestedView] || "Memorials & Milestones";
+      const countLabel = document.createElement("span");
+      countLabel.className = "directory-heading-count";
+      const count = viewCounts[requestedView] || 0;
+      const singular = { collections: "collection", memorials: "memorial", milestones: "milestone" }[requestedView];
+      countLabel.textContent = count + " " + (count === 1 ? singular : viewNames[requestedView].toLowerCase());
+      heading.append(countLabel);
+      collectionList.append(heading);
+    }
+    // The directory heading already names the category, so avoid repeating it.
+    if (!requestedCollection && ["memorials", "milestones"].includes(requestedView)) {
+      const repeatedHeading = document.getElementById(requestedView + "-heading");
+      if (repeatedHeading) repeatedHeading.hidden = true;
+    }
+    document.querySelectorAll(".catalog-section").forEach(section => {
+      if (!requestedCollection) section.hidden = requestedView === "collections" ||
+        (requestedView === "memorials" && section.querySelector("#milestone-records")) ||
+        (requestedView === "milestones" && section.querySelector("#memorial-records"));
+    });
     if (requestedCollection) {
       const collection = collections.find(c => c.id === requestedCollection && c.visibility === "public");
       if (!collection) throw new Error("Collection not found.");
@@ -95,6 +155,11 @@ async function loadCatalog() {
       title.className = "collection-title";
       title.textContent = collection.title || collection.id;
       collectionList.append(title);
+      const collectionCount = list.length;
+      const collectionCountLabel = document.createElement("p");
+      collectionCountLabel.className = "collection-record-count";
+      collectionCountLabel.textContent = collectionCount + " " + (collectionCount === 1 ? "record" : "records") + " total";
+      collectionList.append(collectionCountLabel);
       if (collection.description) {
         const description = document.createElement("p");
         description.className = "collection-description";
@@ -103,29 +168,38 @@ async function loadCatalog() {
       }
       // QR sharing belongs on the collection view, below its records.
       renderShare("collection-share-slot", shareUrl("collection", requestedCollection), "collection");
-    } else {
-      const publicCollections = collections.filter(c => c.visibility === "public" &&
-        visible.some(r => (r.collections || []).includes(c.id)));
+    } else if (requestedView === "collections") {
       if (publicCollections.length) {
-        const heading = document.createElement("h2");
-        heading.className = "collections-heading";
-        heading.textContent = "Collections";
-        collectionList.append(heading);
         for (const c of publicCollections) {
           const a = document.createElement("a");
           a.className = "collection-link";
           a.href = "?collection=" + encodeURIComponent(c.id);
-          a.textContent = c.title || c.id;
+          const label = document.createElement("span");
+          label.textContent = c.title || c.id;
+          const count = visible.filter(r => (r.collections || []).includes(c.id)).length;
+          const badge = document.createElement("span");
+          badge.className = "collection-link-count";
+          badge.textContent = count + " " + (count === 1 ? "record" : "records");
+          a.append(label, badge);
           collectionList.append(a);
         }
       }
     }
     function renderRecords(type, container) {
       const records = list.filter(r => r.type === type);
-      // A collection should only display categories that contain records.
-      // Keep the usual empty-state message on the main public catalog.
+      // In collection views, show counts beside each section heading.
+      if (requestedCollection) {
+        const heading = document.getElementById(type === "memorial" ? "memorials-heading" : "milestones-heading");
+        if (heading) {
+          const label = type === "memorial" ? "Memorials" : "Milestones";
+          heading.textContent = label + " — " + records.length + " " +
+            (records.length === 1 ? type : type + "s");
+        }
+      }
+      // Collection sections are strictly scoped to collection membership.
+      // Hide empty categories, including their heading and introduction.
       const section = container.closest(".catalog-section");
-      if (section) section.hidden = Boolean(requestedCollection && records.length === 0);
+      if (section && requestedCollection) section.hidden = records.length === 0;
       if (!records.length && requestedCollection) return;
       if (!records.length) {
         const empty = document.createElement("p");
@@ -170,8 +244,12 @@ async function loadCatalog() {
         container.append(a);
       }
     }
-    renderRecords("memorial", memorialList);
-    renderRecords("milestone", milestoneList);
+    if (requestedCollection || requestedView === "memorials") renderRecords("memorial", memorialList);
+    if (requestedCollection || requestedView === "milestones") renderRecords("milestone", milestoneList);
+    if (requestedView === "collections" && !publicCollections.length) {
+      const empty = document.createElement("p"); empty.className = "catalog-empty";
+      empty.textContent = "No public collections listed yet."; collectionList.append(empty);
+    }
     status.hidden = true; catalog.hidden = false;
   } catch (e) { status.textContent = e.message; status.hidden = false; status.classList.add("error"); }
 }
@@ -467,8 +545,15 @@ function renderRecordMetadata(record) {
   const image = document.getElementById("milestone-image");
   const descWrap = document.getElementById("record-description-wrap");
   const brand = document.getElementById("site-brand");
-  const defaultBrand = "Continuum Memorials And Milestones";
-  brand.textContent = defaultBrand;
+  // Keep the infinity mark in the shared header when switching catalog/viewer.
+  const setBrand = (label) => {
+    const symbol = document.createElement("span");
+    symbol.className = "brand-infinity";
+    symbol.setAttribute("aria-hidden", "true");
+    symbol.textContent = "∞";
+    brand.replaceChildren(document.createTextNode("Continuum "), symbol, document.createTextNode(` ${label}`));
+  };
+  setBrand("Memorials And Milestones");
   section.hidden = true;
   image.hidden = true;
   image.removeAttribute("src");
@@ -477,8 +562,8 @@ function renderRecordMetadata(record) {
   document.getElementById("milestone-description").textContent = "";
   if (!record || typeof record !== "object") return;
 
-  if (record.type === "memorial") brand.textContent = "Continuum Memorial";
-  else if (record.type === "milestone") brand.textContent = "Continuum Milestone";
+  if (record.type === "memorial") setBrand("Memorial");
+  else if (record.type === "milestone") setBrand("Milestone");
 
   const title = typeof record.title === "string" ? record.title.trim() : "";
   const description = typeof record.description === "string" ? record.description.trim() : "";

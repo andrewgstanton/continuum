@@ -278,3 +278,42 @@ body {
 
 /* Hide categories without records on collection pages. */
 .catalog-section[hidden] { display: none; }
+
+/* Shared light-theme catalog introduction; existing cards and viewer remain intact. */
+.brand-infinity{display:inline-block;font-family:Georgia,serif;color:#b58a4e;font-size:1.55em;vertical-align:-.08em;margin-right:.35em;letter-spacing:0}
+.catalog-hero{border-bottom:1px solid #e6ddd0;padding:0 0 34px;margin:-10px 0 38px;text-align:center}
+.catalog-hero[hidden]{display:none!important}
+.catalog-eyebrow{font-size:.78rem;letter-spacing:.11em;color:#786044;font-weight:700}
+.catalog-hero h1{font-family:Georgia,serif;font-weight:normal;font-size:clamp(1.9rem,4vw,2.6rem);line-height:1.2;margin:15px 0}
+.catalog-hero p{color:#6d665d;line-height:1.65;max-width:590px;margin:0 auto 22px}
+.catalog-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:12px}
+.catalog-button{display:inline-block;border:1px solid #b98d51;border-radius:8px;background:#e8d0a6;color:#29251f;text-decoration:none;padding:11px 18px;font-weight:650}
+.catalog-button-secondary{background:#fff;border-color:#e6ddd0;color:#285d96}
+@media print{body,.page-shell{background:#fff!important;box-shadow:none!important}.catalog-actions{display:none!important}}
+
+/* Admin page: consistent Continuum header, restrained form layout */
+.admin-nav{display:flex;justify-content:center;gap:22px;flex-wrap:wrap;margin-top:-28px;margin-bottom:30px}
+.admin-heading{border-bottom:1px solid #e6ddd0;padding-bottom:24px;margin-bottom:28px}
+.admin-eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.15em;color:#947247}
+.admin-heading h1{font-family:Georgia,serif;font-weight:normal;font-size:clamp(1.65rem,4vw,2.15rem);margin:12px 0}
+.admin-heading p{color:#6d665d;line-height:1.6;margin:0}
+#builder-panel h2{font-family:Georgia,serif;font-size:1.4rem;font-weight:normal;margin:0 0 12px}
+@media print{.admin-nav,.admin-heading,.preview-button{display:none!important}}
+
+/* Compact directory landing and dedicated browse views */
+.directory-nav[hidden]{display:none!important}
+.directory-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:0 0 18px}
+.directory-card{display:flex;flex-direction:column;gap:10px;padding:22px 17px;border:1px solid #e5d9c8;border-radius:11px;background:#fffdf9;color:#29241e;text-decoration:none;min-height:215px;transition:border-color .15s,box-shadow .15s}
+.directory-card:hover,.directory-card:focus-visible{border-color:#b98d51;box-shadow:0 3px 13px #5d493315}
+.directory-card h2{font:normal 1.4rem Georgia,serif;margin:0}
+.directory-card p{color:#71685e;font-size:.92rem;line-height:1.5;margin:0;flex:1}
+.directory-count{color:#75634f;font-size:.85rem}
+.directory-action{font-size:.92rem;font-weight:600;color:#285d96}
+.directory-heading{font:normal 2rem Georgia,serif;margin:22px 0 22px}
+@media(max-width:660px){.directory-nav{grid-template-columns:1fr}.directory-card{min-height:0;padding:19px}}
+@media print{.directory-card{box-shadow:none;background:white;break-inside:avoid}.directory-nav{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+.directory-heading-count{display:block;margin-top:.35rem;color:#75634f;font:normal .95rem Arial,sans-serif}
+
+.collection-link-count { display:block; margin-top:4px; font:normal .85rem Arial,sans-serif; color:#75634f; }
+.collection-record-count { margin:.3rem 0 1rem; font:normal .95rem Arial,sans-serif; color:#75634f; }
