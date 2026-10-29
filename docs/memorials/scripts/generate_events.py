@@ -29,7 +29,7 @@ def generate(source, pubkey, timestamp):
             raise ValueError('%s: invalid Bitcoin txid' % rid)
         txid = txid.lower()
         title = record['title']
-        inscription = record['bitcoin']['inscription']
+        inscription = record['bitcoin'].get('extracted_inscription') or record['bitcoin'].get('inscription')
         if not isinstance(title, str) or not title.strip() or not isinstance(inscription, str) or not inscription.strip():
             raise ValueError('%s: title and inscription are required' % rid)
         record_type = record['type']

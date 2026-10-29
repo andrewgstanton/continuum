@@ -1,8 +1,8 @@
 # Continuum Memorials & Milestones
 
-**Version 14 — consolidated documentation**
+**Version 15 — inscription preview and extracted-text fields**
 
-A static memorials and milestones website that displays Bitcoin-anchored records, collections, and individual viewers, with an ordering page linked to Google Forms. Version 14 changes documentation only; site assets and application behavior are identical to Version 13.
+A static memorials and milestones website that displays Bitcoin-anchored records, collections, and individual viewers, with an ordering page linked to Google Forms. Version 15 adds text-only preview support and distinguishes proposed text from text extracted from Bitcoin.
 
 ## Site structure
 
@@ -19,6 +19,30 @@ A static memorials and milestones website that displays Bitcoin-anchored records
 | `/memorials/create_milestone/` | Administrative creation and PSBT preview workflow |
 
 Records and counts are derived from `memorials/index.json`. Collection category counts reflect only that collection's records; empty categories are hidden. Existing transaction, QR, Nostr, and PSBT functionality is preserved.
+
+## V15: proposed text versus extracted Bitcoin text
+
+Each record can include these distinct `bitcoin` properties:
+
+```json
+"bitcoin": {
+  "txid": "",
+  "psbt": null,
+  "preview_inscription": "Proposed wording awaiting approval",
+  "extracted_inscription": ""
+}
+```
+
+- `preview_inscription`: proposed text, editable for customer approval; **not proof of publication**.
+- `extracted_inscription`: exact text decoded from the Bitcoin transaction by `scripts/update_json.py`; never copy proposed text here as a substitute for extraction.
+- `psbt`: optional unsigned transaction for the existing PSBT preview.
+- `txid`: on-chain transaction ID; the viewer retrieves and decodes the OP_RETURN from a Bitcoin explorer, as before.
+
+Viewer priority for `?id=record-id`: TXID (verified viewer) → PSBT (decoded unsigned transaction preview) → `preview_inscription` (text-only preview). Direct `?txid=` behavior is unchanged. For text-only previews, the viewer hides permanence, explorer verification, Nostr links, and sharing controls. **A text-only preview is not on Bitcoin.**
+
+Heather's `preview_inscription` is intentionally blank for you to fill in; her existing PSBT is preserved. To exercise the text-only preview, temporarily clear `psbt` in a local test copy and visit `?id=heather-moretzsohn-001`. The public `index.json` is readable by anyone, even when a record has `visibility: "private"`.
+
+Legacy JSON records with `bitcoin.inscription` remain accepted by `generate_events.py` as a fallback. The Bitcoin viewer does not trust either JSON inscription field: it continues extracting directly from the transaction. The updater writes `extracted_inscription` and removes the old `inscription` key only for successfully processed TXIDs.
 
 ## Local preview
 
@@ -61,6 +85,7 @@ The public index, order page, viewer, and admin creation page use a coordinated 
 - **V12 — Homepage cleanup:** Removed the redundant small branding subheader beneath the main header.
 - **V13 — Form connected:** Set the live Google Forms responder URL in `order/form-config.js`.
 - **V14 — Documentation:** Consolidated previous README documents into this single file. No functional changes.
+- **V15 — Inscription schema and previews:** Renamed stored Bitcoin-derived text to `extracted_inscription`; added `preview_inscription` for proposed text; enabled ID-based text previews without a PSBT; updated the Python extractor and Nostr event generator. Live TXID verification is unchanged.
 
 ## Administration: Bitcoin inscription updater and Nostr event generator
 
@@ -86,13 +111,13 @@ The default input is `memorials/index.json`. The output is
 `memorials/scripts/index_changed_json` (JSON format, filename as requested).
 Defaults are relative to the script, so it works from any working directory.
 
-Each record with a Bitcoin transaction ID receives `bitcoin.inscription`:
+Each record with a Bitcoin transaction ID receives `bitcoin.extracted_inscription`:
 
 ```json
 "bitcoin": {
   "txid": "existing transaction ID",
   "psbt": null,
-  "inscription": "Exact decoded inscription text"
+  "extracted_inscription": "Exact decoded inscription text"
 }
 ```
 

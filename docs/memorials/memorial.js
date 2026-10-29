@@ -78,11 +78,16 @@ async function loadCatalog() {
         await showBitcoinMemorial(selected.bitcoin.txid, selected);
         return;
       }
+      // Prefer a PSBT-derived preview when present; otherwise show proposed text.
       if (typeof selected.bitcoin?.psbt === "string" && selected.bitcoin.psbt.trim()) {
         showPsbtMemorial(selected.bitcoin.psbt, selected);
         return;
       }
-      throw new Error("This record has not been published to Bitcoin yet.");
+      if (typeof selected.bitcoin?.preview_inscription === "string" && selected.bitcoin.preview_inscription.trim()) {
+        showTextPreview(selected.bitcoin.preview_inscription, selected);
+        return;
+      }
+      throw new Error("This record has no Bitcoin transaction, PSBT, or preview inscription yet.");
     }
     const list = requestedCollection ? visible.filter(r => (r.collections || []).includes(requestedCollection)) : visible;
     const publicCollections = collections.filter(c => c.visibility === "public" &&
@@ -637,6 +642,23 @@ function renderInscription(element, text) {
   element.append(document.createTextNode(text.slice(offset)));
 }
 
+// Proposed text only: no PSBT and no verified Bitcoin transaction.
+function showTextPreview(text, record = null) {
+  renderInscription(document.getElementById("message"), text);
+  renderRecordMetadata(record);
+  document.getElementById("onchain-heading").textContent = "Preview inscription — proposed text";
+  document.getElementById("permanence").hidden = true;
+  document.getElementById("verification").hidden = true;
+  document.getElementById("nostr-links").hidden = true;
+  document.getElementById("record-share-slot").replaceChildren();
+  document.getElementById("preview-detail").textContent =
+    "Proposed inscription text for customer review. No Bitcoin transaction or PSBT has been created or verified.";
+  document.getElementById("preview-meta").hidden = false;
+  document.getElementById("catalog").hidden = true;
+  document.getElementById("status").hidden = true;
+  document.getElementById("memorial").hidden = false;
+}
+
 function showPsbtMemorial(psbt, record = null) {
   const transaction = extractUnsignedTransactionFromPsbt(psbt);
   const text = hexToUtf8(extractOpReturnHexFromRawTransaction(transaction));
@@ -647,6 +669,8 @@ function showPsbtMemorial(psbt, record = null) {
   document.getElementById("verification").hidden = true;
   document.getElementById("nostr-links").hidden = true;
   document.getElementById("record-share-slot").replaceChildren();
+  document.getElementById("preview-detail").textContent =
+    "Decoded directly from the unsigned transaction contained in this PSBT.";
   document.getElementById("preview-meta").hidden = false;
   document.getElementById("catalog").hidden = true;
   document.getElementById("status").hidden = true;

@@ -110,7 +110,8 @@ def update_records(data, fetch):
             key = txid.lower()
             if key not in cache:
                 cache[key] = fetch(key)
-            bitcoin["inscription"] = cache[key]
+            bitcoin["extracted_inscription"] = cache[key]
+            bitcoin.pop("inscription", None)
             print("OK   " + label, file=sys.stderr)
         except Exception as error:
             errors.append(label + ": " + str(error))
