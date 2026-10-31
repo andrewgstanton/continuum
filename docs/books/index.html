@@ -8,25 +8,33 @@
 <link rel="stylesheet" href="/styles/style.css">
 </head>
 
-<body>
+<body class="continuum-interior">
+<header class="c-header"><div class="c-nav"><a class="c-brand" href="/" aria-label="Continuum home"><span class="c-infinity">∞</span><span>CONTINUUM</span></a><nav class="c-links" aria-label="Main navigation">
+<a href="/" aria-current="page">Home</a>
+<details class="c-menu"><summary>About</summary><div class="c-menu-panel">
+<a href="/overview.html">Overview</a>
+<a href="/why_continuum.html">Why Continuum?</a>
+<a href="/use_cases.html">Who Continuum Is For</a>
+</div></details>
+<details class="c-menu"><summary>Explore</summary><div class="c-menu-panel">
+<a href="/memorials/">Memorials &amp; Milestones</a>
+<a href="/tools.html">Tools</a>
+<a href="/demos.html">Demos</a>
+<a href="https://stories.mycontinuum.xyz/" target="_blank" rel="noopener noreferrer">Stories ↗</a>
+</div></details>
+<a href="/downloads.html">Downloads</a>
+<details class="c-menu"><summary>Learn</summary><div class="c-menu-panel">
+<a href="/faqs.html">FAQs</a>
+<a href="/books/">Books</a>
+<a href="/open_source.html">Open Source</a>
+<a href="/release_notes.html">Release Notes</a>
+</div></details>
+<a href="/pricing.html">Pricing</a>
+</nav></div></header>
 
 <div class="page-shell">
 
-<div class="nav">
-    <a href="/">Home</a>
-    <a href="/overview.html">Overview</a>
-    <a href="/release_notes.html">Release Notes</a>
-    <a href="/demos.html">Demos</a>
-    <a href="/downloads.html">Downloads</a>
-    <a href="/pricing.html">Pricing</a>
-    <a href="/use_cases.html">Who Continuum Is For</a>
-    <a href="/why_continuum.html">Why Continuum ?</a>
-    <a href="/faqs.html">FAQs</a>
-    <a href="/books/">Books</a>
-    <a href="/tools.html">Tools</a>
-    <a href="/open_source.html">Open Source</a>
-    <a href="https://stories.mycontinuum.xyz/">Stories</a>
-</div>
+
 
 
     <div class="hero">
@@ -116,5 +124,6 @@
     </footer>
 
 </div>
+<script>document.addEventListener('click',function(e){document.querySelectorAll('.c-menu[open]').forEach(function(m){if(!m.contains(e.target))m.removeAttribute('open')})});document.querySelectorAll('.c-menu').forEach(function(m){m.addEventListener('toggle',function(){if(m.open)document.querySelectorAll('.c-menu').forEach(function(other){if(other!==m)other.removeAttribute('open')})})})</script>
 </body>
 </html>

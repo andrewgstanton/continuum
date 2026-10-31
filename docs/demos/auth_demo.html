@@ -1,157 +1,109 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8"/>
 <title>Continuum Auth Demo</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<link rel="stylesheet" href="/styles/style.css">
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<link href="/styles/style.css" rel="stylesheet"/>
 </head>
-
-<body>
-
+<body class="continuum-interior"><header class="c-header"><div class="c-nav"><a aria-label="Continuum home" class="c-brand" href="/"><span class="c-infinity">∞</span><span>CONTINUUM</span></a><nav aria-label="Main navigation" class="c-links">
+<a href="/">Home</a>
+<details class="c-menu"><summary>About</summary><div class="c-menu-panel">
+<a href="/overview.html">Overview</a>
+<a href="/why_continuum.html">Why Continuum?</a>
+<a href="/use_cases.html">Who Continuum Is For</a>
+</div></details>
+<details class="c-menu"><summary>Explore</summary><div class="c-menu-panel">
+<a href="/memorials/">Memorials &amp; Milestones</a>
+<a href="/tools.html">Tools</a>
+<a aria-current="page" href="/demos.html">Demos</a>
+<a href="https://stories.mycontinuum.xyz/" rel="noopener noreferrer" target="_blank">Stories ↗</a>
+</div></details>
+<a href="/downloads.html">Downloads</a>
+<details class="c-menu"><summary>Learn</summary><div class="c-menu-panel">
+<a href="/faqs.html">FAQs</a>
+<a href="/books/">Books</a>
+<a href="/open_source.html">Open Source</a>
+<a href="/release_notes.html">Release Notes</a>
+</div></details>
+<a href="/pricing.html">Pricing</a>
+</nav></div></header>
 <div class="page-shell">
 
-<div class="nav">
-    <a href="/">Home</a>
-    <a href="/overview.html">Overview</a>
-    <a href="/release_notes.html">Release Notes</a>
-    <a href="/demos.html">Demos</a>
-    <a href="/downloads.html">Downloads</a>
-    <a href="/pricing.html">Pricing</a>
-    <a href="/use_cases.html">Who Continuum Is For</a>
-    <a href="/why_continuum.html">Why Continuum ?</a>
-    <a href="/faqs.html">FAQs</a>
-    <a href="/books.html">Books</a>
-    <a href="/tools.html">Tools</a>
-    <a href="/open_source.html">Open Source</a>
-    <a href="https://stories.mycontinuum.xyz/">Stories</a>
-</div>
-
 <div class="hero">
-
-  <h1>Manual Nostr Auth Demo</h1>
-
-  <p>
+<h1>Manual Nostr Auth Demo</h1>
+<p>
     This page demonstrates passwordless authentication using a Nostr public key.
   </p>
-
-  <p>
+<p>
     The website requests a challenge payload. You paste that payload into a compatible signing tool.
     The tool extracts the challenge string, signs it, and returns a verification payload.
   </p>
-
-  <p>
+<p>
     No password is created. No username is required. No private key is sent to the server.
   </p>
-
 </div>
-
-<hr>
-
+<hr/>
 <div class="section">
-
 <h2>1. Enter your Nostr public key</h2>
-
 <p>
 Enter an <code>npub</code> or 64-character hex public key.
 </p>
-
-<input id="pubkey" placeholder="npub1... or 64-character hex pubkey" style="width:100%; padding:10px;">
-
+<input id="pubkey" placeholder="npub1... or 64-character hex pubkey" style="width:100%; padding:10px;"/>
 <p>
 <button id="requestChallengeBtn">Request Challenge Payload</button>
 </p>
-
 </div>
-
 <div class="section">
-
 <h2>2. Copy the challenge payload</h2>
-
 <p>
 Copy this full payload and paste it into a compatible signing tool.
 </p>
-
 <p>
 The signing tool should extract the <code>challenge</code> string internally and sign that exact string.
 </p>
-
-<textarea id="challengeBox" readonly style="width:100%; min-height:220px; padding:10px;"></textarea>
-
+<textarea id="challengeBox" readonly="" style="width:100%; min-height:220px; padding:10px;"></textarea>
 <p>
 <button id="copyChallengeBtn">Copy Challenge Payload</button>
 </p>
-
 </div>
-
 <div class="section">
-
 <h2>3. Paste signed verification payload</h2>
-
 <p>
 Paste the signed verification payload returned by your signer.
 </p>
-
 <p>
 Expected format:
 </p>
-
 <pre style="white-space:pre-wrap; overflow:auto;">{
   "pubkey": "...",
   "challenge": "...",
   "signature": "..."
 }</pre>
-
-<textarea id="proofBox" style="width:100%; min-height:220px; padding:10px;" placeholder='{"pubkey":"...","challenge":"...","signature":"..."}'></textarea>
-
+<textarea id="proofBox" placeholder='{"pubkey":"...","challenge":"...","signature":"..."}' style="width:100%; min-height:220px; padding:10px;"></textarea>
 <p>
 <button id="verifyProofBtn">Verify Proof</button>
 </p>
-
 </div>
-
 <div class="section">
-
 <h2>4. Session check</h2>
-
 <p>
 After a successful verification, check whether the API recognizes the browser session.
 </p>
-
 <p>
 <button id="getMeBtn">Call /api/me</button>
 <button id="logoutBtn">Logout</button>
 </p>
-
 <p id="status"><strong>Status:</strong> Ready.</p>
-
 </div>
-
 <div class="section">
-
 <h2>Result</h2>
-
 <pre id="result" style="white-space:pre-wrap; overflow:auto;">{}</pre>
-
 </div>
+<hr/>
 
-<hr>
-
-<footer>
-
-<p>© 2025–2026 Andrew G. Stanton.</p>
-<p>Continuum software and documentation.</p>
-
-<p>Built on Nostr. Designed for durable authorship.</p>
-<p>
-This demo shows how authentication can work through signed proof rather than stored passwords.
-</p>
-
-</footer>
-
-</div>
-
+<p class="demo-note">This demo shows how authentication can work through signed proof rather than stored passwords.</p></div>
 <script type="module">
 import { nip19 } from "https://esm.sh/nostr-tools";
 
@@ -327,6 +279,5 @@ document.getElementById("verifyProofBtn").addEventListener("click", verifyProof)
 document.getElementById("getMeBtn").addEventListener("click", getMe);
 document.getElementById("logoutBtn").addEventListener("click", logout);
 </script>
-
-</body>
+<footer class="c-footer"><div class="c-footer-inner"><span>© 2025–2026 Andrew G. Stanton · Continuum</span><span><a href="/pricing.html">Pricing &amp; support</a> · <a href="/release_notes.html">Release notes</a> · <a href="https://stories.mycontinuum.xyz/">Stories</a> · <a href="/downloads/current_release/LICENSE.txt">License</a></span></div></footer></body>
 </html>

@@ -9,25 +9,33 @@
 <link rel="stylesheet" href="/styles/style.css">
 </head>
 
-<body>
+<body class="continuum-interior">
+<header class="c-header"><div class="c-nav"><a class="c-brand" href="/" aria-label="Continuum home"><span class="c-infinity">∞</span><span>CONTINUUM</span></a><nav class="c-links" aria-label="Main navigation">
+<a href="/" aria-current="page">Home</a>
+<details class="c-menu"><summary>About</summary><div class="c-menu-panel">
+<a href="/overview.html">Overview</a>
+<a href="/why_continuum.html">Why Continuum?</a>
+<a href="/use_cases.html">Who Continuum Is For</a>
+</div></details>
+<details class="c-menu"><summary>Explore</summary><div class="c-menu-panel">
+<a href="/memorials/">Memorials &amp; Milestones</a>
+<a href="/tools.html">Tools</a>
+<a href="/demos.html">Demos</a>
+<a href="https://stories.mycontinuum.xyz/" target="_blank" rel="noopener noreferrer">Stories ↗</a>
+</div></details>
+<a href="/downloads.html">Downloads</a>
+<details class="c-menu"><summary>Learn</summary><div class="c-menu-panel">
+<a href="/faqs.html">FAQs</a>
+<a href="/books/">Books</a>
+<a href="/open_source.html">Open Source</a>
+<a href="/release_notes.html">Release Notes</a>
+</div></details>
+<a href="/pricing.html">Pricing</a>
+</nav></div></header>
 
 <div class="page-shell">
 
-<div class="nav">
-    <a href="/">Home</a>
-    <a href="/overview.html">Overview</a>
-    <a href="/release_notes.html">Release Notes</a>
-    <a href="/demos.html">Demos</a>
-    <a href="/downloads.html">Downloads</a>
-    <a href="/pricing.html">Pricing</a>
-    <a href="/use_cases.html">Who Continuum Is For</a>
-    <a href="/why_continuum.html">Why Continuum ?</a>
-    <a href="/faqs.html">FAQs</a>
-    <a href="/books/">Books</a>
-    <a href="/tools.html">Tools</a>
-    <a href="/open_source.html">Open Source</a>
-    <a href="https://stories.mycontinuum.xyz/">Stories</a>
-</div>
+
   
 <div class="hero">
 
@@ -408,20 +416,8 @@ It allows your work to exist under your control before it becomes public.
 
 </div>
 
-<hr>
-
-<footer>
-
-<p>© 2025–2026 Andrew G. Stanton.</p>
-<p>Continuum software and documentation.</p>
-
-<p>Built on Nostr. Designed for durable authorship.</p>
-<p>Continuum software and documentation are distributed under license.
-See the <a href="/downloads/current_release/LICENSE.txt">license</a>.
-</p>
-
-</footer>
-
 </div>
+<footer class="c-footer"><div class="c-footer-inner"><span>© 2025–2026 Andrew G. Stanton · Continuum</span><span><a href="/pricing.html">Pricing &amp; support</a> · <a href="/release_notes.html">Release notes</a> · <a href="https://stories.mycontinuum.xyz/">Stories</a> · <a href="/downloads/current_release/LICENSE.txt">License</a></span></div></footer>
+<script>document.addEventListener('click',function(e){document.querySelectorAll('.c-menu[open]').forEach(function(m){if(!m.contains(e.target))m.removeAttribute('open')})});document.querySelectorAll('.c-menu').forEach(function(m){m.addEventListener('toggle',function(){if(m.open)document.querySelectorAll('.c-menu').forEach(function(other){if(other!==m)other.removeAttribute('open')})})})</script>
 </body>
 </html>
