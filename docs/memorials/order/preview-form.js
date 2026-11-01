@@ -22,6 +22,12 @@
   const submitButton = field('submit-order');
   const orderStatus = field('order-status');
   const orderConfirmation = field('order-confirmation');
+  const previewLinkBox = field('order-preview-link');
+  const previewAnchor = field('order-preview-anchor');
+  field('copy-order-preview').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(previewAnchor.href); field('copy-order-preview').textContent = 'Copied!'; }
+    catch { window.prompt('Copy this link:', previewAnchor.href); }
+  });
   const updateCount = () => {
     const size = encoder.encode(message.value).length;
     count.textContent = `${size} / 80 UTF-8 bytes`;
@@ -102,6 +108,8 @@
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Could not submit order.');
       field('order-number').textContent = 'Order ID: ' + data.order_id;
+      previewLinkBox.hidden = !data.preview_url;
+      if (data.preview_url) previewAnchor.href = data.preview_url;
       orderConfirmation.hidden = false;
       orderStatus.hidden = true;
     } catch (e) {

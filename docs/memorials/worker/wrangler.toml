@@ -7,3 +7,7 @@ ALLOWED_ORIGINS = "http://localhost:8000,https://mycontinuum.xyz,https://www.myc
 ORDER_TO_EMAIL = "andrewgstanton@gmail.com"
 # Set ORDER_FROM_EMAIL after verifying your domain with Resend.
 ORDER_FROM_EMAIL = "Memorials <orders@mail.mycontinuum.xyz>"
+
+[[r2_buckets]]
+binding = "MEMORIAL_PENDING"
+bucket_name = "continuum-memorial-pending"

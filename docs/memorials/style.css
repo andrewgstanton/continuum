@@ -317,3 +317,6 @@ body {
 
 .collection-link-count { display:block; margin-top:4px; font:normal .85rem Arial,sans-serif; color:#75634f; }
 .collection-record-count { margin:.3rem 0 1rem; font:normal .95rem Arial,sans-serif; color:#75634f; }
+
+/* Pending previews are visibly distinct from verified Bitcoin records. */
+.pending-order-notice { background: #fff1b8; color: #654600; border: 1px solid #d7a321; padding: .8rem 1rem; border-radius: 8px; font-weight: 700; }

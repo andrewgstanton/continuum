@@ -1,4 +1,4 @@
-onst encoder = new TextEncoder();
+const encoder = new TextEncoder();
 const json = (data, status = 200, headers = {}) => new Response(JSON.stringify(data), {
   status, headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', ...headers }
 });
@@ -7,7 +7,7 @@ function cors(request, env) {
   const allowed = (env.ALLOWED_ORIGINS || '').split(',').map(s => s.trim());
   return origin && allowed.includes(origin) ? {
     'Access-Control-Allow-Origin': origin,
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Idempotency-Key',
     'Access-Control-Max-Age': '600', 'Vary': 'Origin'
   } : null;
@@ -30,6 +30,26 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     if (url.pathname === '/health' && request.method === 'GET') return json({status:'ok'});
+    // Pending previews are publicly shareable by their existing order ID.
+    // Only the public index entry is stored; contact/payment details are never returned.
+    if (url.pathname.startsWith('/api/orders/') && request.method === 'GET') {
+      const headers = cors(request, env);
+      if (!headers) return json({error:'Origin not allowed'},403);
+      if (!env.MEMORIAL_PENDING) return json({error:'Preview storage not configured'},503,headers);
+      const id = decodeURIComponent(url.pathname.slice('/api/orders/'.length)).toLowerCase();
+      if (!/^cm-[0-9a-f]{12}$/.test(id)) return json({error:'Invalid order ID'},400,headers);
+      try {
+        const object = await env.MEMORIAL_PENDING.get(`pending/${id}.json`);
+        if (!object) return json({error:'Preview not found or expired'},404,headers);
+        const pending = await object.json();
+        if (!pending.expires_at || Date.parse(pending.expires_at) <= Date.now())
+          return json({error:'Preview expired'},410,headers);
+        return json({order_id:id.toUpperCase(),status:'pending',expires_at:pending.expires_at,record:pending.record},200,headers);
+      } catch (error) {
+        console.error('Pending preview read failed', error);
+        return json({error:'Preview temporarily unavailable'},503,headers);
+      }
+    }
     if (url.pathname !== '/api/orders') return json({error:'Not found'},404);
     const headers = cors(request,env);
     if (!headers) return json({error:'Origin not allowed'},403);
@@ -42,6 +62,7 @@ export default {
     try { body = await request.json(); } catch { return json({error:'Invalid JSON'},400,headers); }
     const problem = validate(body);
     if (problem) return json({error:problem},400,headers);
+    if (!env.MEMORIAL_PENDING) return json({error:'Pending preview storage not configured'},503,headers);
     if (!env.RESEND_API_KEY || !env.ORDER_FROM_EMAIL || !env.ORDER_TO_EMAIL) return json({error:'Order service not configured'},503,headers);
     const orderId = 'CM-' + key.replace(/-/g,'').slice(0,12).toUpperCase();
 
@@ -102,6 +123,19 @@ export default {
       console.error('Resend rejected email:', result.status);
       return json({error:'Unable to accept order right now. Please retry later.'},502,headers);
     }
-    return json({order_id:orderId,status:'pending',notification:'accepted_for_delivery'},201,headers);
+    // Store only the public-facing ready-to-copy entry, never customer contact data.
+    // The existing emailed entry and its published/private fields remain unchanged.
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+    try {
+      await env.MEMORIAL_PENDING.put(`pending/${indexEntry.id}.json`, JSON.stringify({
+        order_id:orderId, created_at:new Date().toISOString(), expires_at:expiresAt, record:indexEntry
+      }), {httpMetadata:{contentType:'application/json'}});
+    } catch (error) {
+      console.error('Pending preview write failed', error);
+      return json({error:'Order email accepted, but preview could not be saved. Contact us with your order ID: '+orderId},503,headers);
+    }
+    return json({order_id:orderId,status:'pending',notification:'accepted_for_delivery',
+      preview_url:`https://mycontinuum.xyz/memorials/?order_id=${encodeURIComponent(orderId)}`,
+      expires_at:expiresAt},201,headers);
   }
 };

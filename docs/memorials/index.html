@@ -56,10 +56,10 @@
     </article>
 </main><script>
 // The welcome section is only for the catalog, never for an individual transaction viewer.
-if (![...['txid','psbt','id','collection','view']].some(key => new URLSearchParams(location.search).has(key))) {
+if (![...['txid','psbt','id','collection','view','order_id']].some(key => new URLSearchParams(location.search).has(key))) {
   document.getElementById('catalog-intro').hidden = false;
 }
-</script><script src="qr.js?v=1"></script><script src="memorial.js?v=20"></script><script>
+</script><script src="order/submission-config.js?v=18"></script><script src="qr.js?v=1"></script><script src="memorial.js?v=21"></script><script>
 // Optional Nostr links for published records; absent for previews and records without an event ID.
 (async function () {
   const section = document.getElementById('nostr-links');

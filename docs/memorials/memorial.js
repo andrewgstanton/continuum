@@ -604,8 +604,36 @@ async function findRecordByTxid(txid) {
   }
 }
 
+async function loadPendingOrder(orderId) {
+  const status = document.getElementById("status");
+  if (!/^CM-[0-9A-F]{12}$/i.test(orderId)) {
+    status.textContent = "Invalid order ID."; return;
+  }
+  try {
+    const api = window.MEMORIALS_ORDER_API;
+    if (!api) throw new Error("Pending preview service is not configured.");
+    const response = await fetch(api.replace(/\/$/, "") + "/api/orders/" + encodeURIComponent(orderId), {cache:"no-store"});
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Preview unavailable.");
+    showTextPreview(data.record.bitcoin.preview_inscription, data.record);
+    const notice = document.querySelector("#preview-meta .preview-notice");
+    notice.textContent = "PENDING INSCRIPTION — NOT YET RECORDED ON BITCOIN";
+    notice.classList.add("pending-order-notice");
+    document.getElementById("preview-detail").textContent =
+      "Order " + data.order_id + " · Temporary preview available until " +
+      new Date(data.expires_at).toLocaleDateString() + ". Payment and approval are required before Bitcoin inscription.";
+    document.getElementById("preview-back").textContent = "← Browse memorials and milestones";
+    renderShare("record-share-slot", shareUrl("order_id", data.order_id), data.record.type === "milestone" ? "milestone preview" : "memorial preview");
+  } catch (error) {
+    status.hidden = false;
+    status.textContent = error.message || "Pending preview unavailable.";
+  }
+}
+
 async function loadMemorial() {
   const params = new URLSearchParams(window.location.search);
+  const orderId = params.get("order_id");
+  if (orderId) { await loadPendingOrder(orderId); return; }
   const txid = params.get("txid");
   if (!txid) {
     await loadCatalog();
