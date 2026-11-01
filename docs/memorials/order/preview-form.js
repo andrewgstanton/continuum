@@ -110,6 +110,15 @@
       field('order-number').textContent = 'Order ID: ' + data.order_id;
       previewLinkBox.hidden = !data.preview_url;
       if (data.preview_url) previewAnchor.href = data.preview_url;
+      const expiryLabel = field('order-preview-expires');
+      const expiresAt = data.expires_at ? new Date(data.expires_at) : null;
+      expiryLabel.textContent = expiresAt && !Number.isNaN(expiresAt.getTime())
+        ? new Intl.DateTimeFormat('en-US', {
+            timeZone: 'America/Los_Angeles',
+            month: 'long', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit',
+            hour12: true, timeZoneName: 'short'
+          }).format(expiresAt)
+        : 'the expiration time shown in your order details';
       orderConfirmation.hidden = false;
       orderStatus.hidden = true;
     } catch (e) {

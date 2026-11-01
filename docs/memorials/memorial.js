@@ -617,11 +617,18 @@ async function loadPendingOrder(orderId) {
     if (!response.ok) throw new Error(data.error || "Preview unavailable.");
     showTextPreview(data.record.bitcoin.preview_inscription, data.record);
     const notice = document.querySelector("#preview-meta .preview-notice");
-    notice.textContent = "PENDING INSCRIPTION — NOT YET RECORDED ON BITCOIN";
+    const expiresAt = new Date(data.expires_at);
+    const expiryText = new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/Los_Angeles",
+      month: "long", day: "numeric", year: "numeric",
+      hour: "numeric", minute: "2-digit", hour12: true,
+      timeZoneName: "short"
+    }).format(expiresAt);
+    notice.textContent = "PENDING INSCRIPTION — NOT YET RECORDED ON BITCOIN. AVAILABLE UNTIL " + expiryText;
     notice.classList.add("pending-order-notice");
     document.getElementById("preview-detail").textContent =
       "Order " + data.order_id + " · Temporary preview available until " +
-      new Date(data.expires_at).toLocaleDateString() + ". Payment and approval are required before Bitcoin inscription.";
+      expiryText + ". Payment and approval are required before Bitcoin inscription.";
     document.getElementById("preview-back").textContent = "← Browse memorials and milestones";
     renderShare("record-share-slot", shareUrl("order_id", data.order_id), data.record.type === "milestone" ? "milestone preview" : "memorial preview");
   } catch (error) {
