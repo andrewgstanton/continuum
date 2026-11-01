@@ -1,0 +1,9 @@
+name = "continuum-memorials-api"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+
+[vars]
+ALLOWED_ORIGINS = "http://localhost:8000,https://mycontinuum.xyz,https://www.mycontinuum.xyz"
+ORDER_TO_EMAIL = "andrewgstanton@gmail.com"
+# Set ORDER_FROM_EMAIL after verifying your domain with Resend.
+ORDER_FROM_EMAIL = "Memorials <orders@mail.mycontinuum.xyz>"
