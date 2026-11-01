@@ -9,7 +9,7 @@
 </head>
 
 <body class="continuum-interior">
-<header class="c-header"><div class="c-nav"><a class="c-brand" href="/" aria-label="Continuum home"><span class="c-infinity">∞</span><span>CONTINUUM</span></a><nav class="c-links" aria-label="Main navigation">
+<header class="c-header"><div class="c-nav"><a class="c-brand" href="/" aria-label="Continuum home"><span class="c-infinity">∞</span><span>CONTINUUM</span></a><button class="c-mobile-toggle" type="button" aria-expanded="false" aria-label="Open navigation menu" aria-controls="continuum-primary-nav"><span aria-hidden="true">☰</span><span class="c-toggle-label">Menu</span></button><nav class="c-links" id="continuum-primary-nav" aria-label="Main navigation">
 <a href="/" aria-current="page">Home</a>
 <details class="c-menu"><summary>About</summary><div class="c-menu-panel">
 <a href="/overview.html">Overview</a>
@@ -105,5 +105,5 @@ and other ways Continuum separates authorship from distribution.
 </div>
 <footer class="c-footer"><div class="c-footer-inner"><span>© 2025–2026 Andrew G. Stanton · Continuum</span><span><a href="/pricing.html">Pricing &amp; support</a> · <a href="/release_notes.html">Release notes</a> · <a href="https://stories.mycontinuum.xyz/">Stories</a> · <a href="/downloads/current_release/LICENSE.txt">License</a></span></div></footer>
 <script>document.addEventListener('click',function(e){document.querySelectorAll('.c-menu[open]').forEach(function(m){if(!m.contains(e.target))m.removeAttribute('open')})});document.querySelectorAll('.c-menu').forEach(function(m){m.addEventListener('toggle',function(){if(m.open)document.querySelectorAll('.c-menu').forEach(function(other){if(other!==m)other.removeAttribute('open')})})})</script>
-</body>
+<script>(function(){const toggle=document.querySelector('.c-mobile-toggle');const nav=document.getElementById('continuum-primary-nav');if(!toggle||!nav)return;function close(){toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-label','Open navigation menu');toggle.querySelector('[aria-hidden]').textContent='☰';nav.classList.remove('c-mobile-open');nav.querySelectorAll('details[open]').forEach(d=>d.removeAttribute('open'));}toggle.addEventListener('click',()=>{if(toggle.getAttribute('aria-expanded')==='true'){close();}else{toggle.setAttribute('aria-expanded','true');toggle.setAttribute('aria-label','Close navigation menu');toggle.querySelector('[aria-hidden]').textContent='✕';nav.classList.add('c-mobile-open');}});document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});window.addEventListener('resize',()=>{if(window.innerWidth>900)close()});})();</script></body>
 </html>
