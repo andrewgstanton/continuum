@@ -1,12 +1,13 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#faf8f4">
-  <meta name="description" content="Honor a loved one or celebrate a milestone with a short message recorded in a Bitcoin transaction. Continuum Memorials & Milestones — $21.">
-  <title>Create a Memorial or Milestone | Continuum</title>
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="#faf8f4" name="theme-color"/>
+<meta content="Honor a loved one or celebrate a milestone with a short message recorded in a Bitcoin transaction. Continuum Memorials &amp; Milestones — $21." name="description"/>
+<title>Create a Memorial or Milestone | Continuum</title>
+<style>
     :root {--bg:#faf8f4;--panel:#fffdfb;--line:#e6ddd0;--text:#292724;--muted:#6d665d;--gold:#b58a4e;--accent:#285d96}
     *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}
     a{color:var(--accent)}a:hover{color:#183c67}.wrap{max-width:900px;margin:auto;padding:0 26px}
@@ -18,76 +19,126 @@
     .price{font-size:2.9rem;font-weight:700;line-height:1.1;color:#86622f;margin:12px 0}.fine{font-size:.92rem;color:var(--muted)}.orderbox{max-width:760px;background:#fff;border:1px solid var(--line);padding:28px;border-radius:12px}label{display:block;font-weight:650;margin:17px 0 7px}input,select,textarea{width:100%;padding:11px 12px;background:#fff;color:var(--text);border:1px solid #cfc6b9;border-radius:7px;font:inherit}input:focus,select:focus,textarea:focus{outline:2px solid #b58a4e;outline-offset:1px}textarea{min-height:98px;resize:vertical}.row{display:grid;grid-template-columns:1fr 1fr;gap:16px}.count{text-align:right;font-size:.85rem;color:var(--muted)}.notice{border-left:3px solid var(--gold);padding:12px 16px;background:#faf4e9;margin:20px 0;color:#625a50}details{padding:15px 0;border-bottom:1px solid var(--line)}summary{cursor:pointer;font-weight:650}details p{color:var(--muted)}footer{padding:28px 0;color:var(--muted);border-top:1px solid var(--line);font-size:.9rem}footer .wrap{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
     @media(max-width:600px){.hero{padding:44px 0}section{padding:36px 0}.row{grid-template-columns:1fr}.orderbox{padding:19px}}
     @media print{body,.hero,header,.card,.orderbox{background:#fff!important;color:#000!important}header,.navlinks,footer,.actions,button{display:none!important}section{padding:16px 0;break-inside:avoid}.wrap{max-width:none}a{color:#000!important}input,textarea,select{border:1px solid #aaa}details p{display:block}}
-  </style>
+  
+    /* V16 native request and local preview */
+    .orderbox{max-width:760px}.form-help{color:var(--muted);font-size:.9rem;margin:5px 0 10px}
+    .form-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
+    .form-actions button:disabled{opacity:.5;cursor:not-allowed}
+    .preview-card{background:#fffdfb;border:1px solid var(--line);border-radius:12px;padding:32px 26px;margin-top:22px;text-align:center}
+    .preview-kicker{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:#806746;font-weight:700}
+    .preview-card h3{font:normal clamp(1.5rem,3vw,2.1rem)/1.3 Georgia,serif;margin:20px 0 14px}
+    .preview-inscription{font:normal 1.2rem/1.6 Georgia,serif;white-space:pre-wrap;overflow-wrap:anywhere;margin:20px auto;max-width:580px}
+    .preview-description{white-space:pre-wrap;overflow-wrap:anywhere;color:var(--muted);max-width:590px;margin:15px auto}
+    .preview-warning{border:1px solid #dfc89f;background:#fbf4e8;color:#725733;border-radius:8px;padding:11px;margin-top:18px;font-weight:650}
+    .preview-label{font-size:.8rem;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+    .field-error{color:#a33b2b;font-size:.87rem}.count.error{color:#a33b2b}
+    .native-status{margin-top:16px;padding:12px 14px;border-radius:8px;background:#f6f1e8;color:#5c5144}
+    [hidden]{display:none!important}
+    @media(max-width:600px){.preview-card{padding:22px 16px}}
+
+    .preview-image-wrap{margin:20px auto;max-width:580px}
+    .preview-image-wrap img{display:block;max-width:100%;max-height:420px;object-fit:contain;margin:auto;border-radius:10px}
+    .preview-image-wrap figcaption{margin-top:10px}
+
+#request-email:invalid:not(:placeholder-shown){border-color:#b64c3c} #native-order-form label strong{font-size:.85em;color:#9a422e}
+</style>
 </head>
 <body>
-  <header><div class="wrap nav"><a class="brand" href="../../"><span class="mark" aria-hidden="true">∞</span><span>CONTINUUM<br><small style="font:normal .7rem system-ui;letter-spacing:.09em">MEMORIALS &amp; MILESTONES</small></span></a><nav class="navlinks" aria-label="Main navigation"><a href="../">Browse memorials & milestones</a><a href="#how-it-works">How it works</a><a href="#order">Order</a></nav></div></header>
-  <main>
-    <div class="hero"><div class="wrap"><div class="eyebrow">Continuum Memorials &amp; Milestones</div><h1>Some moments are worth remembering forever.</h1><p class="lead">Honor someone you love. Celebrate a meaningful milestone. Preserve a short message in a Bitcoin transaction, with a beautiful page to share.</p><div class="actions"><a class="button" href="#order">Create yours — $21</a><a class="button secondary" href="../">Explore examples</a></div></div></div>
-    <section><div class="wrap"><h2>Stories worth preserving</h2><p class="intro">Whether you're remembering a life or marking a new chapter, Continuum helps you create a lasting, verifiable record of what matters.</p><div class="grid"><div class="card"><h3>Memorials</h3><p>Honor a loved one, a cherished companion, or a life that changed yours.</p></div><div class="card"><h3>Milestones</h3><p>Mark an anniversary, a graduation, a new beginning, or a personal achievement.</p></div></div></div></section>
-    <section id="how-it-works"><div class="wrap"><h2>How it works</h2><p class="intro">You don't need to own Bitcoin or understand blockchain technology.</p><div class="grid"><div class="card"><div class="number">01</div><h3>Send your message</h3><p>Choose a memorial or milestone and write a short inscription of up to 80 characters.</p></div><div class="card"><div class="number">02</div><h3>Review and approve</h3><p>We'll prepare a preview and confirm the exact wording with you before recording it.</p></div><div class="card"><div class="number">03</div><h3>Preserve and share</h3><p>After payment and confirmation on Bitcoin, receive a shareable viewer link and a way to independently verify the transaction.</p></div></div></div></section>
-    <section><div class="wrap"><h2>One meaningful message. $21.</h2><div class="price">$21</div><p class="intro">Includes one short message (up to 80 characters) recorded in a Bitcoin transaction, a shareable Continuum viewer page, and a Bitcoin verification link.</p><p class="fine">Payment can be arranged via Bitcoin or Venmo after you approve your preview. Additional photos and longer descriptions may be displayed by Continuum, but are not part of the permanent on-chain message.</p><a href="../">Browse existing memorials & milestones →</a></div></section>
-    <section id="order"><div class="wrap"><h2>Begin your memorial or milestone</h2><p class="intro">Complete our short order request form. We'll contact you to confirm your inscription, provide a preview for approval, and arrange payment.</p><div class="orderbox"><h3>Request your $21 inscription</h3><p>Choose Memorial or Milestone, share your contact information, and propose a message of up to 80 characters. No Bitcoin wallet required.</p><p class="fine">Your message will not be recorded on Bitcoin until you have approved the preview and completed payment.</p><a id="google-form-link" class="button" href="#order" aria-disabled="true">Order form coming soon</a><p id="form-setup-note" class="fine">The order form link will be enabled after the Google Form is created.</p></div></div></section>
-    <section><div class="wrap"><h2>Frequently asked questions</h2>
-      <details>
-        <summary>Why record a memorial or milestone on Bitcoin?</summary>
-        <p>
+<header><div class="wrap nav"><a class="brand" href="../../"><span aria-hidden="true" class="mark">∞</span><span>CONTINUUM<br/><small style="font:normal .7rem system-ui;letter-spacing:.09em">MEMORIALS &amp; MILESTONES</small></span></a><nav aria-label="Main navigation" class="navlinks"><a href="../">Browse memorials &amp; milestones</a><a href="#how-it-works">How it works</a><a href="#order">Order</a></nav></div></header>
+<main>
+<div class="hero"><div class="wrap"><div class="eyebrow">Continuum Memorials &amp; Milestones</div><h1>Some moments are worth remembering forever.</h1><p class="lead">Honor someone you love. Celebrate a meaningful milestone. Preserve a short message in a Bitcoin transaction, with a beautiful page to share.</p><div class="actions"><a class="button" href="#order">Create yours — $21</a><a class="button secondary" href="../">Explore examples</a></div></div></div>
+<section><div class="wrap"><h2>Stories worth preserving</h2><p class="intro">Whether you're remembering a life or marking a new chapter, Continuum helps you create a lasting, verifiable record of what matters.</p><div class="grid"><div class="card"><h3>Memorials</h3><p>Honor a loved one, a cherished companion, or a life that changed yours.</p></div><div class="card"><h3>Milestones</h3><p>Mark an anniversary, a graduation, a new beginning, or a personal achievement.</p></div></div></div></section>
+<section id="how-it-works"><div class="wrap"><h2>How it works</h2><p class="intro">You don't need to own Bitcoin or understand blockchain technology.</p><div class="grid"><div class="card"><div class="number">01</div><h3>Send your message</h3><p>Choose a memorial or milestone and write a short inscription of up to 80 characters.</p></div><div class="card"><div class="number">02</div><h3>Review and approve</h3><p>We'll prepare a preview and confirm the exact wording with you before recording it.</p></div><div class="card"><div class="number">03</div><h3>Preserve and share</h3><p>After payment and confirmation on Bitcoin, receive a shareable viewer link and a way to independently verify the transaction.</p></div></div></div></section>
+<section><div class="wrap"><h2>One meaningful message. $21.</h2><div class="price">$21</div><p class="intro">Includes one short message (up to 80 characters) recorded in a Bitcoin transaction, a shareable Continuum viewer page, and a Bitcoin verification link.</p><p class="fine">Payment can be arranged via Bitcoin or Venmo after you approve your preview. Additional photos and longer descriptions may be displayed by Continuum, but are not part of the permanent on-chain message.</p><a href="../">Browse existing memorials &amp; milestones →</a></div></section>
+<section id="order"><div class="wrap"><h2>Begin your memorial or milestone</h2><p class="intro">Enter your inscription details and generate a private, temporary preview instantly. Order submission and payment will be connected in a later update.</p><div class="orderbox">
+<h3>Prepare your $21 inscription</h3>
+<p>Enter the details below and preview how your memorial or milestone could appear. Nothing is submitted, saved, charged, or recorded on Bitcoin.</p>
+<form id="native-order-form" novalidate="">
+<div class="row"><div><label for="request-name">Your name</label><input autocomplete="name" id="request-name" name="name" placeholder="Your name"/></div>
+<div><label for="request-email">Email <strong>(required)</strong></label><input aria-required="true" autocomplete="email" id="request-email" inputmode="email" name="email" pattern="[^@\s]+@[^@\s]+\.[^@\s]+" placeholder="you@example.com" required="" type="email"/></div></div>
+<p class="form-help">* Required fields: email, title, and Bitcoin inscription.</p>
+<label for="request-type">Type of inscription</label>
+<select id="request-type" name="type"><option value="Memorial">Memorial</option><option value="Milestone">Milestone</option></select>
+<label for="request-title">Memorial or milestone title <span aria-hidden="true">*</span></label>
+<input id="request-title" maxlength="150" name="title" placeholder="e.g. In loving memory of…" required=""/>
+<label for="request-message">Message to preserve on Bitcoin <span aria-hidden="true">*</span></label>
+<textarea id="request-message" name="message" placeholder="Write the exact words you want preserved on Bitcoin" required=""></textarea>
+<div aria-live="polite" class="count" id="message-byte-count">0 / 80 UTF-8 bytes</div>
+<p class="form-help">Up to 80 UTF-8 bytes. Accented letters and emoji may use more than one byte. Only this message is intended for the Bitcoin transaction.</p>
+<label for="request-description">Additional description (optional)</label>
+<textarea id="request-description" name="description" placeholder="A longer story or explanation for the Continuum viewer page"></textarea>
+<p class="form-help">The title and description are hosted separately and are not recorded on Bitcoin.</p><label for="request-image-url">Image URL (optional)</label>
+<input autocomplete="off" id="request-image-url" inputmode="url" name="image_url" placeholder="https://example.com/photo.jpg" type="url"/>
+<p class="form-help">Enter a publicly accessible HTTPS image URL. The image appears in the temporary preview, but is not part of the Bitcoin inscription.</p>
+<div class="field-error" hidden="" id="form-error" role="alert"></div>
+<div class="form-actions"><button class="button" id="generate-preview" type="submit">Generate preview →</button><button class="button secondary" type="reset">Clear form</button></div>
+</form>
+<div aria-live="polite" hidden="" id="instant-preview">
+<div class="preview-card">
+<div class="preview-kicker">∞   CONTINUUM MEMORIALS &amp; MILESTONES</div>
+<h3 id="preview-title"></h3><p class="preview-description" hidden="" id="preview-description"></p><figure class="preview-image-wrap" hidden="" id="preview-image-wrap">
+<img alt="Memorial or milestone preview image" id="preview-image" referrerpolicy="no-referrer"/>
+<figcaption class="field-error" hidden="" id="preview-image-error">Image could not be loaded. Check that the URL is public and points directly to an image.</figcaption>
+</figure>
+<div class="preview-label">Proposed Bitcoin inscription</div>
+<div class="preview-inscription" id="preview-message"></div>
+<div class="preview-warning">PREVIEW — NOT YET RECORDED ON BITCOIN</div>
+<p class="fine">This is a temporary browser preview, not a saved or shareable memorial page. No transaction or payment has been created.</p>
+</div>
+<div class="form-actions"><button class="button secondary" id="edit-preview" type="button">Edit details</button><button class="button" id="submit-order" type="button">Submit order — $21</button></div>
+<p aria-live="polite" class="native-status" hidden="" id="order-status" role="status"></p><div class="native-status" hidden="" id="order-confirmation"><strong>Order received.</strong> Your request is pending review. No payment has been collected and nothing has been recorded on Bitcoin. <span id="order-number"></span></div></div>
+<p class="native-status" id="submission-note">Preview your inscription before submitting. Submission creates a pending request only; payment and Bitcoin inscription happen later.</p>
+</div></div></section>
+<section><div class="wrap"><h2>Frequently asked questions</h2>
+<details>
+<summary>Why record a memorial or milestone on Bitcoin?</summary>
+<p>
           We share life's important moments through photographs, social media, and memorial websites. But websites can disappear, accounts can be closed, and digital memories can be lost.
           Continuum offers another way to preserve what matters.
           For $21, your personal message is recorded directly on Bitcoin's blockchain—not simply stored on a website or represented by a cryptographic hash.
           Your words become part of a durable, independently verifiable historical record that doesn't depend on Continuum or any other company to remain accessible.
         </p>
-        <p>   
-          <strong>Share your memories anywhere. Preserve your words on Bitcoin.</strong>
-        </p>
-      </details>      
-      <details>
-        <summary>What is actually preserved on Bitcoin?</summary>
-        <p>The approved short inscription is included in a Bitcoin transaction. 
+<p>
+<strong>Share your memories anywhere. Preserve your words on Bitcoin.</strong>
+</p>
+</details>
+<details>
+<summary>What is actually preserved on Bitcoin?</summary>
+<p>The approved short inscription is included in a Bitcoin transaction. 
           The transaction can be independently verified using a public Bitcoin explorer. 
           The Continuum webpage, images, and extended descriptions are hosted separately and are not themselves guaranteed to remain available forever.
         </p>
-      </details>
-      <details>
-        <summary>Do I need a Bitcoin wallet?</summary>
-        <p>
+</details>
+<details>
+<summary>Do I need a Bitcoin wallet?</summary>
+<p>
           No. You can request a memorial or milestone without a wallet or any prior Bitcoin experience.
         </p>
-      </details>
-      <details>
-        <summary>Can I change my message later?</summary>
-        <p>Once the transaction is confirmed, the on-chain message cannot be edited. 
+</details>
+<details>
+<summary>Can I change my message later?</summary>
+<p>Once the transaction is confirmed, the on-chain message cannot be edited. 
           That's why we ask for your approval first. 
           Separately hosted presentation details may be updated.
         </p>
-      </details>
-      <details>
-          <summary>Can I add a photo or longer story?</summary>
-          <p>
+</details>
+<details>
+<summary>Can I add a photo or longer story?</summary>
+<p>
             Ask us about adding supporting details to your viewer page. 
             Those additions are hosted separately from the on-chain inscription.
           </p>
-      </details>
-      <details>
-        <summary>When do I pay?</summary>
-          <p>
+</details>
+<details>
+<summary>When do I pay?</summary>
+<p>
             After you approve your memorial or milestone preview, we'll provide payment instructions. 
             Once payment is received, we'll create and submit your inscription to Bitcoin. 
             When the transaction is confirmed, we'll send you a link to view and independently verify your inscription.            
           </p>
-      </details>
-    </div></section>
-  </main>
-  <footer><div class="wrap"><span>© <span id="year"></span> Continuum · Memorials & Milestones</span><span><a href="../../">Continuum home</a> · <a href="../">Browse memorials</a></span></div></footer>
-  <script src="form-config.js"></script><script>
-  document.getElementById('year').textContent = new Date().getFullYear();
-  const formUrl = window.CONTINUUM_GOOGLE_FORM_URL || '';
-  if (/^https:\/\/docs\.google\.com\/forms\//.test(formUrl) || /^https:\/\/forms\.gle\//.test(formUrl)) {
-    const link = document.getElementById('google-form-link');
-    link.href = formUrl; link.textContent = 'Open order form →';
-    link.removeAttribute('aria-disabled'); link.target = '_blank'; link.rel = 'noopener noreferrer';
-    document.getElementById('form-setup-note').textContent = 'The form opens in a new tab. Submitting a request does not charge you or publish an inscription.';
-  }
-</script>
-</body>
+</details>
+</div></section>
+</main>
+<footer><div class="wrap"><span>© <span id="year"></span> Continuum · Memorials &amp; Milestones</span><span><a href="../../">Continuum home</a> · <a href="../">Browse memorials</a></span></div></footer>
+<script src="preview-form.js"></script><script src="submission-config.js"></script></body>
 </html>
