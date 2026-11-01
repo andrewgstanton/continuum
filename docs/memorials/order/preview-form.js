@@ -10,6 +10,35 @@
   const previewImage = field('preview-image');
   const imageWrap = field('preview-image-wrap');
   const imageError = field('preview-image-error');
+  const imageFileInput = field('request-image-file');
+  let photoObjectUrl = null;
+  let preparedPhoto = null;
+  const releasePhotoPreview = () => {
+    if (photoObjectUrl) URL.revokeObjectURL(photoObjectUrl);
+    photoObjectUrl = null;
+  };
+  // Resize camera images in-browser so mobile uploads are small and consistently viewable.
+  async function preparePhoto(file) {
+    if (!file) return null;
+    if (!file.type.startsWith('image/')) throw new Error('Please select an image file.');
+    const sourceUrl = URL.createObjectURL(file);
+    try {
+      const img = new Image();
+      img.src = sourceUrl;
+      if (img.decode) await img.decode();
+      else await new Promise((resolve, reject) => { img.onload = resolve; img.onerror = reject; });
+      const scale = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(img.naturalWidth * scale));
+      canvas.height = Math.max(1, Math.round(img.naturalHeight * scale));
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.82));
+      if (!blob || blob.size > 5 * 1024 * 1024) throw new Error('Photo could not be optimized below 5 MB. Choose a smaller image.');
+      return new File([blob], 'photo.jpg', {type:'image/jpeg'});
+    } catch (_) {
+      throw new Error('This photo format cannot be opened by your browser. Try a JPEG, PNG, or another photo.');
+    } finally { URL.revokeObjectURL(sourceUrl); }
+  }
   previewImage.addEventListener('error', () => {
     previewImage.hidden = true;
     imageError.hidden = false;
@@ -34,14 +63,14 @@
     count.classList.toggle('error', size > 80);
     return size;
   };
-  const hidePreview = () => { preview.hidden = true; orderConfirmation.hidden = true; orderStatus.hidden = true; currentRequestKey = crypto.randomUUID(); submitButton.disabled = false; };
+  const hidePreview = () => { preparedPhoto = null; releasePhotoPreview(); preview.hidden = true; orderConfirmation.hidden = true; orderStatus.hidden = true; currentRequestKey = crypto.randomUUID(); submitButton.disabled = false; };
   form.addEventListener('input', () => { updateCount(); hidePreview(); error.hidden = true; });
   form.addEventListener('change', hidePreview);
   form.addEventListener('reset', () => {
     hidePreview(); error.hidden = true;
     setTimeout(updateCount, 0);
   });
-  form.addEventListener('submit', event => {
+  form.addEventListener('submit', async event => {
     event.preventDefault();
     const email = field('request-email').value.trim();
     const title = field('request-title').value.trim();
@@ -55,7 +84,8 @@
       return;
     }
     const imageUrl = field('request-image-url').value.trim();
-    if (imageUrl) {
+    const selectedFile = imageFileInput.files[0];
+    if (imageUrl && !selectedFile) {
       try {
         const url = new URL(imageUrl);
         if (url.protocol !== 'https:') throw new Error('HTTPS required');
@@ -66,12 +96,22 @@
         return;
       }
     }
+    try {
+      preparedPhoto = selectedFile ? await preparePhoto(selectedFile) : null;
+    } catch (e) {
+      error.textContent = e.message;
+      error.hidden = false;
+      preview.hidden = true;
+      return;
+    }
     error.hidden = true;
+    releasePhotoPreview();
     previewImage.removeAttribute('src');
     previewImage.hidden = true;
     imageError.hidden = true;
-    imageWrap.hidden = !imageUrl;
-    if (imageUrl) previewImage.src = imageUrl;
+    imageWrap.hidden = !(preparedPhoto || imageUrl);
+    if (preparedPhoto) { photoObjectUrl = URL.createObjectURL(preparedPhoto); previewImage.src = photoObjectUrl; }
+    else if (imageUrl) previewImage.src = imageUrl;
     field('preview-title').textContent = title;
     field('preview-message').textContent = inscription;
     const desc = field('request-description').value.trim();
@@ -97,13 +137,19 @@
       description: field('request-description').value.trim(),
       image_url: field('request-image-url').value.trim()
     };
+    const multipart = !!preparedPhoto;
+    const requestBody = multipart ? new FormData() : JSON.stringify(payload);
+    if (multipart) {
+      requestBody.append('order', JSON.stringify(payload));
+      requestBody.append('photo', preparedPhoto, preparedPhoto.name);
+    }
     submitButton.disabled = true;
     orderStatus.hidden = false;
     orderStatus.textContent = 'Submitting your order…';
     try {
       const response = await fetch(api.replace(/\/$/, '') + '/api/orders', {
-        method: 'POST', headers: {'Content-Type': 'application/json', 'Idempotency-Key': currentRequestKey},
-        body: JSON.stringify(payload)
+        method: 'POST', headers: multipart ? {'Idempotency-Key': currentRequestKey} : {'Content-Type': 'application/json', 'Idempotency-Key': currentRequestKey},
+        body: requestBody
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Could not submit order.');

@@ -30,6 +30,24 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     if (url.pathname === '/health' && request.method === 'GET') return json({status:'ok'});
+    // Image requests are authorized by the same seven-day pending order record.
+    const imageMatch = url.pathname.match(/^\/api\/orders\/(CM-[0-9A-F]{12})\/image$/i);
+    if (imageMatch && request.method === 'GET') {
+      const origin = request.headers.get('Origin');
+      const headers = origin ? cors(request, env) : {};
+      if (!headers) return json({error:'Origin not allowed'},403);
+      if (!env.MEMORIAL_PENDING || !env.MEMORIAL_IMAGES) return json({error:'Image storage not configured'},503,headers);
+      const id = imageMatch[1].toLowerCase();
+      const order = await env.MEMORIAL_PENDING.get(`pending/${id}.json`);
+      if (!order) return json({error:'Preview not found'},404,headers);
+      const pending = await order.json();
+      if (!pending.expires_at || Date.parse(pending.expires_at) <= Date.now())
+        return json({error:'Preview expired'},410,headers);
+      const image = await env.MEMORIAL_IMAGES.get(`pending/${id}/photo.jpg`);
+      if (!image) return json({error:'Photo not found'},404,headers);
+      return new Response(image.body, {headers:{...headers,'Content-Type':'image/jpeg',
+        'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'}});
+    }
     // Pending previews are publicly shareable by their existing order ID.
     // Only the public index entry is stored; contact/payment details are never returned.
     if (url.pathname.startsWith('/api/orders/') && request.method === 'GET') {
@@ -55,11 +73,24 @@ export default {
     if (!headers) return json({error:'Origin not allowed'},403);
     if (request.method === 'OPTIONS') return new Response(null,{status:204,headers});
     if (request.method !== 'POST') return json({error:'Method not allowed'},405,headers);
-    if (Number(request.headers.get('Content-Length') || 0) > 16000) return json({error:'Request too large'},413,headers);
+    const isMultipart = (request.headers.get('Content-Type') || '').toLowerCase().startsWith('multipart/form-data');
+    if (Number(request.headers.get('Content-Length') || 0) > (isMultipart ? 6 * 1024 * 1024 : 16000)) return json({error:'Request too large'},413,headers);
     const key = request.headers.get('Idempotency-Key');
     if (!key || !/^[0-9a-f]{8}-[0-9a-f-]{27,}$/i.test(key)) return json({error:'Invalid request key'},400,headers);
-    let body;
-    try { body = await request.json(); } catch { return json({error:'Invalid JSON'},400,headers); }
+    let body, photo = null;
+    try {
+      if (isMultipart) {
+        const form = await request.formData();
+        body = JSON.parse(form.get('order'));
+        photo = form.get('photo');
+        if (!photo || typeof photo.arrayBuffer !== 'function' || photo.type !== 'image/jpeg' || photo.size < 1 || photo.size > 5 * 1024 * 1024)
+          return json({error:'Please upload a JPEG photo of 5 MB or less.'},400,headers);
+        const signature = new Uint8Array(await photo.slice(0,3).arrayBuffer());
+        if (signature[0] !== 0xff || signature[1] !== 0xd8 || signature[2] !== 0xff)
+          return json({error:'Invalid JPEG image.'},400,headers);
+      } else body = await request.json();
+    } catch { return json({error:'Invalid order data'},400,headers); }
+    if (photo && !env.MEMORIAL_IMAGES) return json({error:'Photo storage not configured'},503,headers);
     const problem = validate(body);
     if (problem) return json({error:problem},400,headers);
     if (!env.MEMORIAL_PENDING) return json({error:'Pending preview storage not configured'},503,headers);
@@ -67,6 +98,7 @@ export default {
     const orderId = 'CM-' + key.replace(/-/g,'').slice(0,12).toUpperCase();
 
     // Generate a ready-to-copy entry for memorials/index.json.
+    const photoUrl = photo ? `${url.origin}/api/orders/${encodeURIComponent(orderId)}/image` : '';
     const indexEntry = {
       id: orderId.toLowerCase(),
       type: body.type.toLowerCase(),
@@ -75,7 +107,7 @@ export default {
       visibility: 'private',
       collections: [],
       description: clean(body.description,5000) || null,
-      image: clean(body.image_url,2000),
+      image: photoUrl || clean(body.image_url,2000),
       bitcoin: {
         txid: '',
         psbt: '',
@@ -93,7 +125,7 @@ export default {
       `Title: ${clean(body.title,150)}`, '',
       'Proposed Bitcoin inscription:', clean(body.inscription,500), '',
       'Additional description:', clean(body.description,5000) || '(none)', '',
-      `Image URL: ${clean(body.image_url,2000) || '(none)'}`, '',
+      `Image URL: ${photoUrl || clean(body.image_url,2000) || '(none)'}`, '',
       'Review payment and approve inscription manually. No Bitcoin transaction has occurred.',
       '',
       '----------------------------------------',
@@ -101,6 +133,16 @@ export default {
       '----------------------------------------',
       indexJson
     ];
+    // Save image first. A failed email leaves only a temporary object cleaned up by R2 lifecycle.
+    if (photo) {
+      try {
+        await env.MEMORIAL_IMAGES.put(`pending/${indexEntry.id}/photo.jpg`, photo.stream(),
+          {httpMetadata:{contentType:'image/jpeg'}});
+      } catch (error) {
+        console.error('Photo upload failed',error);
+        return json({error:'Photo could not be saved. Please retry.'},503,headers);
+      }
+    }
     let result;
     try {
       result = await fetch('https://api.resend.com/emails', {

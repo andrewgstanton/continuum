@@ -11,3 +11,8 @@ ORDER_FROM_EMAIL = "Memorials <orders@mail.mycontinuum.xyz>"
 [[r2_buckets]]
 binding = "MEMORIAL_PENDING"
 bucket_name = "continuum-memorial-pending"
+
+# Create this bucket in R2 before deploying the photo-upload Worker.
+[[r2_buckets]]
+binding = "MEMORIAL_IMAGES"
+bucket_name = "continuum-memorial-images"
