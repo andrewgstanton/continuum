@@ -178,24 +178,9 @@
         </p>
 
     </div>
-
-    <hr>
-
-    <footer>
-
-        <p>© 2025–2026 Andrew G. Stanton · Continuum</p>
-        <p>Continuum software and documentation.</p>
-
-        <p>Built on Nostr. Designed for durable authorship.</p>
-
-        <p>
-        Continuum software and documentation are distributed under license.
-        See the <a href="/downloads/current_release/LICENSE.txt">license</a>.
-        </p>
-
-    </footer>
-
 </div>
+<footer class="c-footer"><div class="c-footer-inner"><span>© 2025–2026 Andrew G. Stanton · Continuum</span><span><a href="/pricing.html">Pricing &amp; support</a> · <a href="/release_notes.html">Release notes</a> · <a href="https://stories.mycontinuum.xyz/">Stories</a> · <a href="/downloads/current_release/LICENSE.txt">License</a></span></div></footer>
+
 <script>document.addEventListener('click',function(e){document.querySelectorAll('.c-menu[open]').forEach(function(m){if(!m.contains(e.target))m.removeAttribute('open')})});document.querySelectorAll('.c-menu').forEach(function(m){m.addEventListener('toggle',function(){if(m.open)document.querySelectorAll('.c-menu').forEach(function(other){if(other!==m)other.removeAttribute('open')})})})</script>
 <script>(function(){const toggle=document.querySelector('.c-mobile-toggle');const nav=document.getElementById('continuum-primary-nav');if(!toggle||!nav)return;function close(){toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-label','Open navigation menu');toggle.querySelector('[aria-hidden]').textContent='☰';nav.classList.remove('c-mobile-open');nav.querySelectorAll('details[open]').forEach(d=>d.removeAttribute('open'));}toggle.addEventListener('click',()=>{if(toggle.getAttribute('aria-expanded')==='true'){close();}else{toggle.setAttribute('aria-expanded','true');toggle.setAttribute('aria-label','Close navigation menu');toggle.querySelector('[aria-hidden]').textContent='✕';nav.classList.add('c-mobile-open');}});document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});window.addEventListener('resize',()=>{if(window.innerWidth>900)close()});})();</script></body>
 </html>
