@@ -30,23 +30,35 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     if (url.pathname === '/health' && request.method === 'GET') return json({status:'ok'});
-    // Image requests are authorized by the same seven-day pending order record.
+    // A single stable image URL works for both pending and published orders.
+    // Always check published storage FIRST: permanent photos must not depend
+    // on the seven-day pending order record or its lifecycle expiration.
     const imageMatch = url.pathname.match(/^\/api\/orders\/(CM-[0-9A-F]{12})\/image$/i);
     if (imageMatch && request.method === 'GET') {
       const origin = request.headers.get('Origin');
       const headers = origin ? cors(request, env) : {};
       if (!headers) return json({error:'Origin not allowed'},403);
-      if (!env.MEMORIAL_PENDING || !env.MEMORIAL_IMAGES) return json({error:'Image storage not configured'},503,headers);
+      if (!env.MEMORIAL_IMAGES) return json({error:'Image storage not configured'},503,headers);
       const id = imageMatch[1].toLowerCase();
-      const order = await env.MEMORIAL_PENDING.get(`pending/${id}.json`);
-      if (!order) return json({error:'Preview not found'},404,headers);
-      const pending = await order.json();
-      if (!pending.expires_at || Date.parse(pending.expires_at) <= Date.now())
-        return json({error:'Preview expired'},410,headers);
-      const image = await env.MEMORIAL_IMAGES.get(`pending/${id}/photo.jpg`);
-      if (!image) return json({error:'Photo not found'},404,headers);
-      return new Response(image.body, {headers:{...headers,'Content-Type':'image/jpeg',
-        'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'}});
+      try {
+        const publishedImage = await env.MEMORIAL_IMAGES.get(`published/${id}/photo.jpg`);
+        if (publishedImage) return new Response(publishedImage.body, {headers:{...headers,
+          'Content-Type':'image/jpeg', 'Cache-Control':'public, max-age=3600',
+          'X-Content-Type-Options':'nosniff'}});
+        if (!env.MEMORIAL_PENDING) return json({error:'Preview storage not configured'},503,headers);
+        const order = await env.MEMORIAL_PENDING.get(`pending/${id}.json`);
+        if (!order) return json({error:'Preview not found or expired'},404,headers);
+        const pending = await order.json();
+        if (!pending.expires_at || Date.parse(pending.expires_at) <= Date.now())
+          return json({error:'Preview expired'},410,headers);
+        const image = await env.MEMORIAL_IMAGES.get(`pending/${id}/photo.jpg`);
+        if (!image) return json({error:'Photo not found'},404,headers);
+        return new Response(image.body, {headers:{...headers,'Content-Type':'image/jpeg',
+          'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'}});
+      } catch (error) {
+        console.error('Image read failed', error);
+        return json({error:'Image temporarily unavailable'},503,headers);
+      }
     }
     // Pending previews are publicly shareable by their existing order ID.
     // Only the public index entry is stored; contact/payment details are never returned.
