@@ -136,7 +136,7 @@ li {
 
 .subtitle {
   font-size: 1rem;
-  color: #6b5f4d;
+  color: #292524;
   line-height: 1.6;
   margin-bottom: 1.5rem;
   font-style: italic;
@@ -195,7 +195,7 @@ footer p {
   }
 }
 /* Stage 1 homepage redesign: scoped to index.html only. */
-.stage-one-home{background:#faf8f4;color:#282624;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;line-height:1.65}
+.stage-one-home{background:#faf8f4;color:#1C1917;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;line-height:1.65}
 .stage-one-home *{box-sizing:border-box}
 .stage-one-home a:not(.c-button){color:#315e8f}
 .c-header{background:#fffdfa;border-bottom:1px solid #e6ded1;position:relative;z-index:10}
@@ -203,29 +203,29 @@ footer p {
 :is(.stage-one-home,.continuum-interior) .c-brand{display:flex;align-items:center;gap:12px;text-decoration:none!important;color:#65543c!important;font:700 1.28rem Georgia,serif;letter-spacing:.1em;white-space:nowrap}
 .c-infinity{color:#b68a4b;font:normal 2.8rem Georgia,serif;line-height:1}
 .c-links{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
-:is(.stage-one-home,.continuum-interior) .c-links>a,.c-menu summary{font:500 .96rem -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:#5e554a!important;text-decoration:none;cursor:pointer}
+:is(.stage-one-home,.continuum-interior) .c-links>a,.c-menu summary{font:500 .96rem -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:#292524!important;text-decoration:none;cursor:pointer}
 .c-links>a:hover,.c-menu summary:hover{color:#a77937!important}
 .c-menu{position:relative}.c-menu summary{list-style:none}.c-menu summary::-webkit-details-marker{display:none}.c-menu summary:after{content:' ▾';font-size:.8em}
 .c-menu-panel{position:absolute;top:calc(100% + 14px);left:0;min-width:220px;padding:10px;background:#fffdfb;border:1px solid #e2d8c8;box-shadow:0 12px 30px #392b1c20;border-radius:12px;display:grid;gap:2px;z-index:20}
-.c-menu-panel a{display:block;padding:9px 12px;border-radius:6px;text-decoration:none;color:#5e554a!important;font-size:.92rem}.c-menu-panel a:hover{background:#f6f0e7}
+.c-menu-panel a{display:block;padding:9px 12px;border-radius:6px;text-decoration:none;color:#292524!important;font-size:.92rem}.c-menu-panel a:hover{background:#f6f0e7}
 .c-main{max-width:1340px;padding:24px 26px 0;margin:auto}.c-hero{text-align:center;background:#fffdfa;border-radius:24px;padding:60px 34px 0;box-shadow:0 4px 28px #7d6c550b}
-.c-eyebrow{display:flex;align-items:center;justify-content:center;gap:16px;color:#6e5d46;font:700 1.2rem Georgia,serif;letter-spacing:.14em}.c-eyebrow .c-infinity{font-size:2.35rem}
+.c-eyebrow{display:flex;align-items:center;justify-content:center;gap:16px;color:#1C1917;font:700 1.2rem Georgia,serif;letter-spacing:.14em}.c-eyebrow .c-infinity{font-size:2.35rem}
 .stage-one-home h1,.stage-one-home h2,.stage-one-home h3{font-family:Georgia,"Times New Roman",serif;color:#272524;font-weight:500}
 .stage-one-home h1{font-size:clamp(2.9rem,5vw,4.95rem);letter-spacing:-.035em;line-height:1.1;margin:34px auto 23px;max-width:1100px}
-.c-lead{font-size:clamp(1.16rem,1.75vw,1.45rem);line-height:1.6;color:#6f685e;max-width:820px;margin:0 auto 15px}
-.c-description{font-size:1.09rem;line-height:1.85;color:#6f685e;max-width:880px;margin:0 auto}.c-platform-note{font-size:.92rem;font-weight:600;color:#6e5d46;margin:19px auto 10px}
-.c-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:15px}.stage-one-home .c-button{display:inline-block;text-decoration:none;background:#ead1a7;border:1px solid #b88c4d;border-radius:12px;padding:15px 28px;color:#282624!important;font-size:1.06rem;font-weight:700;transition:background .2s}.stage-one-home .c-button:hover{background:#f0dbb8}
+.c-lead{font-size:clamp(1.16rem,1.75vw,1.45rem);line-height:1.6;color:#292524;max-width:820px;margin:0 auto 15px}
+.c-description{font-size:1.09rem;line-height:1.85;color:#292524;max-width:880px;margin:0 auto}.c-platform-note{font-size:.92rem;font-weight:600;color:#1C1917;margin:19px auto 10px}
+.c-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:15px}.stage-one-home .c-button{display:inline-block;text-decoration:none;background:#ead1a7;border:1px solid #b88c4d;border-radius:12px;padding:15px 28px;color:#1C1917!important;font-size:1.06rem;font-weight:700;transition:background .2s}.stage-one-home .c-button:hover{background:#f0dbb8}
 .c-subactions{display:flex;gap:17px;flex-wrap:wrap;justify-content:center;margin:16px 0 34px;font-size:.96rem}.c-subactions a{text-decoration:none}.c-subactions a:hover{text-decoration:underline}.c-rule{height:1px;background:#e4dbcd;max-width:1110px;margin:auto}
-.c-section{padding:84px 0}.c-section-intro{text-align:center;max-width:810px;margin:0 auto 34px}.stage-one-home h2{font-size:clamp(2.2rem,3.5vw,3.5rem);line-height:1.18;margin:0 0 14px}.c-section-intro p,.c-feature p{color:#6f685e;font-size:1.06rem;margin:0}
-.c-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}.c-card{background:#fffdfa;border:1px solid #e7ded2;border-radius:16px;padding:36px 38px;min-height:255px}.c-kicker{font-size:.8rem;font-weight:750;letter-spacing:.12em;color:#a77d42}.stage-one-home h3{font-size:clamp(1.55rem,2.2vw,2.05rem);line-height:1.2;margin:13px 0 12px}.c-card p{color:#6f685e;margin:0 0 19px}.c-card a{font-weight:650;text-decoration:none}.c-card a:hover{text-decoration:underline}
+.c-section{padding:84px 0}.c-section-intro{text-align:center;max-width:810px;margin:0 auto 34px}.stage-one-home h2{font-size:clamp(2.2rem,3.5vw,3.5rem);line-height:1.18;margin:0 0 14px}.c-section-intro p,.c-feature p{color:#292524;font-size:1.06rem;margin:0}
+.c-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}.c-card{background:#fffdfa;border:1px solid #e7ded2;border-radius:16px;padding:36px 38px;min-height:255px}.c-kicker{font-size:.8rem;font-weight:750;letter-spacing:.12em;color:#a77d42}.stage-one-home h3{font-size:clamp(1.55rem,2.2vw,2.05rem);line-height:1.2;margin:13px 0 12px}.c-card p{color:#292524;margin:0 0 19px}.c-card a{font-weight:650;text-decoration:none}.c-card a:hover{text-decoration:underline}
 .c-feature{display:flex;justify-content:space-between;gap:40px;align-items:center;padding:48px 55px;background:#f1ebe1;border-radius:18px}.c-feature h2{margin:8px 0 10px}.c-feature>div:first-child{max-width:550px}.c-feature-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:flex-end;max-width:440px}.c-text-link{width:100%;text-align:center;font-size:.93rem;margin-top:4px}
 .c-next{text-align:center;padding-bottom:78px}.c-small-links{display:flex;flex-wrap:wrap;justify-content:center;gap:15px 30px;margin-top:20px}.c-small-links a{text-decoration:none;font-weight:600}
-.c-footer{border-top:1px solid #e6ded1;background:#fffdfa;color:#70675e}.c-footer-inner{max-width:1340px;margin:auto;padding:28px 30px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:.88rem}
+.c-footer{border-top:1px solid #e6ded1;background:#fffdfa;color:#292524}.c-footer-inner{max-width:1340px;margin:auto;padding:28px 30px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:.88rem}
 @media(max-width:900px){.c-nav{align-items:flex-start;flex-direction:column;gap:10px}.c-links{gap:14px 20px}.c-feature{flex-direction:column;align-items:flex-start}.c-feature-actions{justify-content:flex-start}}
 @media(max-width:650px){.c-main{padding:12px 12px 0}.c-nav{padding:14px 18px}.c-links{gap:12px 15px}.c-links>a,.c-menu summary{font-size:.88rem!important}.c-menu-panel{left:auto;right:0}.c-hero{padding:42px 20px 0;border-radius:16px}.c-eyebrow{font-size:.96rem;gap:10px}.stage-one-home h1{margin:27px auto 20px}.c-description{font-size:1rem}.c-actions{flex-direction:column}.c-actions .c-button{text-align:center}.c-subactions{gap:10px;margin-bottom:28px}.c-section{padding:56px 0}.c-cards{grid-template-columns:1fr}.c-card{padding:27px}.c-feature{padding:30px 25px}.c-feature-actions{flex-direction:column;width:100%}.c-feature-actions .c-button{text-align:center}.c-footer-inner{padding:24px 18px}}
 
 /* Phase 2: V4 visual language for the existing informational pages. */
-.continuum-interior{background:#faf8f4;color:#282624;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
+.continuum-interior{background:#faf8f4;color:#1C1917;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
 .continuum-interior *{box-sizing:border-box}
 .continuum-interior .c-header{margin:0}
 .continuum-interior .page-shell{max-width:1120px;margin:28px auto 76px;padding:62px clamp(28px,6vw,86px);background:#fffdfa;border:1px solid #eee7dc;border-radius:22px;box-shadow:0 4px 28px #7d6c550b}
@@ -234,7 +234,7 @@ footer p {
 .continuum-interior .page-shell h3{font-size:1.35rem;font-weight:500;margin-top:30px}
 .continuum-interior .page-shell p,.continuum-interior .page-shell li{color:#514b43;line-height:1.8}
 .continuum-interior .page-shell a:not(.button){color:#315e8f}
-.continuum-interior .page-shell .button{background:#ead1a7;border:1px solid #b88c4d;color:#282624;border-radius:12px}
+.continuum-interior .page-shell .button{background:#ead1a7;border:1px solid #b88c4d;color:#1C1917;border-radius:12px}
 .continuum-interior .page-shell .button:hover{background:#f0dbb8;box-shadow:none}
 .continuum-interior .page-shell hr{border-color:#e7ded2}
 .continuum-interior .page-shell footer{margin-top:60px}
@@ -244,9 +244,9 @@ footer p {
 @media(max-width:650px){.continuum-interior .page-shell{margin:12px 12px 40px;padding:32px 22px;border-radius:16px}.continuum-interior .page-shell h1{font-size:2.4rem}.continuum-interior .page-shell [style*="display:flex"]{flex-wrap:wrap}}
 
 /* Auth demo: retain working form while matching main-site layout. */
-.continuum-interior .page-shell .demo-note{margin-top:42px;padding-top:22px;border-top:1px solid #e7ded2;color:#70675e;font-size:.95rem}
+.continuum-interior .page-shell .demo-note{margin-top:42px;padding-top:22px;border-top:1px solid #e7ded2;color:#292524;font-size:.95rem}
 .continuum-interior .page-shell input,.continuum-interior .page-shell textarea{max-width:100%;font:inherit;border:1px solid #cfc6b9;border-radius:7px;background:#fff}
-.continuum-interior .page-shell button{font:inherit;cursor:pointer;padding:9px 14px;border:1px solid #b88c4d;border-radius:8px;background:#ead1a7;color:#282624}
+.continuum-interior .page-shell button{font:inherit;cursor:pointer;padding:9px 14px;border:1px solid #b88c4d;border-radius:8px;background:#ead1a7;color:#1C1917}
 
 /* V17.2: responsive Continuum navigation; desktop behavior unchanged. */
 .c-mobile-toggle{display:none}

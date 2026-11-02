@@ -73,7 +73,7 @@ body {
 .permanence {
   margin-bottom: 18px;
 
-  color: #70695e;
+  color: #292524;
 
   font-size: 0.95rem;
 }
@@ -93,7 +93,7 @@ body {
 .status {
   font-size: 1rem;
 
-  color: #6b5f4d;
+  color: #292524;
 }
 
 .error {
@@ -125,7 +125,7 @@ body {
 
 .preview-intro {
   margin: -18px 0 22px;
-  color: #70695e;
+  color: #292524;
   font-size: 0.95rem;
   line-height: 1.6;
 }
@@ -169,7 +169,7 @@ body {
 }
 
 .preview-detail {
-  color: #70695e;
+  color: #292524;
   font-size: 0.88rem;
 }
 
@@ -201,27 +201,27 @@ body {
 
 /* Clear, visitor-friendly Bitcoin verification area */
 .verification { margin-top: 16px; text-align: center; }
-.verification-heading { font-size: 0.96rem; font-weight: 600; color: #49443d; }
+.verification-heading { font-size: 0.96rem; font-weight: 600; color: #1C1917; }
 .verification .explorer-links { margin: 10px 0 9px; gap: 24px; }
 .verification .explorer-links a { font-size: 0.94rem; }
-.verification-help { font-size: 0.83rem; color: #70695e; }
-.verification-source { font-size: 0.78rem; color: #857e74; margin-top: 15px; }
+.verification-help { font-size: 0.83rem; color: #292524; }
+.verification-source { font-size: 0.78rem; color: #292524; margin-top: 15px; }
 
 /* Public archive: distinct memorial and milestone galleries */
 .catalog { text-align: left; }
 .catalog-section { margin: 0 0 30px; }
 .catalog-section + .catalog-section { border-top: 1px solid #e8e1d6; padding-top: 28px; }
 .catalog-section h2 { margin: 0 0 8px; font-family: Georgia, "Times New Roman", serif; font-size: 1.55rem; font-weight: normal; }
-.catalog-intro { margin: 0 0 20px; color: #70695e; font-size: .92rem; line-height: 1.5; }
+.catalog-intro { margin: 0 0 20px; color: #292524; font-size: .92rem; line-height: 1.5; }
 .catalog-records { display: grid; gap: 12px; }
 .catalog-card { display: flex; align-items: center; gap: 18px; padding: 13px; border: 1px solid #e8e1d6; border-radius: 9px; color: inherit; text-decoration: none; transition: background .15s; }
 .catalog-card:hover, .catalog-card:focus-visible { background: #f8f4ed; }
 .catalog-thumbnail { flex: 0 0 90px; width: 90px; height: 90px; object-fit: cover; border-radius: 7px; background: #f3eee6; }
-.catalog-placeholder { display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #86765d; }
+.catalog-placeholder { display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #292524; }
 .catalog-card-content { display: flex; flex-direction: column; align-items: flex-start; gap: 9px; min-width: 0; }
 .catalog-card-title { font-weight: 600; font-size: 1rem; line-height: 1.4; }
 .catalog-card-action { color: #355c96; font-size: .87rem; }
-.catalog-empty { color: #857e74; font-size: .9rem; }
+.catalog-empty { color: #292524; font-size: .9rem; }
 #collections:not(:empty) { margin-bottom: 26px; }
 #collections a { color: #355c96; }
 @media (max-width: 480px) { .catalog-thumbnail { flex-basis: 72px; width: 72px; height: 72px; } .catalog-card { gap: 12px; } }
@@ -229,14 +229,14 @@ body {
 /* Explicit separation of optional catalog metadata and Bitcoin inscription */
 .record-details { text-align: left; border: 1px solid #e7dfd3; background: #fbf8f2; padding: 24px; border-radius: 10px; margin: 0 0 34px; }
 .record-details h2, .onchain-section h2 { font-family: Georgia, "Times New Roman", serif; font-size: 1.2rem; font-weight: normal; margin: 0 0 10px; }
-.record-origin, .onchain-explainer { font-size: .84rem; color: #70695e; line-height: 1.55; margin: 0 0 20px; }
+.record-origin, .onchain-explainer { font-size: .84rem; color: #292524; line-height: 1.55; margin: 0 0 20px; }
 #milestone-image { display: block; max-width: 100%; max-height: 460px; object-fit: contain; margin: 0 auto 22px; border-radius: 8px; }
 #milestone-image[hidden] { display: none; }
 .record-fields { margin: 0; }
 .record-fields > div { margin: 0 0 13px; }
-.record-fields dt { color: #857e74; font-size: .78rem; margin-bottom: 4px; }
+.record-fields dt { color: #292524; font-size: .78rem; margin-bottom: 4px; }
 .record-fields dd { margin: 0; line-height: 1.5; font-size: 1rem; }
-#record-description-wrap h3 { font-size: .86rem; font-weight: 600; color: #70695e; margin: 15px 0 5px; }
+#record-description-wrap h3 { font-size: .86rem; font-weight: 600; color: #292524; margin: 15px 0 5px; }
 #milestone-description { margin: 0; overflow-wrap: anywhere; }
 .onchain-section { border-top: 1px solid #e8e1d6; padding-top: 28px; }
 .onchain-section h2 { color: #6b5a43; }
@@ -260,7 +260,7 @@ body {
 .share-section h2 { font: normal 1.15rem Georgia, "Times New Roman", serif; color: #6b5a43; margin: 0 0 17px; }
 .share-qr { width: 172px; height: 172px; margin: 0 auto; background: white; }
 .share-qr svg { display: block; width: 100%; height: 100%; }
-.share-caption { font-size: .85rem; color: #70695e; margin: 12px 0 18px; }
+.share-caption { font-size: .85rem; color: #292524; margin: 12px 0 18px; }
 .share-actions { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
 .share-actions button { padding: 9px 13px; border: 1px solid #c9bdac; border-radius: 6px; background: #fffdf9; color: #355c96; font: inherit; font-size: .87rem; cursor: pointer; }
 .share-actions button:hover { background: #f5f1e8; }
@@ -273,7 +273,7 @@ body {
 .collection-link { display: block; padding: 15px 17px; border: 1px solid #e8e1d6; border-radius: 9px; color: #355c96; text-decoration: none; line-height: 1.5; }
 .collection-link:hover, .collection-link:focus-visible { background: #f8f4ed; text-decoration: underline; }
 .collection-back { display: inline-block; color: #355c96; margin: 0 0 22px; font-size: .9rem; }
-.collection-description { text-align: center; color: #70695e; line-height: 1.6; }
+.collection-description { text-align: center; color: #292524; line-height: 1.6; }
 #collection-share-slot .share-section { border-top: 1px solid #e8e1d6; margin: 34px 0 0; padding-top: 30px; }
 
 /* Hide categories without records on collection pages. */
@@ -285,7 +285,7 @@ body {
 .catalog-hero[hidden]{display:none!important}
 .catalog-eyebrow{font-size:.78rem;letter-spacing:.11em;color:#786044;font-weight:700}
 .catalog-hero h1{font-family:Georgia,serif;font-weight:normal;font-size:clamp(1.9rem,4vw,2.6rem);line-height:1.2;margin:15px 0}
-.catalog-hero p{color:#6d665d;line-height:1.65;max-width:590px;margin:0 auto 22px}
+.catalog-hero p{color:#292524;line-height:1.65;max-width:590px;margin:0 auto 22px}
 .catalog-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:12px}
 .catalog-button{display:inline-block;border:1px solid #b98d51;border-radius:8px;background:#e8d0a6;color:#29251f;text-decoration:none;padding:11px 18px;font-weight:650}
 .catalog-button-secondary{background:#fff;border-color:#e6ddd0;color:#285d96}
@@ -296,7 +296,7 @@ body {
 .admin-heading{border-bottom:1px solid #e6ddd0;padding-bottom:24px;margin-bottom:28px}
 .admin-eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.15em;color:#947247}
 .admin-heading h1{font-family:Georgia,serif;font-weight:normal;font-size:clamp(1.65rem,4vw,2.15rem);margin:12px 0}
-.admin-heading p{color:#6d665d;line-height:1.6;margin:0}
+.admin-heading p{color:#292524;line-height:1.6;margin:0}
 #builder-panel h2{font-family:Georgia,serif;font-size:1.4rem;font-weight:normal;margin:0 0 12px}
 @media print{.admin-nav,.admin-heading,.preview-button{display:none!important}}
 
@@ -307,16 +307,16 @@ body {
 .directory-card:hover,.directory-card:focus-visible{border-color:#b98d51;box-shadow:0 3px 13px #5d493315}
 .directory-card h2{font:normal 1.4rem Georgia,serif;margin:0}
 .directory-card p{color:#71685e;font-size:.92rem;line-height:1.5;margin:0;flex:1}
-.directory-count{color:#75634f;font-size:.85rem}
+.directory-count{color:#292524;font-size:.85rem}
 .directory-action{font-size:.92rem;font-weight:600;color:#285d96}
 .directory-heading{font:normal 2rem Georgia,serif;margin:22px 0 22px}
 @media(max-width:660px){.directory-nav{grid-template-columns:1fr}.directory-card{min-height:0;padding:19px}}
 @media print{.directory-card{box-shadow:none;background:white;break-inside:avoid}.directory-nav{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
-.directory-heading-count{display:block;margin-top:.35rem;color:#75634f;font:normal .95rem Arial,sans-serif}
+.directory-heading-count{display:block;margin-top:.35rem;color:#292524;font:normal .95rem Arial,sans-serif}
 
-.collection-link-count { display:block; margin-top:4px; font:normal .85rem Arial,sans-serif; color:#75634f; }
-.collection-record-count { margin:.3rem 0 1rem; font:normal .95rem Arial,sans-serif; color:#75634f; }
+.collection-link-count { display:block; margin-top:4px; font:normal .85rem Arial,sans-serif; color:#292524; }
+.collection-record-count { margin:.3rem 0 1rem; font:normal .95rem Arial,sans-serif; color:#292524; }
 
 /* Pending previews are visibly distinct from verified Bitcoin records. */
 .pending-order-notice { background: #fff1b8; color: #654600; border: 1px solid #d7a321; padding: .8rem 1rem; border-radius: 8px; font-weight: 700; }
