@@ -18,5 +18,30 @@ function buildPsbt(txid,vout,inputSats,changeAddress,fee,text){if(!/^[a-f0-9]{64
 function download(name,content,type){let url=URL.createObjectURL(new Blob([content],{type}));let a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 function displayError(e){$('builder-result').textContent='Error: '+e.message;}
 async function generate(){try{const txid=$('funding-txid').value.trim(),vout=readInteger('funding-vout'),inputSats=readInteger('funding-amount'),fee=readInteger('fee-sats'),address=$('change-address').value.trim(),message=$('inscription-text').value;const result=buildPsbt(txid,vout,inputSats,address,fee,message);const id=$('record-id').value.trim()||crypto.randomUUID();if(!/^[a-zA-Z0-9_-]{4,80}$/.test(id))throw Error('ID must be 4–80 letters, digits, underscores or hyphens');const record={schema:'continuum-milestone-v1',id,status:'preview',psbt:result.psbt,txid:null,image_url:$('image-url').value.trim()||null,description:$('long-description').value||null,created_at:new Date().toISOString()};const digest=hex(await sha256(result.raw));record.unsigned_tx_sha256=digest;window.continuumDraft=record;$('builder-result').textContent=`PSBT generated. ${result.bytes} UTF-8 bytes; ${result.change} sats change; ${fee} sats fee. Verify all details independently in Sparrow before signing.`;$('generated-psbt').value=result.psbt;$('download-manifest').hidden=false;$('show-generated-preview').hidden=false;$('download-manifest').onclick=()=>download('index.json',JSON.stringify(record,null,2),'application/json');$('show-generated-preview').onclick=()=>{renderPreview(result.psbt);$('builder-panel').hidden=true;};}catch(e){displayError(e);}}
+async function prefillFromIndex(){
+  const id = new URLSearchParams(window.location.search).get('id');
+  if (!id) return;
+  const status = $('status');
+  const report = message => { if (status) { status.textContent = message; status.hidden = false; } };
+  if (!/^[a-zA-Z0-9_-]{4,80}$/.test(id)) { report('Invalid milestone ID in URL.'); return; }
+  try {
+    const response = await fetch('../index.json', {cache:'no-store'});
+    if (!response.ok) throw Error('Could not load index.json (HTTP '+response.status+')');
+    const data = await response.json();
+    if (!Array.isArray(data.records)) throw Error('index.json has no records array');
+    const record = data.records.find(item => item.id === id);
+    if (!record) { report('Milestone ID not found in index.json: '+id); return; }
+    const bitcoin = record.bitcoin || {};
+    const inscription = bitcoin.preview_inscription || bitcoin.extracted_inscription || '';
+    $('record-id').value = record.id;
+    $('inscription-text').value = inscription;
+    $('image-url').value = record.image || '';
+    $('long-description').value = record.description || '';
+    $('byte-count').textContent = encoder.encode(inscription).length+' / 80 bytes';
+    if (!inscription) report('Record loaded, but it has no inscription text.');
+    else if (encoder.encode(inscription).length > 80) report('Record loaded, but inscription exceeds the 80-byte limit.');
+    else report('Loaded milestone from index.json: '+(record.title || id)+'. Review before generating the PSBT.');
+  } catch (error) { report('Unable to prefill milestone: '+error.message); }
+}
 function initBuilder(){let button=$('generate-psbt');if(button)button.addEventListener('click',generate);let text=$('inscription-text');if(text)text.addEventListener('input',()=>{$('byte-count').textContent=encoder.encode(text.value).length+' / 80 bytes';});}
-document.addEventListener('DOMContentLoaded',initBuilder);
+document.addEventListener('DOMContentLoaded',()=>{initBuilder();prefillFromIndex();});
