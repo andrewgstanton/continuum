@@ -36,10 +36,10 @@
       "description": null,
       "image": "https://continuum-memorials-api.andrewgstanton.workers.dev/api/orders/CM-DDB56ECEB68E/image",
       "bitcoin": {
-        "txid": "",
+        "txid": "b167fdb108ac4e147bddd4c18204de70b2fc3b8c03ce32d3f49a5b83397862f5",
         "psbt": "",
         "extracted_inscription": "",
-        "preview_inscription": "Men’s Energy Group\nCafe Bianco\nNovember 5, 2026"
+        "preview_inscription": ""
       }
     },
     {
