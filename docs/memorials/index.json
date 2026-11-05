@@ -31,7 +31,7 @@
       "type": "milestone",
       "title": "Cafe Bianco November 5, 2026",
       "status": "published",
-      "visibility": "private",
+      "visibility": "public",
       "collections": [],
       "description": null,
       "image": "https://continuum-memorials-api.andrewgstanton.workers.dev/api/orders/CM-DDB56ECEB68E/image",
