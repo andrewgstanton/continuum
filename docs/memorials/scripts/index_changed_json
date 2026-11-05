@@ -27,6 +27,22 @@
       }
     },
     {
+      "id": "cm-ddb56eceb68e",
+      "type": "milestone",
+      "title": "Cafe Bianco November 5, 2026",
+      "status": "published",
+      "visibility": "public",
+      "collections": [],
+      "description": null,
+      "image": "https://continuum-memorials-api.andrewgstanton.workers.dev/api/orders/CM-DDB56ECEB68E/image",
+      "bitcoin": {
+        "txid": "b167fdb108ac4e147bddd4c18204de70b2fc3b8c03ce32d3f49a5b83397862f5",
+        "psbt": "",
+        "extracted_inscription": "Men’s Energy Group\nCafe Bianco\nNovember 5, 2026",
+        "preview_inscription": ""
+      }
+    },
+    {
       "id": "bill-williams-002",
       "type": "milestone",
       "title": "Bill Williams — From Coming Soon to SOLD",

@@ -22,8 +22,9 @@ def generate(source, pubkey, timestamp):
         if not isinstance(rid, str) or not re.fullmatch(r'[A-Za-z0-9_-]+', rid) or rid in seen:
             raise ValueError('Invalid or duplicate record id: %r' % rid)
         seen.add(rid)
+        # Only public, published records are eligible for Nostr events.
         if record.get('visibility') != 'public' or record.get('status') != 'published':
-            raise ValueError('%s: expected a public, published record' % rid)
+            continue
         txid = record['bitcoin']['txid']
         if not isinstance(txid, str) or not re.fullmatch(r'[0-9a-fA-F]{64}', txid):
             raise ValueError('%s: invalid Bitcoin txid' % rid)
