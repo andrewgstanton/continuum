@@ -63,8 +63,10 @@ if (![...['txid','psbt','id','collection','view','order_id']].some(key => new UR
 // Optional Nostr links for published records; absent for previews and records without an event ID.
 (async function () {
   const section = document.getElementById('nostr-links');
-  const txid = new URLSearchParams(window.location.search).get('txid');
-  if (!txid || !/^[a-f0-9]{64}$/i.test(txid)) return;
+  const params = new URLSearchParams(window.location.search);
+  const txid = params.get('txid');
+  const recordId = params.get('id');
+  if (!recordId && (!txid || !/^[a-f0-9]{64}$/i.test(txid))) return;
   try {
     const response = await fetch('index.json', { cache: 'no-cache' });
     if (!response.ok) return;
@@ -72,8 +74,11 @@ if (![...['txid','psbt','id','collection','view','order_id']].some(key => new UR
     // Supports a top-level array or an object with a records array.
     const records = Array.isArray(index) ? index : index.records;
     if (!Array.isArray(records)) return;
-    const record = records.find(item => item && item.bitcoin &&
-      typeof item.bitcoin.txid === 'string' && item.bitcoin.txid.toLowerCase() === txid.toLowerCase());
+    const record = records.find(item => item && (
+      (recordId && item.id === recordId) ||
+      (txid && item.bitcoin && typeof item.bitcoin.txid === 'string' &&
+        item.bitcoin.txid.toLowerCase() === txid.toLowerCase())
+    ));
     const eventId = record && record.nostr && record.nostr.event_id;
     if (typeof eventId !== 'string' || !/^[a-f0-9]{64}$/i.test(eventId)) return;
     document.getElementById('nostr-primal').href = 'https://primal.net/e/' + eventId;
