@@ -38,9 +38,12 @@
       "bitcoin": {
         "txid": "7b86ee3590e26d4e8696d5f51771736b7c0c4cbd14203677a960069c98d1d7f4",
         "psbt": "",
-        "extracted_inscription": "",
+        "extracted_inscription": "Cornerstone Men’s Breakfast\nNovember 7, 2026\n“Mobilize Love”",
         "preview_inscription": ""
-      }
+      },
+      "nostr": {
+        "event_id": "9f0a46a0376dd0c16c93ebee006591719361bcecf81060373d4dbfe18c2b16b9"
+      }        
     },    
     {
       "id": "cm-0d60f38ad11d",

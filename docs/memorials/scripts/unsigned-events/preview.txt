@@ -1,3 +1,27 @@
+=== cm-7ddb1f7f0738 ===
+
+Cornerstone Men’s Breakfast November 7, 2026
+
+https://continuum-memorials-api.andrewgstanton.workers.dev/api/orders/CM-7DDB1F7F0738/image
+
+Recorded on Bitcoin
+
+Cornerstone Men’s Breakfast
+November 7, 2026
+“Mobilize Love”
+
+Permanently recorded on the Bitcoin network
+
+View this milestone:
+https://mycontinuum.xyz/memorials/?txid=7b86ee3590e26d4e8696d5f51771736b7c0c4cbd14203677a960069c98d1d7f4
+
+Verify on Bitcoin:
+mempool.space:
+https://mempool.space/tx/7b86ee3590e26d4e8696d5f51771736b7c0c4cbd14203677a960069c98d1d7f4
+
+Blockstream:
+https://blockstream.info/tx/7b86ee3590e26d4e8696d5f51771736b7c0c4cbd14203677a960069c98d1d7f4
+
 === cm-0d60f38ad11d ===
 
 Hannah Shepard "A Sunset Dream"

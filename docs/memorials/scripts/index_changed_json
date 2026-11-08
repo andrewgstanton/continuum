@@ -29,17 +29,17 @@
     {
       "id": "cm-7ddb1f7f0738",
       "type": "milestone",
-      "title": "Cornerstone Men’s Breakfast 11/7/2026",
+      "title": "Cornerstone Men’s Breakfast November 7, 2026",
       "status": "published",
-      "visibility": "private",
+      "visibility": "public",
       "collections": [],
       "description": null,
       "image": "https://continuum-memorials-api.andrewgstanton.workers.dev/api/orders/CM-7DDB1F7F0738/image",
       "bitcoin": {
-        "txid": "",
+        "txid": "7b86ee3590e26d4e8696d5f51771736b7c0c4cbd14203677a960069c98d1d7f4",
         "psbt": "",
-        "extracted_inscription": "",
-        "preview_inscription": "Cornerstone Men’s Breakfast\nNovember 7, 2026\n“Mobilize Love”"
+        "extracted_inscription": "Cornerstone Men’s Breakfast\nNovember 7, 2026\n“Mobilize Love”",
+        "preview_inscription": ""
       }
     },
     {
@@ -56,6 +56,9 @@
         "psbt": "",
         "extracted_inscription": "Hannah Shepard\n“A Sunset Dream”\nNovember 5, 2026\nFirst pastel oil painting",
         "preview_inscription": ""
+      },
+      "nostr": {
+        "event_id": "e62798d9259c61c7be73b2e418dcbfac7b2be69da08b0b4eedd99599817cb1eb"
       }
     },
     {
