@@ -47,15 +47,15 @@
       "type": "milestone",
       "title": "Hannah Shepard \"A Sunset Dream\"",
       "status": "published",
-      "visibility": "private",
+      "visibility": "public",
       "collections": [],
       "description": null,
       "image": "https://continuum-memorials-api.andrewgstanton.workers.dev/api/orders/CM-0D60F38AD11D/image",
       "bitcoin": {
-        "txid": "",
+        "txid": "4a61de42c939e20c91005e34359339c44d16e12015e34f9094c12c96af6613de",
         "psbt": "",
         "extracted_inscription": "",
-        "preview_inscription": "Hannah Shepard\n“A Sunset Dream”\nNovember 5, 2026\nFirst pastel oil painting"
+        "preview_inscription": ""
       }
     },    
     {
