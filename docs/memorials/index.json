@@ -54,9 +54,12 @@
       "bitcoin": {
         "txid": "4a61de42c939e20c91005e34359339c44d16e12015e34f9094c12c96af6613de",
         "psbt": "",
-        "extracted_inscription": "",
-        "preview_inscription": ""
-      }
+       "extracted_inscription": "Hannah Shepard\n“A Sunset Dream”\nNovember 5, 2026\nFirst pastel oil painting",        
+       "preview_inscription": ""
+      },
+      "nostr": {
+        "event_id": "e62798d9259c61c7be73b2e418dcbfac7b2be69da08b0b4eedd99599817cb1eb"
+      }         
     },    
     {
       "id": "cm-ddb56eceb68e",
