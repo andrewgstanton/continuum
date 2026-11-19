@@ -27,6 +27,22 @@
       }
     },
     {
+      "id": "cm-b91f7a7806c5",
+      "type": "milestone",
+      "title": "Welcoming Theo",
+      "status": "published",
+      "visibility": "private",
+      "collections": [],
+      "description": null,
+      "image": "",
+      "bitcoin": {
+        "txid": "",
+        "psbt": "",
+        "extracted_inscription": "",
+        "preview_inscription": "Theo saw the light and met his parents! The world is bigger than it seems!"
+      }
+    },    
+    {
       "id": "cm-7ddb1f7f0738",
       "type": "milestone",
       "title": "Cornerstone Men’s Breakfast November 7, 2026",
