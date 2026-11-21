@@ -31,17 +31,20 @@
       "type": "milestone",
       "title": "Welcoming Theo",
       "status": "published",
-      "visibility": "private",
+      "visibility": "public",
       "collections": [],
       "description": null,
       "image": "",
       "bitcoin": {
-        "txid": "",
+        "txid": "080e92421f950350f6f595963150967b83aa6895dbad715df98fd9656e64ed24",
         "psbt": "",
-        "extracted_inscription": "",
-        "preview_inscription": "Theo saw the light and met his parents! The world is bigger than it seems!"
-      }
-    },    
+        "extracted_inscription": "Theo saw the light and met his parents! The world is bigger than it seems!",
+        "preview_inscription": ""
+      },
+      "nostr": {
+        "event_id": "0d948d5de104efef613906b09941f34cfbd1fda8b9226504d7836e2e0a754d3c"
+      }      
+    },  
     {
       "id": "cm-7ddb1f7f0738",
       "type": "milestone",

@@ -27,6 +27,25 @@
       }
     },
     {
+      "id": "cm-b91f7a7806c5",
+      "type": "milestone",
+      "title": "Welcoming Theo",
+      "status": "published",
+      "visibility": "public",
+      "collections": [],
+      "description": null,
+      "image": "",
+      "bitcoin": {
+        "txid": "080e92421f950350f6f595963150967b83aa6895dbad715df98fd9656e64ed24",
+        "psbt": "",
+        "extracted_inscription": "Theo saw the light and met his parents! The world is bigger than it seems!",
+        "preview_inscription": ""
+      },
+      "nostr": {
+        "event_id": "0d948d5de104efef613906b09941f34cfbd1fda8b9226504d7836e2e0a754d3c"
+      }      
+    },
+    {
       "id": "cm-7ddb1f7f0738",
       "type": "milestone",
       "title": "Cornerstone Men’s Breakfast November 7, 2026",
@@ -40,6 +59,9 @@
         "psbt": "",
         "extracted_inscription": "Cornerstone Men’s Breakfast\nNovember 7, 2026\n“Mobilize Love”",
         "preview_inscription": ""
+      },
+      "nostr": {
+        "event_id": "9f0a46a0376dd0c16c93ebee006591719361bcecf81060373d4dbfe18c2b16b9"
       }
     },
     {

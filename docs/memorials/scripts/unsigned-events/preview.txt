@@ -1,3 +1,23 @@
+=== cm-b91f7a7806c5 ===
+
+Welcoming Theo
+
+Recorded on Bitcoin
+
+Theo saw the light and met his parents! The world is bigger than it seems!
+
+Permanently recorded on the Bitcoin network
+
+View this milestone:
+https://mycontinuum.xyz/memorials/?txid=080e92421f950350f6f595963150967b83aa6895dbad715df98fd9656e64ed24
+
+Verify on Bitcoin:
+mempool.space:
+https://mempool.space/tx/080e92421f950350f6f595963150967b83aa6895dbad715df98fd9656e64ed24
+
+Blockstream:
+https://blockstream.info/tx/080e92421f950350f6f595963150967b83aa6895dbad715df98fd9656e64ed24
+
 === cm-7ddb1f7f0738 ===
 
 Cornerstone Men’s Breakfast November 7, 2026
