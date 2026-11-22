@@ -7,7 +7,14 @@
       "title": "Stanton Family Memorials and Milestones",
       "description": null,
       "visibility": "public"
+    },
+    {
+      "id": "ags-ministry-events",
+      "title": "Christian Ministtry Events & Milestones - Andrew Stanton",
+      "description": null,
+      "visibility": "public"
     }
+
   ],
   "records": [
     {
@@ -32,7 +39,7 @@
       "title": "NCS November 19, 2026",
       "status": "published",
       "visibility": "public",
-      "collections": [],
+      "collections": ["ags-ministry-events"],
       "description": null,
       "image": "https://continuum-memorials-api.andrewgstanton.workers.dev/api/orders/CM-16C2683D30B3/image",
       "bitcoin": {
@@ -70,7 +77,7 @@
       "title": "Cornerstone Men’s Breakfast November 7, 2026",
       "status": "published",
       "visibility": "public",
-      "collections": [],
+      "collections": ["ags-ministry-events"],
       "description": null,
       "image": "https://continuum-memorials-api.andrewgstanton.workers.dev/api/orders/CM-7DDB1F7F0738/image",
       "bitcoin": {
@@ -108,7 +115,7 @@
       "title": "Cafe Bianco November 5, 2026",
       "status": "published",
       "visibility": "public",
-      "collections": [],
+      "collections": ["ags-ministry-events"],
       "description": null,
       "image": "https://continuum-memorials-api.andrewgstanton.workers.dev/api/orders/CM-DDB56ECEB68E/image",
       "bitcoin": {
