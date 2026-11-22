@@ -27,6 +27,25 @@
       }
     },
     {
+      "id": "cm-16c2683d30b3",
+      "type": "milestone",
+      "title": "NCS November 19, 2026",
+      "status": "published",
+      "visibility": "public",
+      "collections": [],
+      "description": null,
+      "image": "https://continuum-memorials-api.andrewgstanton.workers.dev/api/orders/CM-16C2683D30B3/image",
+      "bitcoin": {
+        "txid": "44875590c1e3e2c93f9182eb552d91251ba279d7c4809e1029d7079e67dd49d2",
+        "psbt": "",
+        "extracted_inscription": "NCS Forever!!\n\nThomas Stierwalt Testimony\n\nNovember 19, 2026",
+        "preview_inscription": ""
+      },
+      "nostr": {
+        "event_id": "e9153c9ab673fd8c2f10f49deda8b2de8a2776745c1980b1c29c9e119c6e1871"
+      }      
+    },
+    {
       "id": "cm-b91f7a7806c5",
       "type": "milestone",
       "title": "Welcoming Theo",
@@ -43,7 +62,7 @@
       },
       "nostr": {
         "event_id": "0d948d5de104efef613906b09941f34cfbd1fda8b9226504d7836e2e0a754d3c"
-      }      
+      }
     },
     {
       "id": "cm-7ddb1f7f0738",

@@ -1,3 +1,29 @@
+=== cm-16c2683d30b3 ===
+
+NCS November 19, 2026
+
+https://continuum-memorials-api.andrewgstanton.workers.dev/api/orders/CM-16C2683D30B3/image
+
+Recorded on Bitcoin
+
+NCS Forever!!
+
+Thomas Stierwalt Testimony
+
+November 19, 2026
+
+Permanently recorded on the Bitcoin network
+
+View this milestone:
+https://mycontinuum.xyz/memorials/?txid=44875590c1e3e2c93f9182eb552d91251ba279d7c4809e1029d7079e67dd49d2
+
+Verify on Bitcoin:
+mempool.space:
+https://mempool.space/tx/44875590c1e3e2c93f9182eb552d91251ba279d7c4809e1029d7079e67dd49d2
+
+Blockstream:
+https://blockstream.info/tx/44875590c1e3e2c93f9182eb552d91251ba279d7c4809e1029d7079e67dd49d2
+
 === cm-b91f7a7806c5 ===
 
 Welcoming Theo
